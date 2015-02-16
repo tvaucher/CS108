@@ -1,5 +1,9 @@
 package ch.epfl.imhof.projection;
 
-public interface Projection {
+import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.geometry.Point;
 
+public interface Projection {
+    public Point project(PointGeo point);
+    public PointGeo inverse(Point point);
 }
