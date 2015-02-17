@@ -4,9 +4,6 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
 
 public final class CH1903Projection {
-    //lambda = longitude
-    //phi = lattitude
-    ///!\ degré
     public Point project(PointGeo point) {
         double longitudeDegrees = Math.toDegrees(point.longitude());
         double latitudeDegrees =  Math.toDegrees(point.latitude());
