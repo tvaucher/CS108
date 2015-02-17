@@ -1,24 +1,25 @@
 package ch.epfl.imhof;
 
 /**
- * Un point à la surface de la Terre, en coordonnées sphériques.
+ * A point on Earth's surface, in spherical coordinates.
  * 
  * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
  */
 public final class PointGeo {
     private final double longitude;
     private final double latitude;
     /**
-     * Construit un point avec la latitude et la longitude en données.
+     * Construct a point with its longitude and latitude passed as parameters.
      * 
      * @param longitude
-     *          La longitude du point, en radians.
+     *          Longitude of the point, in radians.
      * @param latitude
-     *          La latitude du point, en radians.
+     *          Latitude of the point, in radians.
      * @throws IllegalArgumentException
-     *          Si la longitude est invalide, c'est-à-dire hors de l'intervalle [-π; π]
+     *          If the longitude is invalid, when out of allowed range [-π; π]
      * @throws IllegalArgumentException
-     *          Si la latitude est invalide, c'est-à-dire hors de l'intervalle [-π/2; π/2]
+     *          If the latitude is invalid, when out of allowed range [-π/2; π/2]
      */
     public PointGeo (double longitude, double latitude) throws IllegalArgumentException {
         if (Math.abs(latitude) > Math.PI/2) {
@@ -32,22 +33,22 @@ public final class PointGeo {
     }
     
     /**
-     * Retourne la latitude du point, en radians.
-     * 
-     * @return latitude
-     *          La latitude du point, en radians.
-     */
-    public double latitude() {
-        return latitude;
-    }
-    
-    /**
-     * Retourne la longitude du point, en radians.
+     * Return the longitude of the point, in radians.
      * 
      * @return longitude
-     *          La longitude du point, en radians.
+     *          Longitude of the point, in radians.
      */
     public double longitude() {
         return longitude;
+    }
+    
+    /**
+     * Return the latitude of the point, in radians.
+     * 
+     * @return latitude
+     *          Latitude of the point, in radians.
+     */
+    public double latitude() {
+        return latitude;
     }
 }

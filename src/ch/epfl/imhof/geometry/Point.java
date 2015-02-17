@@ -1,19 +1,20 @@
 package ch.epfl.imhof.geometry;
 
 /**
- * Un point à la surface de la Terre, en coordonnées cartésiennes.
+ * A point on Earth's surface, in Cartesian coordinates.
  * 
  * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
  */
 public final class Point {
     private final double x, y;
     /**
-     * Construit un point avec l'abscisse et l'ordonnée en données.
+     * Construct a point with its abscissa and ordinate passed as parameters.
      * 
      * @param x
-     *          L'abscisse du point.
+     *          Abscissa of the point.
      * @param y
-     *          L'ordonnée du point.
+     *          Ordinate of the point.
      */
     public Point(double x, double y) {
         this.x = x;
@@ -21,20 +22,20 @@ public final class Point {
     }
     
     /**
-     * Retourne l'abscisse du point.
+     * Return the abscissa of the point.
      * 
      * @return x
-     *          L'abscisse du point
+     *          Abscissa of the point.
      */
     public double x() {
         return x;
     }
     
     /**
-     * Retourne l'ordonnée du point.
+     * Return the ordinate of the point.
      * 
      * @return y
-     *          L'ordonnée du point
+     *          Ordinate of the point.
      */
     public double y() {
         return y;
