@@ -5,8 +5,9 @@ import ch.epfl.imhof.geometry.Point;
 
 /**
  * Implementation of the CH1903 projection based on the Projection interface
+ * Source : {@link http://tinyurl.com/k3zxbbn}
  * 
- * @see {@link ch.epfl.imhof.projection.Projection} for interface doc
+ * @see ch.epfl.imhof.projection.Projection for interface doc
  * 
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)

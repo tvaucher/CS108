@@ -7,7 +7,7 @@ import ch.epfl.imhof.geometry.Point;
  * Implementation of the Equirectangular projection based on the Projection
  * interface
  * 
- * @see {@link ch.epfl.imhof.projection.Projection} for interface doc
+ * @see ch.epfl.imhof.projection.Projection for interface doc
  * 
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
