@@ -40,8 +40,7 @@ public final class Polygon {
      *          A closed polyline that marks the exterior of the polygon.
      */
     public Polygon(ClosedPolyLine shell) {
-        this.shell = shell; // The shell is already immutable, so there's no need for deep copies.
-        this.holes = Collections.unmodifiableList(new ArrayList<ClosedPolyLine>()); 
+        this(shell, Collections.emptyList()); //invoke the other constructor with an explicit empty List
     }
     
     /**

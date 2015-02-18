@@ -34,12 +34,11 @@ public final class ClosedPolyLine extends PolyLine{
                 }
             }
             else {
-                if (p2.y() <= p.y() && isLeftFromLine(p, p1, p2)) {
+                if (p2.y() <= p.y() && isLeftFromLine(p, p2, p1)) {
                     --count;
                 }
             }
         }
-               
         return (count != 0);
     }
     
