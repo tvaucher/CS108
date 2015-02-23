@@ -26,7 +26,7 @@ public abstract class PolyLine {
         if (points.isEmpty()) {
             throw new IllegalArgumentException("The list of points is empty");
         }
-        this.points = Collections.unmodifiableList(new ArrayList<Point>(points));
+        this.points = Collections.unmodifiableList(new ArrayList<>(points));
     }
     
     /**

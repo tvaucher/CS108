@@ -25,7 +25,7 @@ public final class Attributes {
      */
     public Attributes(Map<String, String> attributes) {
         this.attributes = Collections
-                .unmodifiableMap(new HashMap<String, String>(attributes));
+                .unmodifiableMap(new HashMap<>(attributes));
     }
 
     /**
@@ -90,7 +90,7 @@ public final class Attributes {
      */
     public int get(String key, int defaultValue) {
         try {
-            return Integer.parseInt(attributes.getOrDefault(key, defaultValue));
+            return Integer.parseInt(get(key));//, String.valueOf(defaultValue)));
         } catch (NumberFormatException e) {
             return defaultValue;
         }
