@@ -110,7 +110,6 @@ public class AttributesTest {
         Set<String> keys2 = new TreeSet<>();
         keys1.add("number");
         keys1.add("string");
-        keys1.add("hex");
         
         assertFalse(inst1.keepOnlyKeys(keys1).isEmpty());
         assertTrue(inst1.keepOnlyKeys(keys2).isEmpty());
@@ -119,6 +118,6 @@ public class AttributesTest {
         
         assertTrue(inst1.keepOnlyKeys(keys1).contains("number"));
         assertTrue(inst1.keepOnlyKeys(keys1).contains("string"));
-        assertTrue(inst1.keepOnlyKeys(keys1).contains("hex"));
+        assertFalse(inst1.keepOnlyKeys(keys1).contains("hex"));
     }
 }
