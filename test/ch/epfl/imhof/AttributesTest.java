@@ -39,8 +39,8 @@ public class AttributesTest {
         Attributes inst1 = attributes1.build();
         Attributes inst2 = new Attributes.Builder().build();
         
-        assertEquals(inst1.isEmpty(), false);
-        assertEquals(inst2.isEmpty(), true);
+        assertFalse(inst1.isEmpty());
+        assertTrue(inst2.isEmpty());
     }
     
     @Test

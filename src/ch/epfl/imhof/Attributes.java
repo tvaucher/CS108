@@ -24,8 +24,7 @@ public final class Attributes {
      *            Set of couple (attributes, values)
      */
     public Attributes(Map<String, String> attributes) {
-        this.attributes = Collections
-                .unmodifiableMap(new HashMap<>(attributes));
+        this.attributes = Collections.unmodifiableMap(new HashMap<>(attributes));
     }
 
     /**
@@ -90,8 +89,8 @@ public final class Attributes {
      */
     public int get(String key, int defaultValue) {
         try {
-            return Integer.parseInt(get(key));//, String.valueOf(defaultValue)));
-        } catch (NumberFormatException e) {
+            return Integer.parseInt(get(key)); // Throw a NFE if "get" returns null
+        } catch (NumberFormatException e) {    // Thus if key doesn't exist we get default result 
             return defaultValue;
         }
     }
