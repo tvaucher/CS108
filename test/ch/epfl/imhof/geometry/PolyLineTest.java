@@ -35,6 +35,11 @@ public abstract class PolyLineTest {
     public void constructorFailsOnEmptyPointList() {
         newPolyLine(Collections.emptyList());
     }
+    
+    @Test(expected = NullPointerException.class)
+    public void nullDoesntThrowIAE() {
+        newPolyLine(null).firstPoint();
+    }
 
     @Test
     public void pointListIsClonedBeforeBeingStored() {

@@ -1,5 +1,7 @@
 package ch.epfl.imhof;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Immutable generic class.
  * Represents an entity of type T associated to an Attributes object
@@ -22,8 +24,8 @@ public final class Attributed<T> {
      * Associated list of attributes
      */
     public Attributed(T value, Attributes attributes) {
-        this.value = value;
-        this.attributes = attributes;
+        this.value = requireNonNull(value);
+        this.attributes = requireNonNull(attributes);
     }
     
     /**

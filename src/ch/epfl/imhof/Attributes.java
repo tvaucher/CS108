@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Immutable class that consists of a map of attributes and their associated
@@ -24,7 +25,7 @@ public final class Attributes {
      *            Set of couple (attributes, values)
      */
     public Attributes(Map<String, String> attributes) {
-        this.attributes = Collections.unmodifiableMap(new HashMap<>(attributes));
+        this.attributes = Collections.unmodifiableMap(new HashMap<>(requireNonNull(attributes)));
     }
 
     /**
