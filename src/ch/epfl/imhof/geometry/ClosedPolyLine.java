@@ -27,6 +27,7 @@ public final class ClosedPolyLine extends PolyLine{
     /* (non-Javadoc)
      * @see ch.epfl.imhof.geometry.PolyLine#isClosed()
      */
+    @Override
     public boolean isClosed() {
         return true;
     }

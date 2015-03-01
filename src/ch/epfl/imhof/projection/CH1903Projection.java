@@ -7,7 +7,7 @@ import ch.epfl.imhof.geometry.Point;
  * Implementation of the CH1903 projection based on the Projection interface
  * Source : {@link http://tinyurl.com/k3zxbbn}
  * 
- * @see ch.epfl.imhof.projection.Projection for interface doc
+ * {@inheritDoc}
  * 
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
@@ -17,6 +17,7 @@ public final class CH1903Projection implements Projection{
     /* (non-Javadoc)
      * @see ch.epfl.imhof.projection.Projection#project(ch.epfl.imhof.PointGeo)
      */
+    @Override
     public Point project(PointGeo point) {
         double longitudeDegrees = Math.toDegrees(point.longitude());
         double latitudeDegrees = Math.toDegrees(point.latitude());
@@ -40,6 +41,7 @@ public final class CH1903Projection implements Projection{
     /* (non-Javadoc)
      * @see ch.epfl.imhof.projection.Projection#inverse(ch.epfl.imhof.geometry.Point)
      */
+    @Override
     public PointGeo inverse(Point point) {
         double x1 = (point.x() - 6e5) / 1e6;
         double y1 = (point.y() - 2e5) / 1e6;

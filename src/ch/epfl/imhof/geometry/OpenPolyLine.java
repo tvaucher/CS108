@@ -23,6 +23,7 @@ public final class OpenPolyLine extends PolyLine {
     /* (non-Javadoc)
      * @see ch.epfl.imhof.geometry.PolyLine#isClosed()
      */
+    @Override
     public boolean isClosed() {
         return false;
     }
