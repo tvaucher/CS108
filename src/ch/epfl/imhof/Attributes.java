@@ -116,7 +116,7 @@ public final class Attributes {
 
     /**
      * Builder associated to the Attributes class. Allow to construct an
-     * Attributes objet step by step by adding couple (key, value) in the
+     * Attributes object step by step by adding couple (key, value) in the
      * attributes map
      * 
      */
