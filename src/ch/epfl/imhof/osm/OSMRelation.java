@@ -12,7 +12,7 @@ public final class OSMRelation extends OSMEntity {
 
     public OSMRelation(long id, List<Member> members, Attributes attributes) {
         super(id, attributes);
-        this.members = Collections.unmodifiableList(new ArrayList<Member>(
+        this.members = Collections.unmodifiableList(new ArrayList<>(
                 requireNonNull(members)));
     }
 
@@ -43,28 +43,27 @@ public final class OSMRelation extends OSMEntity {
             return member;
         }
 
-        public static final class Type {
-            // TODO Do research and write this.
-            // Enumeration of NODE, WAY, RELATION
-            // We haven't learned about this yet. Will do a bit of research and
-            // get back to it.
+        public enum Type {
+            NODE, WAY, RELATION
         }
     }
-    
+
     public static final class Builder extends OSMEntity.Builder {
-        private Member.Type type;
-        private String role;
-        private OSMEntity newMember;
-        
+        private List<Member> members;
+
         public Builder(long id) {
             super(id);
+            members = new ArrayList<>();
         }
-        
+
         public void addMember(Member.Type type, String role, OSMEntity newMember) {
-            // TODO after Type, write this.
+            members.add(new Member(type, role, newMember));
         }
-        
-        // TODO Write OSMRelation build()
-        
+
+        public OSMRelation build() throws IllegalStateException {
+            if (isIncomplete()) throw new IllegalStateException("Cannot build Incomplete Relation");
+            return new OSMRelation(id, members, b.build());
+        }
+
     }
 }
