@@ -1,6 +1,7 @@
 package ch.epfl.imhof.osm;
 
 import ch.epfl.imhof.Attributes;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author Maxime Kjaer (250694)
@@ -14,7 +15,7 @@ public abstract class OSMEntity {
     
     public OSMEntity(long id, Attributes attributes) {
         this.id = id;
-        this.attributes = attributes;
+        this.attributes = requireNonNull(attributes);
     }
     
     public long id() {
@@ -25,7 +26,7 @@ public abstract class OSMEntity {
         return attributes;
     }
     
-    public boolean hasAttributes(String key) {
+    public boolean hasAttribute(String key) {
         return attributes.contains(key);
     }
     
