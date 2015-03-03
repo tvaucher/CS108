@@ -90,7 +90,8 @@ public abstract class OSMEntity {
         protected Attributes.Builder b = new Attributes.Builder();
 
         /**
-         * Constructor for the Builder. Requires the ID of the future Entity
+         * Constructor for the Builder. Requires the unique ID of the future
+         * Entity
          * 
          * @param id
          *            The unique ID of the entity.
