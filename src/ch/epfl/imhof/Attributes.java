@@ -25,7 +25,8 @@ public final class Attributes {
      *            Set of couple (attributes, values)
      */
     public Attributes(Map<String, String> attributes) {
-        this.attributes = Collections.unmodifiableMap(new HashMap<>(requireNonNull(attributes)));
+        this.attributes = Collections.unmodifiableMap(new HashMap<>(
+                requireNonNull(attributes)));
     }
 
     /**
@@ -90,8 +91,10 @@ public final class Attributes {
      */
     public int get(String key, int defaultValue) {
         try {
-            return Integer.parseInt(get(key)); // Throw a NFE if "get" returns null
-        } catch (NumberFormatException e) {    // Thus if key doesn't exist we get default result 
+            return Integer.parseInt(get(key)); // Throw a NFE if "get" returns
+                                               // null
+        } catch (NumberFormatException e) { // Thus if key doesn't exist we get
+                                            // default result
             return defaultValue;
         }
     }
@@ -105,7 +108,10 @@ public final class Attributes {
      * @return the newly built Attributes
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
-        Attributes.Builder builder = new Attributes.Builder(); // Using a builder to avoid code redundancy
+        Attributes.Builder builder = new Attributes.Builder(); // Using a
+                                                               // builder to
+                                                               // avoid code
+                                                               // redundancy
         for (String key : keysToKeep) {
             if (contains(key)) {
                 builder.put(key, get(key));
