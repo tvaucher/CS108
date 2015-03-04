@@ -7,9 +7,9 @@ import java.util.List;
 import ch.epfl.imhof.Attributes;
 
 /**
- * A way is a list of nodes, where the last node is identical to the first one,
- * and the nodes are in spherical coordinates (as opposed to Cartesian
- * coordinates).
+ * A way is a list of nodes, the nodes are in spherical coordinates (as opposed
+ * to Cartesian coordinates). A Way is considered closed if its last node is the
+ * same as the first one.
  * 
  * @see ch.epfl.imhof.osm.OSMNode
  * 
@@ -20,14 +20,14 @@ public final class OSMWay extends OSMEntity {
     private final List<OSMNode> nodes;
 
     /**
-     * Construct a new OSM Way. The last node is identical to the first one, and
-     * its nodes are in spherical coordinates instead of Cartesian coordinates.
+     * Construct a new OSM Way. Its nodes are in spherical coordinates instead
+     * of Cartesian coordinates.
      * 
      * @param id
      *            The unique ID of the entity. Every entity is referenced by its
      *            ID; for instance, the Allee de Savoie has an ID of 51740696,
      *            and information about it can be seen at
-     *            http://www.openstreetmap.org/way/51740696
+     *            @see {@link http://www.openstreetmap.org/way/51740696}
      * @param nodes
      *            A list of nodes that will make up the way
      * @param attributes
@@ -156,7 +156,8 @@ public final class OSMWay extends OSMEntity {
         }
 
         /* (non-Javadoc)
-         * @see ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete()
+         * 
+         * @see ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete() 
          * Return true if the way has 2 nodes or fewer.
          */
         @Override

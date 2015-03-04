@@ -26,7 +26,7 @@ public abstract class OSMEntity {
      *            The unique ID of the entity. Every entity is referenced by its
      *            ID; for instance, the EPFL RLC's relation is 331569, and
      *            information about it can be seen at
-     *            http://www.openstreetmap.org/relation/331569
+     *            @see {@link http://www.openstreetmap.org/relation/331569}
      * @param attributes
      *            An Attributes object. @see ch.epfl.imhof.Attributes
      */
