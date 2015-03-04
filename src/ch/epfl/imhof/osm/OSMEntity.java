@@ -116,7 +116,7 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Sets the completion to true.
+         * Sets the incompletion to true.
          */
         public void setIncomplete() {
             incomplete = true;

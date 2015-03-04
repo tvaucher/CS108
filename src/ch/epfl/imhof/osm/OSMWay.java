@@ -113,7 +113,7 @@ public final class OSMWay extends OSMEntity {
 
     /**
      * Builder associated to the OSMWay object. Allows you to construct an
-     * OSMEntity object step by step by adding one node at a time
+     * OSMWay object step by step by adding one node at a time
      */
     public static final class Builder extends OSMEntity.Builder {
         private List<OSMNode> nodes;
