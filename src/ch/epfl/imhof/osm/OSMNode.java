@@ -70,7 +70,9 @@ public final class OSMNode extends OSMEntity {
          * the Builder.
          * 
          * @return The newly created OSMNode object.
-         * @throws IllegalStateException if the node is incomplete.
+         * @throws IllegalStateException
+         *             if the node is incomplete (if the setIncomplete method
+         *             has been called on the Builder)
          */
         public OSMNode build() throws IllegalStateException {
             if (isIncomplete())
