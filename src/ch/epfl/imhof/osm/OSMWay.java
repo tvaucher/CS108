@@ -27,7 +27,7 @@ public final class OSMWay extends OSMEntity {
      *            The unique ID of the entity. Every entity is referenced by its
      *            ID; for instance, the Allee de Savoie has an ID of 51740696,
      *            and information about it can be seen at
-     *            @see {@link http://www.openstreetmap.org/way/51740696}
+     * @see {@link http://www.openstreetmap.org/way/51740696}
      * @param nodes
      *            A list of nodes that will make up the way
      * @param attributes
@@ -68,7 +68,7 @@ public final class OSMWay extends OSMEntity {
     }
 
     /**
-     * Getter for the list of nodes (excluding the last one, which is the same
+     * Getter for the list of nodes (excluding the last one, if it is the same
      * as the first one)
      * 
      * @return the list of nodes (excluding the last one, which is the same as
@@ -155,10 +155,11 @@ public final class OSMWay extends OSMEntity {
             return new OSMWay(id, nodes, b.build());
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
          * 
-         * @see ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete() 
-         * Return true if the way has 2 nodes or fewer.
+         * @see ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete() Return true
+         * if the way has 2 nodes or fewer.
          */
         @Override
         public boolean isIncomplete() {

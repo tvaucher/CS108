@@ -79,7 +79,4 @@ public class OSMNodeTest {
         assertEquals("test", node.attributeValue(""));
         assertEquals("", node.attributeValue("123"));
     }
-    
-    
-
 }
