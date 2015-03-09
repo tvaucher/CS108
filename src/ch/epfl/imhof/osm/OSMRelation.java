@@ -63,7 +63,7 @@ public final class OSMRelation extends OSMEntity {
          * @param type
          *            Type of the member (type of entity)
          * @param role
-         *            Role of the member
+         *            Role of the member should either be "inner" or "outer"
          * @param member
          *            entity given as member
          */
@@ -101,8 +101,10 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * enumeration of possible type of entity node : @see {@link OSMNode}
-         * way : @see {@link OSMWay} relation : @see {@link OSMRelation}
+         * enumeration of possible type of entity 
+         * - node : @see {@link OSMNode}
+         * - way : @see {@link OSMWay} 
+         * - relation : @see {@link OSMRelation}
          */
         public enum Type {
             NODE, WAY, RELATION

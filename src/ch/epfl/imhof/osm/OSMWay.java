@@ -102,7 +102,7 @@ public final class OSMWay extends OSMEntity {
     }
 
     /**
-     * Returns true if the first node is the same as the last one, false
+     * Returns true iff the first node is the same as the last one, false
      * otherwise.
      * 
      * @return true iff the first node is the same as the last one.
