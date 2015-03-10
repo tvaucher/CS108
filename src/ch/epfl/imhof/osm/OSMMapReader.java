@@ -13,8 +13,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import ch.epfl.imhof.PointGeo;
-import ch.epfl.imhof.geometry.Point;
-import ch.epfl.imhof.projection.CH1903Projection;
 
 public final class OSMMapReader {
     private OSMMapReader() {
@@ -41,7 +39,10 @@ public final class OSMMapReader {
                             long id = Long.parseLong(atts.getValue("id"));
                             double lon = Double.parseDouble(atts.getValue("lon"));
                             double lat = Double.parseDouble(atts.getValue("lat"));
-                            PointGeo point = new CH1903Projection().inverse(new Point(lon, lat));
+                            //I don't get this line. Why do you use a projection ? Ok points are in degrees, but you just have to convert them into radians.
+                            //Because the given values are already in WGS 84
+                            //PointGeo point = new CH1903Projection().inverse(new Point(lon, lat));
+                            PointGeo point = new PointGeo(Math.toRadians(lon), Math.toRadians(lat));
                             nodeBuilder = new OSMNode.Builder(id, point);
                             currentParentBuilder = nodeBuilder;
                             break;
@@ -76,20 +77,28 @@ public final class OSMMapReader {
                                     OSMNode referencedNode = mapBuilder.nodeForId(ref);
                                     if (referencedNode != null)
                                         relationBuilder.addMember(OSMRelation.Member.Type.NODE, role, referencedNode);
+                                    else
+                                        relationBuilder.setIncomplete();
                                     break;
                                 case "way":
                                     OSMWay referencedWay = mapBuilder.wayForId(ref);
                                     if (referencedWay != null)
                                         relationBuilder.addMember(OSMRelation.Member.Type.WAY, role, referencedWay);
+                                    else
+                                        relationBuilder.setIncomplete();
                                     break;
                                 case "relation":
                                     OSMRelation referencedRelation = mapBuilder.relationForId(ref);
                                     if (referencedRelation != null)
                                         relationBuilder.addMember(OSMRelation.Member.Type.RELATION, role, referencedRelation);
+                                    else
+                                        relationBuilder.setIncomplete();
                                     break;
                                 default:
                                     // Accept it somehow if it has no type?
-                                    // TODO Figure this out.
+                                    // We just didn't understand the statement :
+                                    // It's not a member without type.
+                                    // It's a relation without the attribute type : "type" => "multipolygon" is missing
                                     break;
                             }
                             break;
@@ -106,15 +115,15 @@ public final class OSMMapReader {
                 public void endElement(String uri, String lName, String qName) throws SAXException {
                     switch (qName) {
                         case "node":
-                            mapBuilder.addNode(nodeBuilder.build());
+                            if (!nodeBuilder.isIncomplete()) mapBuilder.addNode(nodeBuilder.build());
                             nodeBuilder = null;
                             break;
                         case "way":
-                            mapBuilder.addWay(wayBuilder.build());
+                            if (!wayBuilder.isIncomplete()) mapBuilder.addWay(wayBuilder.build());
                             wayBuilder = null;
                             break;
                         case "relation":
-                            mapBuilder.addRelation(relationBuilder.build());
+                            if (!relationBuilder.isIncomplete()) mapBuilder.addRelation(relationBuilder.build());
                             relationBuilder = null;
                             break;
                     }
