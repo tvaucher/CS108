@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+  <node id="1" lat="46.5182404" lon="6.5616727"/>
+  <node id="2" lat="46.5188218" lon="6.5616658"/>
+  <node id="3" lat="46.5188294" lon="6.5621886"/>
+  <node id="4" lat="46.5182432" lon="6.5621964"/>
+  <way id="5">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="3"/>
+    <nd ref="4"/>
+    <nd ref="1"/>
+    <tag k="building" v="yes"/>
+    <tag k="name" v="BC"/>
+  </way>
+</osm>
