@@ -94,12 +94,6 @@ public final class OSMMapReader {
                                     else
                                         relationBuilder.setIncomplete();
                                     break;
-                                default:
-                                    // Accept it somehow if it has no type?
-                                    // We just didn't understand the statement :
-                                    // It's not a member without type.
-                                    // It's a relation without the attribute type : "type" => "multipolygon" is missing
-                                    break;
                             }
                             break;
                         }
