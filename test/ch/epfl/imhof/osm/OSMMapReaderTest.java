@@ -2,16 +2,20 @@ package ch.epfl.imhof.osm;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
 
 public class OSMMapReaderTest {
-    private OSMMap bcMap = OSMMapReader.readOSMFile("bc.osm", false);
-    private OSMMap rlcMap = OSMMapReader.readOSMFile("lc.osm", false);
+    
+    private OSMMap bcMap = OSMMapReader.readOSMFile("data/bc.osm", false);
+    private OSMMap rlcMap = OSMMapReader.readOSMFile("data/lc.osm", false);
+    
     
     // All expected values have been found by manually inspecting the OSM files
     // (use Ctrl+F to get the number of ways / nodes / relations).
     @Test
-    public void allWaysAreSaved() {
+    public void allWaysAreSaved() {        
         assertEquals(1, bcMap.ways().size());
         assertEquals(49, rlcMap.ways().size());
     }
