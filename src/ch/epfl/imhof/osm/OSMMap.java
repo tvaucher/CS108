@@ -1,13 +1,17 @@
 package ch.epfl.imhof.osm;
 
+import static java.util.Objects.requireNonNull;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author Maxime Kjaer (250694)
@@ -30,7 +34,7 @@ public final class OSMMap {
     public List<OSMRelation> relations() {
         return relations;
     }
-    
+        
     public static final class Builder {
         private HashMap<Long, OSMNode> nodes = new HashMap<>();
         private HashMap<Long, OSMWay> ways = new HashMap<>();
@@ -63,6 +67,7 @@ public final class OSMMap {
         }
         
         public OSMMap build() {
+            printMapInFile();
             return new OSMMap(transformToList(ways), transformToList(relations));
         }
         
@@ -72,6 +77,37 @@ public final class OSMMap {
                 list.add(entry.getValue());
             }
             return list;
+        }
+        
+        private void printMapInFile() { //FOR DEBUGING PURPOSE
+            try (FileWriter fr = new FileWriter(new File("data/debug/map" + System.currentTimeMillis() + ".txt"))) {
+                long startTime = System.currentTimeMillis();
+                fr.write("START PRINTING MAP\n\n");
+                fr.write("MAP HAS " + nodes.size() + " NODES\n");
+                fr.write("PRINTING " + ways.size() + " WAYS\n");
+                for (Entry<Long, OSMWay> way : ways.entrySet()) {
+                    fr.write("  Way : id " + way.getKey() + ", contains "
+                            + way.getValue().nodesCount() + " nodes\n");
+                }
+                fr.write("\nPRINTING " + relations.size()
+                        + " RELATIONS\n");
+                for (Entry<Long, OSMRelation> relation : relations.entrySet()) {
+                    fr.write("  Relation : id " + relation.getKey()
+                            + "\n    has " + relation.getValue().members().size()
+                            + " members\n");
+                    /*for (OSMRelation.Member member : relation.getValue()
+                            .members()) {
+                        fr.write("  Member : role " + member.role()
+                                + ", type : " + member.type()+ "\n");
+                    }*/
+                    fr.write("    Relation attribute \"type\" value " + relation.getValue().attributeValue("type") + "\n");
+                }
+                fr.write("\nWRITED IN " + (System.currentTimeMillis() - startTime)/1000. + " sec");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
