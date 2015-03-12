@@ -164,37 +164,44 @@ public final class OSMMap {
         }
 
         /**
-         * A private method for debugging purposes that creates a file in data/debug
+         * A private method for debugging purposes that creates a file in
+         * data/debug
          */
         private void printMapInFile() { // FOR DEBUGING PURPOSES
-            try (PrintWriter pr = new PrintWriter(new File("data/debug/map"
-                    + System.currentTimeMillis() + ".txt"))) {
-                long startTime = System.currentTimeMillis();
-                pr.println("START PRINTING MAP\n");
-                pr.println("MAP HAS " + nodes.size() + " NODES");
-                pr.println("PRINTING " + ways.size() + " WAYS");
-                for (Entry<Long, OSMWay> way : ways.entrySet()) {
-                    pr.println("  Way : id " + way.getKey() + ", contains "
-                            + way.getValue().nodesCount() + " nodes");
+            File debugDirectory = new File("data/debug");
+            if (debugDirectory.exists() && debugDirectory.isDirectory()) {
+                // Will normally be true only locally
+                try (PrintWriter pr = new PrintWriter(new File("data/debug/map"
+                        + System.currentTimeMillis() + ".txt"))) {
+                    long startTime = System.currentTimeMillis();
+                    pr.println("START PRINTING MAP\n");
+                    pr.println("MAP HAS " + nodes.size() + " NODES");
+                    pr.println("PRINTING " + ways.size() + " WAYS");
+                    for (Entry<Long, OSMWay> way : ways.entrySet()) {
+                        pr.println("  Way : id " + way.getKey() + ", contains "
+                                + way.getValue().nodesCount() + " nodes");
+                    }
+                    pr.println("\nPRINTING " + relations.size() + " RELATIONS");
+                    for (Entry<Long, OSMRelation> relation : relations
+                            .entrySet()) {
+                        pr.println("  Relation : id " + relation.getKey()
+                                + "\n    has "
+                                + relation.getValue().members().size()
+                                + " members");
+                        /*
+                         * for (OSMRelation.Member member : relation.getValue()
+                         * .members()) { pr.println("  Member : role " +
+                         * member.role() + ", type : " + member.type()+ "\n"); }
+                         */
+                        pr.println("    Relation attribute \"type\" value "
+                                + relation.getValue().attributeValue("type"));
+                    }
+                    pr.println("\nWRITTEN IN "
+                            + (System.currentTimeMillis() - startTime) / 1000.
+                            + " sec");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-                pr.println("\nPRINTING " + relations.size() + " RELATIONS");
-                for (Entry<Long, OSMRelation> relation : relations.entrySet()) {
-                    pr.println("  Relation : id " + relation.getKey()
-                            + "\n    has "
-                            + relation.getValue().members().size() + " members");
-                    /*
-                     * for (OSMRelation.Member member : relation.getValue()
-                     * .members()) { pr.println("  Member : role " +
-                     * member.role() + ", type : " + member.type()+ "\n"); }
-                     */
-                    pr.println("    Relation attribute \"type\" value "
-                            + relation.getValue().attributeValue("type"));
-                }
-                pr.println("\nWRITTEN IN "
-                        + (System.currentTimeMillis() - startTime) / 1000.
-                        + " sec");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             }
         }
     }
