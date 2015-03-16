@@ -40,11 +40,13 @@ public final class OSMToGeoTransformer {
         final List<OSMWay> ways = map.ways();
         final List<OSMRelation> relations = map.relations();
         
-        for (OSMWay way : ways)
+        for (OSMWay way : ways) {
             transformWay(way, builder);
+        }
         
-        for (OSMRelation relation : relations)
+        for (OSMRelation relation : relations) {
             transformRelation(relation, builder);
+        }
         
         return builder.build();
     }
@@ -62,21 +64,22 @@ public final class OSMToGeoTransformer {
     
     private void transformWay(OSMWay way, Map.Builder builder) {
         Attributes currentAttributes = way.attributes();
-        // "s'il est fermé et que ses attributs indiquent qu'il décrit une surface,
-        // alors il est converti en polygone sans trou"
         if (way.isClosed() && isArea(currentAttributes)) {
             ClosedPolyLine closedLine = new ClosedPolyLine(nodesToPoints(way.nonRepeatingNodes()));
-            // "Notez que si, après filtrage, une entité géométrique ne possède plus aucun attribut, elle doit être ignorée."
             currentAttributes = currentAttributes.keepOnlyKeys(polygonAttributes);
             if (!currentAttributes.isEmpty()) {
                 builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
             }
         }
-        // "sinon, il est converti en polyligne"
         else {
             currentAttributes = currentAttributes.keepOnlyKeys(polyLineAttributes);
             if (!currentAttributes.isEmpty()) {
-                builder.addPolyLine(new Attributed<>(new OpenPolyLine(nodesToPoints(way.nodes())), currentAttributes));
+                if (way.isClosed()) {
+                    builder.addPolyLine(new Attributed<>(new ClosedPolyLine(nodesToPoints(way.nodes())), currentAttributes));
+                }
+                else {
+                    builder.addPolyLine(new Attributed<>(new OpenPolyLine(nodesToPoints(way.nodes())), currentAttributes));
+                }
             }
         }
     }
@@ -151,9 +154,9 @@ public final class OSMToGeoTransformer {
             if (Math.abs(difference) <= DELTA)
                 return 0; //surfaces are equals
             else if (difference < 0)
-                return -1; //p2 is wider than p1
+                return -1; //p2 is bigger than p1
             else
-                return 1; //p1 is wider than p2
+                return 1; //p1 is bigger than p2
         }
     }
     
