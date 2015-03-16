@@ -67,14 +67,7 @@ public final class OSMToGeoTransformer {
                     builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
             }
             else {
-                boolean isArea = false;
-                for (String attribute : wayAttributes) {
-                    if (currentAttributes.contains(attribute)) {
-                        isArea = true;
-                        break;
-                    }
-                }
-                if (isArea) {
+                if (isArea(currentAttributes)) {
                     currentAttributes = currentAttributes.keepOnlyKeys(polygonAttributes);
                     if (!currentAttributes.isEmpty())
                         builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
@@ -93,6 +86,13 @@ public final class OSMToGeoTransformer {
         }
     }
     
+    private boolean isArea(Attributes attributes) {
+        for (String attribute : wayAttributes)
+            if (attributes.contains(attribute))
+                return true;
+        return false;
+    }
+    
     //TRANSFORMATION OF RELATION
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         //TODO this method does step 1 and 2
@@ -107,16 +107,13 @@ public final class OSMToGeoTransformer {
     private class AreaComparator implements Comparator<ClosedPolyLine> {
         private final double DELTA = 1e-5;
         public int compare(ClosedPolyLine p1, ClosedPolyLine p2) {
-            double difference = p2.area() - p1.area();
-            if (Math.abs(difference) <= DELTA) {
+            double difference = p1.area() - p2.area();
+            if (Math.abs(difference) <= DELTA)
                 return 0; //surfaces are equals
-            }
-            else if (difference < 0) {
+            else if (difference < 0)
                 return -1; //p2 is wider than p1
-            }
-            else {
+            else
                 return 1; //p1 is wider than p2
-            }
         }
     }
     
