@@ -75,6 +75,7 @@ public final class OSMRelation extends OSMEntity {
 
         /**
          * returns the type of the current instance
+         * (either NODE, WAY or RELATION)
          * 
          * @return type
          */
@@ -84,6 +85,7 @@ public final class OSMRelation extends OSMEntity {
 
         /**
          * returns the role of the current instance
+         * (either "inner" or "outer")
          * 
          * @return role
          */
