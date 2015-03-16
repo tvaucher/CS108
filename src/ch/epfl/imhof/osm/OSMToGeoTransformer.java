@@ -8,6 +8,7 @@ import java.util.List;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Attributes;
+import ch.epfl.imhof.Graph;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.OpenPolyLine;
@@ -39,15 +40,18 @@ public final class OSMToGeoTransformer {
         final List<OSMWay> ways = map.ways();
         final List<OSMRelation> relations = map.relations();
         
-        for (OSMWay way : ways) {
+        for (OSMWay way : ways)
             transformWay(way, builder);
-        }
         
-        //TODO shitty method
+        for (OSMRelation relation : relations)
+            transformRelation(relation, builder);
+        
         return builder.build();
     }
-       
-    //TRANSFORMATION OF WAYS
+    
+    ////////////////////////////       
+    // TRANSFORMATION OF WAYS //
+    ////////////////////////////
     private List<Point> nodesToPoints(List<OSMNode> nodes) {
         ArrayList<Point> points = new ArrayList<>(nodes.size());
         for (OSMNode node : nodes) {
@@ -93,7 +97,37 @@ public final class OSMToGeoTransformer {
         return false;
     }
     
-    //TRANSFORMATION OF RELATION
+    
+    /////////////////////////////////
+    // TRANSFORMATION OF RELATIONS //
+    /////////////////////////////////
+    private void transformRelation(OSMRelation relation, Map.Builder builder) {
+        // First of all, put the ways into 2 categories: inner and outer.
+        List<OSMEntity> inner = new ArrayList<>();
+        List<OSMEntity> outer = new ArrayList<>();
+        for (OSMRelation.Member relationMember : relation.members()) {
+            if (relationMember.type().equals(OSMRelation.Member.Type.WAY)) {
+                if (relationMember.role().equals("inner"))
+                    inner.add(relationMember.member());
+                else if (relationMember.role().equals("outer"))
+                    outer.add(relationMember.member());
+            }
+        }
+        
+        //Then, build the rings for both inner and outer ways.
+        Graph.Builder<OSMWay> outerRingBuilder = new Graph.Builder<>();
+        for (int i = 0; i < outer.size(); ++i) {
+            OSMWay currentWay = (OSMWay) outer.get(i);
+            for (int j = 0; j < currentWay.nodes().size(); ++i) {
+                // TODO add to outerRingBuilder
+            }
+            // TODO add last node of this to first node of next
+        }
+        // TODO add last node of the relation to the first node.
+        
+    }
+    
+    
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         //TODO this method does step 1 and 2
         return null;
