@@ -1,5 +1,6 @@
 package ch.epfl.imhof.osm;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -58,7 +59,7 @@ public final class OSMMapReader {
     public static OSMMap readOSMFile(String fileName, boolean unGZip) {
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
         try {
-            InputStream i = new FileInputStream(fileName);
+            InputStream i = new BufferedInputStream(new FileInputStream(fileName));
             i = unGZip ? new GZIPInputStream(i) : i;
 
             XMLReader r = XMLReaderFactory.createXMLReader();
@@ -155,22 +156,20 @@ public final class OSMMapReader {
                     case "node":
                         if (!nodeBuilder.isIncomplete())
                             mapBuilder.addNode(nodeBuilder.build());
-                        nodeBuilder = null;
                         break;
                     case "way":
                         if (!wayBuilder.isIncomplete())
                             mapBuilder.addWay(wayBuilder.build());
-                        wayBuilder = null;
                         break;
                     case "relation":
                         if (!relationBuilder.isIncomplete())
                             mapBuilder.addRelation(relationBuilder.build());
-                        relationBuilder = null;
                         break;
                     }
                 }
             });
             r.parse(new InputSource(i));
+            i.close();
             return mapBuilder.build();
         } catch (Exception e) {
             System.out.println("Exception raised while reading " + fileName

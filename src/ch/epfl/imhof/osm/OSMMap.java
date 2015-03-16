@@ -144,24 +144,9 @@ public final class OSMMap {
          */
         public OSMMap build() {
             printMapInFile();
-            return new OSMMap(transformToList(ways), transformToList(relations));
+            return new OSMMap(ways.values(), relations.values());
         }
 
-        /**
-         * Transforms a HashMap's values to an ArrayList
-         * 
-         * @param map
-         *            A hashmap (in this case, keys will often be the ID, values
-         *            will often be a child of OSMEntity)
-         * @return A list containing the values of the HashMap
-         */
-        private <T> List<T> transformToList(HashMap<Long, T> map) {
-            List<T> list = new ArrayList<>();
-            for (Entry<Long, T> entry : map.entrySet()) {
-                list.add(entry.getValue());
-            }
-            return list;
-        }
 
         /**
          * A private method for debugging purposes that creates a file in

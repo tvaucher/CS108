@@ -43,6 +43,11 @@ public class OSMMapReaderTest {
         assertEquals("Rolex Learning Center", rlcMap.relations().get(0).attributeValue("name"));
     }
     
+    @Test
+    public void readTimer() {
+        OSMMapReader.readOSMFile("data/lausanne.osm.gz", true);
+    }
+    
     
     
 }
