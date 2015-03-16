@@ -3,7 +3,7 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 
 /**
- * A closed polyline is a polyiline where the last point is connected to the
+ * A closed polyline is a polyline where the last point is connected to the
  * first one.
  * 
  * @author Maxime Kjaer (250694)
