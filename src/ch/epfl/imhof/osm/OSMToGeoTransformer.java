@@ -18,7 +18,7 @@ import ch.epfl.imhof.projection.Projection;
 
 public final class OSMToGeoTransformer {
     private final Projection projection;
-    private final HashSet<String> wayAttributes = new HashSet<>(
+    private final HashSet<String> closedAttributes = new HashSet<>(
             (Arrays.asList("aeroway", "amenity", "building", "harbour",
                     "historic", "landuse", "leisure", "man_made", "military",
                     "natural", "office", "place", "power", "public_transport",
@@ -62,38 +62,44 @@ public final class OSMToGeoTransformer {
     
     private void transformWay(OSMWay way, Map.Builder builder) {
         Attributes currentAttributes = way.attributes();
-        if (way.isClosed()) {
+        // "s'il est fermé et que ses attributs indiquent qu'il décrit une surface,
+        // alors il est converti en polygone sans trou"
+        if (way.isClosed() && isArea(currentAttributes)) {
             ClosedPolyLine closedLine = new ClosedPolyLine(nodesToPoints(way.nonRepeatingNodes()));
-            String areaValue = way.attributeValue("area");
-            if (areaValue.equals("1") || areaValue.equals("yes") || areaValue.equals("true")) {
-                currentAttributes = currentAttributes.keepOnlyKeys(polygonAttributes);
-                if (!currentAttributes.isEmpty())
-                    builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
-            }
-            else {
-                if (isArea(currentAttributes)) {
-                    currentAttributes = currentAttributes.keepOnlyKeys(polygonAttributes);
-                    if (!currentAttributes.isEmpty())
-                        builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
-                }
-                else {
-                    currentAttributes = currentAttributes.keepOnlyKeys(polyLineAttributes);
-                    if (!currentAttributes.isEmpty())
-                        builder.addPolyLine(new Attributed<>(closedLine, currentAttributes));
-                }
+            // "Notez que si, après filtrage, une entité géométrique ne possède plus aucun attribut, elle doit être ignorée."
+            currentAttributes = currentAttributes.keepOnlyKeys(polygonAttributes);
+            if (!currentAttributes.isEmpty()) {
+                builder.addPolygon(new Attributed<>(new Polygon(closedLine), currentAttributes));
             }
         }
+        // "sinon, il est converti en polyligne"
         else {
             currentAttributes = currentAttributes.keepOnlyKeys(polyLineAttributes);
-            if (!currentAttributes.isEmpty())
+            if (!currentAttributes.isEmpty()) {
                 builder.addPolyLine(new Attributed<>(new OpenPolyLine(nodesToPoints(way.nodes())), currentAttributes));
+            }
         }
     }
     
-    private boolean isArea(Attributes attributes) {
-        for (String attribute : wayAttributes)
-            if (attributes.contains(attribute))
+    /**
+     * Returns whether a way is closed or not, based on the two criteria described in the project documentation:
+     * - has the attribute "area" with a value of "yes", "1" or "true"
+     * - has one of the attributes from closedAttributes
+     * 
+     * @param entityAttributes
+     *          The attributes of the entity that will be checked.
+     * @return Whether the entity is closed or or not.
+     */
+    private boolean isArea(Attributes entityAttributes) {
+        String area = entityAttributes.get("area");
+        if (area.equals("yes") || area.equals("true") || area.equals("1")) {
+            return true;
+        }
+        for (String attribute : closedAttributes) {
+            if (entityAttributes.contains(attribute)) {
                 return true;
+            }
+        }
         return false;
     }
     
