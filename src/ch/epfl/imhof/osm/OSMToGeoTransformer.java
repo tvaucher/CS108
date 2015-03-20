@@ -85,12 +85,15 @@ public final class OSMToGeoTransformer {
     /////////////////////////////////
     // To get an idea of how relations behave, see https://gist.github.com/MaximeKjaer/ac694beccf722a33853c
     
-    private void transformRelation(OSMRelation relation, Map.Builder builder) {        
-        Attributes attributes = relation.attributes().keepOnlyKeys(polygonAttributes);
-        if (!attributes.isEmpty()) {
-            List<Attributed<Polygon>> polygons = assemblePolygon(relation, attributes);
-            for (Attributed<Polygon> polygon : polygons) {
-                builder.addPolygon(polygon);
+    private void transformRelation(OSMRelation relation, Map.Builder builder) {
+        String type = relation.attributeValue("type"); //Because can be null + can't call equals on null object
+        if (type != null && type.equals("multipolygon")) {
+            Attributes attributes = relation.attributes().keepOnlyKeys(polygonAttributes);
+            if (!attributes.isEmpty()) {
+                List<Attributed<Polygon>> polygons = assemblePolygon(relation, attributes);
+                for (Attributed<Polygon> polygon : polygons) {
+                    builder.addPolygon(polygon);
+                }
             }
         }
     }
@@ -205,7 +208,7 @@ public final class OSMToGeoTransformer {
      */
     private boolean isArea(Attributes entityAttributes) {
         String area = entityAttributes.get("area");
-        if (area.equals("yes") || area.equals("true") || area.equals("1")) {
+        if (area != null && (area.equals("yes") || area.equals("true") || area.equals("1"))) {
             return true;
         }
         for (String attribute : closedAttributes) {
