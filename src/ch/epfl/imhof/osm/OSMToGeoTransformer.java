@@ -2,9 +2,13 @@ package ch.epfl.imhof.osm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Attributes;
@@ -13,6 +17,7 @@ import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.OpenPolyLine;
 import ch.epfl.imhof.geometry.Point;
+import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 import ch.epfl.imhof.projection.Projection;
 
@@ -36,7 +41,6 @@ public final class OSMToGeoTransformer {
     public Map transform(OSMMap map) {
         //Declaration of vars for this method
         final Map.Builder builder = new Map.Builder();
-        final AreaComparator comparator = new AreaComparator();
         final List<OSMWay> ways = map.ways();
         final List<OSMRelation> relations = map.relations();
         
@@ -54,14 +58,6 @@ public final class OSMToGeoTransformer {
     ////////////////////////////       
     // TRANSFORMATION OF WAYS //
     ////////////////////////////
-    private List<Point> nodesToPoints(List<OSMNode> nodes) {
-        ArrayList<Point> points = new ArrayList<>(nodes.size());
-        for (OSMNode node : nodes) {
-            points.add(projection.project(node.position()));
-        }
-        return points;
-    }
-    
     private void transformWay(OSMWay way, Map.Builder builder) {
         Attributes currentAttributes = way.attributes();
         if (way.isClosed() && isArea(currentAttributes)) {
@@ -82,6 +78,120 @@ public final class OSMToGeoTransformer {
                 }
             }
         }
+    }
+    
+    /////////////////////////////////
+    // TRANSFORMATION OF RELATIONS //
+    /////////////////////////////////
+    // To get an idea of how relations behave, see https://gist.github.com/MaximeKjaer/ac694beccf722a33853c
+    
+    private void transformRelation(OSMRelation relation, Map.Builder builder) {        
+        Attributes attributes = relation.attributes().keepOnlyKeys(polygonAttributes);
+        if (!attributes.isEmpty()) {
+            List<Attributed<Polygon>> polygons = assemblePolygon(relation, attributes);
+            for (Attributed<Polygon> polygon : polygons) {
+                builder.addPolygon(polygon);
+            }
+        }
+    }
+    
+    private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
+        // First of all, put the ways of the relation into 2 categories: inner and outer.
+        List<OSMWay> ways = new ArrayList<>();
+        for (OSMRelation.Member relationMember : relation.members()) {
+            if (relationMember.type().equals(OSMRelation.Member.Type.WAY) && relationMember.role().equals(role)) {
+                    ways.add((OSMWay) relationMember.member());
+            }
+        }
+        //Then, build the rings for both inner and outer ways.
+        Graph.Builder<OSMNode> graphBuilder = new Graph.Builder<>();
+        for (int i = 0; i < ways.size(); ++i) {
+            OSMWay currentWay = ways.get(i);
+            OSMNode previousNode = null;
+            for (int j = 0; j < currentWay.nodesCount(); ++j) {
+                OSMNode currentNode = currentWay.nodes().get(j);
+                graphBuilder.addNode(currentNode);
+                if (j != 0) {
+                    graphBuilder.addEdge(currentNode, previousNode);
+                }
+                previousNode = currentNode;
+            }
+        }
+        //Finally, convert the Graph to rings
+        Graph<OSMNode> graph = graphBuilder.build();
+        List<OSMNode> unvisited = new ArrayList<>(graph.nodes());
+        List<ClosedPolyLine> ring = new ArrayList<>();
+        while (!unvisited.isEmpty()) {
+            PolyLine.Builder polyLineBuilder = new PolyLine.Builder();
+            OSMNode first = unvisited.get(0);
+            unvisited.remove(0);
+            polyLineBuilder.addPoint(nodeToPoint(first));
+            Set<OSMNode> neighbors = graph.neighborsOf(first);
+            do {
+                if (neighbors.size() == 2) { // Assuming that every node has 2 neighbors
+                    neighbors.retainAll(unvisited);
+                    if (neighbors.size() >= 1) {
+                        OSMNode next = new ArrayList<>(neighbors).get(0);
+                        unvisited.remove(next);
+                        polyLineBuilder.addPoint(nodeToPoint(next));
+                        neighbors = graph.neighborsOf(next);                        
+                    }
+                    
+                    else if (neighbors.size() == 0) { // End of the ring
+                        ring.add(polyLineBuilder.buildClosed());
+                    }
+                    
+                }
+                else { // Error
+                    return Collections.emptyList();
+                }
+            } while (neighbors.size() > 0);
+        }
+        
+        return ring;
+    }
+    
+    private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation, Attributes attributes) {
+        List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
+        List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
+        
+        java.util.Map<ClosedPolyLine, List<ClosedPolyLine>> polygonMap = new HashMap<>();
+        for (ClosedPolyLine outerRing : outerRings) {
+            polygonMap.put(outerRing, new ArrayList<ClosedPolyLine>());
+        }
+        
+        AreaComparator comparator = new AreaComparator();
+        outerRings.sort(comparator);
+        for (ClosedPolyLine innerRing : innerRings) {
+            for (ClosedPolyLine outerRing : outerRings) {
+                if (outerRing.containsPoint(innerRing.firstPoint())) {
+                    polygonMap.get(outerRing).add(innerRing);
+                }
+            }
+        }
+        
+        List<Attributed<Polygon>> out = new ArrayList<>();
+        for (Entry<ClosedPolyLine, List<ClosedPolyLine>> polygon : polygonMap.entrySet()) {
+            out.add(new Attributed<Polygon>(new Polygon(polygon.getKey(), polygon.getValue()), attributes));
+        }
+        
+        return out;
+    }
+    
+    //////////////////////
+    // Utlility methods //
+    //////////////////////
+    
+    private List<Point> nodesToPoints(List<OSMNode> nodes) {
+        ArrayList<Point> points = new ArrayList<>(nodes.size());
+        for (OSMNode node : nodes) {
+            points.add(nodeToPoint(node));
+        }
+        return points;
+    }
+    
+    private Point nodeToPoint(OSMNode node) {
+        return projection.project(node.position());        
     }
     
     /**
@@ -106,47 +216,6 @@ public final class OSMToGeoTransformer {
         return false;
     }
     
-    
-    /////////////////////////////////
-    // TRANSFORMATION OF RELATIONS //
-    /////////////////////////////////
-    private void transformRelation(OSMRelation relation, Map.Builder builder) {
-        // First of all, put the ways into 2 categories: inner and outer.
-        List<OSMEntity> inner = new ArrayList<>();
-        List<OSMEntity> outer = new ArrayList<>();
-        for (OSMRelation.Member relationMember : relation.members()) {
-            if (relationMember.type().equals(OSMRelation.Member.Type.WAY)) {
-                if (relationMember.role().equals("inner"))
-                    inner.add(relationMember.member());
-                else if (relationMember.role().equals("outer"))
-                    outer.add(relationMember.member());
-            }
-        }
-        
-        //Then, build the rings for both inner and outer ways.
-        Graph.Builder<OSMWay> outerRingBuilder = new Graph.Builder<>();
-        for (int i = 0; i < outer.size(); ++i) {
-            OSMWay currentWay = (OSMWay) outer.get(i);
-            for (int j = 0; j < currentWay.nodes().size(); ++i) {
-                // TODO add to outerRingBuilder
-            }
-            // TODO add last node of this to first node of next
-        }
-        // TODO add last node of the relation to the first node.
-        
-    }
-    
-    
-    private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        //TODO this method does step 1 and 2
-        return null;
-    }
-    
-    private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation, Attributes attributes) {
-        //TODO this method does step 3
-        return null;
-    }
-    
     private class AreaComparator implements Comparator<ClosedPolyLine> {
         private final double DELTA = 1e-5;
         public int compare(ClosedPolyLine p1, ClosedPolyLine p2) {
@@ -154,9 +223,9 @@ public final class OSMToGeoTransformer {
             if (Math.abs(difference) <= DELTA)
                 return 0; //surfaces are equals
             else if (difference < 0)
-                return -1; //p2 is bigger than p1
+                return -1; //p2 is larger than p1
             else
-                return 1; //p1 is bigger than p2
+                return 1; //p1 is larger than p2
         }
     }
     
