@@ -75,7 +75,7 @@ public final class Graph<N> {
      *            the Builder will accept.
      */
     public final static class Builder<N> {
-        Map<N, Set<N>> graph = new HashMap<>();
+        private Map<N, Set<N>> graph = new HashMap<>();
 
         /**
          * Add a node to the list of nodes that will be built when using the
