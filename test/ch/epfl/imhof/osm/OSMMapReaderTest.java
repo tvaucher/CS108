@@ -48,7 +48,7 @@ public class OSMMapReaderTest {
     public void readTimer() {
         OSMToGeoTransformer transfo = new OSMToGeoTransformer(new CH1903Projection());
         //transfo.transform(OSMMapReader.readOSMFile("data/lausanne.osm.gz", true));
-        String path = "data/usualTestCaseFig1.osm";//"data/3neighbours.osm";//"data/maMaison.osm";//"data/sauvabelin.osm";//"data/lausanne.osm.gz";
+        String path = "data/lc.osm";//"data/usualTestCaseFig1.osm";//"data/3neighbours.osm";//"data/maMaison.osm";//"data/sauvabelin.osm";//"data/lausanne.osm.gz";
         OSMMap osmMap = OSMMapReader.readOSMFile(path, false);
         Map map = transfo.transform(osmMap);
     }

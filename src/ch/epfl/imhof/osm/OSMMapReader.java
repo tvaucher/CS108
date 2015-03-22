@@ -26,7 +26,7 @@ public final class OSMMapReader {
     private OSMMapReader() {
     }; // Constructor is private in order to prevent instanciation
 
-    // @formatter:off
+    //@formatter:off
     /**
      * Reads the OSM file, if no fatal error encountered (file missing/ wrong
      * extension) builds a OSMMap with the complete OSMEntites that are
@@ -55,13 +55,13 @@ public final class OSMMapReader {
      *            true if file is in gzip, false otherwise
      * @return newly build OSMMap
      */
-    // @formatter:on
+    //@formatter:on
     public static OSMMap readOSMFile(String fileName, boolean unGZip) {
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
-        try {
-            InputStream i = new BufferedInputStream(new FileInputStream(fileName));
-            i = unGZip ? new GZIPInputStream(i) : i;
-
+        try (BufferedInputStream inStream = new BufferedInputStream(
+                new FileInputStream(fileName));
+                InputStream i = unGZip ? new GZIPInputStream(inStream)
+                        : inStream;) {
             XMLReader r = XMLReaderFactory.createXMLReader();
 
             r.setContentHandler(new DefaultHandler() {
@@ -169,12 +169,11 @@ public final class OSMMapReader {
                 }
             });
             r.parse(new InputSource(i));
-            i.close();
             return mapBuilder.build();
         } catch (Exception e) {
             System.out.println("Exception raised while reading " + fileName
                     + (unGZip ? "(Gzipped)" : ""));
-            System.out.println("Exception: " + e.getMessage()); 
+            System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

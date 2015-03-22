@@ -100,11 +100,11 @@ public final class OSMToGeoTransformer {
     private void transformWay(OSMWay way, Map.Builder builder) {
         Attributes currentAttributes = way.attributes();
         if (way.isClosed() && isArea(currentAttributes)) {
-            ClosedPolyLine closedLine = new ClosedPolyLine(
-                    nodesToPoints(way.nonRepeatingNodes()));
             currentAttributes = currentAttributes
                     .keepOnlyKeys(polygonAttributes);
             if (!currentAttributes.isEmpty()) {
+                ClosedPolyLine closedLine = new ClosedPolyLine(
+                        nodesToPoints(way.nonRepeatingNodes()));
                 builder.addPolygon(new Attributed<>(new Polygon(closedLine),
                         currentAttributes));
             }
@@ -202,7 +202,7 @@ public final class OSMToGeoTransformer {
         // Finally, convert the Graph to rings
         Graph<OSMNode> graph = graphBuilder.build();
         List<OSMNode> unvisited = new ArrayList<>(graph.nodes());
-        List<ClosedPolyLine> ring = new ArrayList<>();
+        List<ClosedPolyLine> rings = new ArrayList<>();
         while (!unvisited.isEmpty()) {
             PolyLine.Builder polyLineBuilder = new PolyLine.Builder();
             OSMNode first = unvisited.get(0);
@@ -214,14 +214,15 @@ public final class OSMToGeoTransformer {
                                              // neighbors
                     neighbors.retainAll(unvisited);
                     if (neighbors.size() >= 1) {
-                        OSMNode next = new ArrayList<>(neighbors).get(0);
+                        OSMNode next = getNext(neighbors);
+                        //OSMNode next = new ArrayList<>(neighbors).get(0); //Sol.2
+                        //OSMNode next = new TreeSet<>(neighbors).first(); //Sol.3
                         unvisited.remove(next);
                         polyLineBuilder.addPoint(nodeToPoint(next));
                         neighbors = graph.neighborsOf(next);
                     }
-
                     else if (neighbors.size() == 0) { // End of the ring
-                        ring.add(polyLineBuilder.buildClosed());
+                        rings.add(polyLineBuilder.buildClosed());
                     }
 
                 } else { // Error
@@ -230,7 +231,7 @@ public final class OSMToGeoTransformer {
             } while (neighbors.size() > 0);
         }
 
-        return ring;
+        return rings;
     }
 
     /**
@@ -335,7 +336,20 @@ public final class OSMToGeoTransformer {
         }
         return false;
     }
-
+    
+    /**
+     * Gets the first next neighbor
+     *
+     * @param set of neighbors
+     * @return first next neighbor
+     */
+    private OSMNode getNext(Set<OSMNode> neighbors) {
+        for (OSMNode neighbor : neighbors) {
+            return neighbor;
+        }
+        return null; //would signal that an error occurred
+    }
+    
     /**
      * A comparator of ClosedPolyLines that bases itself on the area of the
      * polylines. Its chief purpose it to allow us to sort them by size.
@@ -353,5 +367,4 @@ public final class OSMToGeoTransformer {
                 return 1; // p1 is larger than p2
         }
     }
-
 }
