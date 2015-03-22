@@ -260,6 +260,7 @@ public final class OSMToGeoTransformer {
             for (ClosedPolyLine outerRing : outerRings) {
                 if (outerRing.containsPoint(innerRing.firstPoint())) {
                     polygonMap.get(outerRing).add(innerRing);
+                    break;
                 }
             }
         }
