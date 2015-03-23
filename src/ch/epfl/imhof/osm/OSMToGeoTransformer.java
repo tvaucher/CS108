@@ -3,7 +3,6 @@ package ch.epfl.imhof.osm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,17 +29,18 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class OSMToGeoTransformer {
     private final Projection projection;
-    private final HashSet<String> closedAttributes = new HashSet<>(
+    private final Set<String> closedAttributes = new HashSet<>(
             (Arrays.asList("aeroway", "amenity", "building", "harbour",
                     "historic", "landuse", "leisure", "man_made", "military",
                     "natural", "office", "place", "power", "public_transport",
                     "shop", "sport", "tourism", "water", "waterway", "wetland")));
-    private final HashSet<String> polyLineAttributes = new HashSet<>(
+    private final Set<String> polyLineAttributes = new HashSet<>(
             (Arrays.asList("bridge", "highway", "layer", "man_made", "railway",
                     "tunnel", "waterway")));
-    private final HashSet<String> polygonAttributes = new HashSet<>(
+    private final Set<String> polygonAttributes = new HashSet<>(
             (Arrays.asList("building", "landuse", "layer", "leisure",
                     "natural", "waterway")));
+    private final double DELTA = 1e-5;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -215,8 +215,6 @@ public final class OSMToGeoTransformer {
                     neighbors.retainAll(unvisited);
                     if (neighbors.size() >= 1) {
                         OSMNode next = getNext(neighbors);
-                        //OSMNode next = new ArrayList<>(neighbors).get(0); //Sol.2
-                        //OSMNode next = new TreeSet<>(neighbors).first(); //Sol.3
                         unvisited.remove(next);
                         polyLineBuilder.addPoint(nodeToPoint(next));
                         neighbors = graph.neighborsOf(next);
@@ -255,8 +253,13 @@ public final class OSMToGeoTransformer {
             polygonMap.put(outerRing, new ArrayList<ClosedPolyLine>());
         }
 
-        AreaComparator comparator = new AreaComparator();
-        outerRings.sort(comparator);
+        outerRings.sort((p1, p2) -> {
+            double difference = p1.area() - p2.area();
+            if (Math.abs(difference) <= DELTA)
+                return 0; // surfaces are equals
+            else
+                return (int) Math.signum(difference);
+        });
         for (ClosedPolyLine innerRing : innerRings) {
             for (ClosedPolyLine outerRing : outerRings) {
                 if (outerRing.containsPoint(innerRing.firstPoint())) {
@@ -348,23 +351,5 @@ public final class OSMToGeoTransformer {
             return neighbor;
         }
         return null; //would signal that an error occurred
-    }
-    
-    /**
-     * A comparator of ClosedPolyLines that bases itself on the area of the
-     * polylines. Its chief purpose it to allow us to sort them by size.
-     */
-    private class AreaComparator implements Comparator<ClosedPolyLine> {
-        private final double DELTA = 1e-5;
-
-        public int compare(ClosedPolyLine p1, ClosedPolyLine p2) {
-            double difference = p1.area() - p2.area();
-            if (Math.abs(difference) <= DELTA)
-                return 0; // surfaces are equals
-            else if (difference < 0)
-                return -1; // p2 is larger than p1
-            else
-                return 1; // p1 is larger than p2
-        }
     }
 }
