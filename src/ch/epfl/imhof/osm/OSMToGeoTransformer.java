@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import ch.epfl.imhof.Attributed;
@@ -29,17 +28,16 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class OSMToGeoTransformer {
     private final Projection projection;
-    private final Set<String> closedAttributes = new HashSet<>(
-            (Arrays.asList("aeroway", "amenity", "building", "harbour",
-                    "historic", "landuse", "leisure", "man_made", "military",
-                    "natural", "office", "place", "power", "public_transport",
-                    "shop", "sport", "tourism", "water", "waterway", "wetland")));
+    private final Set<String> closedAttributes = new HashSet<>((Arrays.asList(
+            "aeroway", "amenity", "building", "harbour", "historic", "landuse",
+            "leisure", "man_made", "military", "natural", "office", "place",
+            "power", "public_transport", "shop", "sport", "tourism", "water",
+            "waterway", "wetland")));
     private final Set<String> polyLineAttributes = new HashSet<>(
             (Arrays.asList("bridge", "highway", "layer", "man_made", "railway",
                     "tunnel", "waterway")));
-    private final Set<String> polygonAttributes = new HashSet<>(
-            (Arrays.asList("building", "landuse", "layer", "leisure",
-                    "natural", "waterway")));
+    private final Set<String> polygonAttributes = new HashSet<>((Arrays.asList(
+            "building", "landuse", "layer", "leisure", "natural", "waterway")));
     private final double DELTA = 1e-5;
 
     /**
@@ -214,7 +212,7 @@ public final class OSMToGeoTransformer {
                                              // neighbors
                     neighbors.retainAll(unvisited);
                     if (neighbors.size() >= 1) {
-                        OSMNode next = getNext(neighbors);
+                        OSMNode next = neighbors.iterator().next();
                         unvisited.remove(next);
                         polyLineBuilder.addPoint(nodeToPoint(next));
                         neighbors = graph.neighborsOf(next);
@@ -247,6 +245,9 @@ public final class OSMToGeoTransformer {
             Attributes attributes) {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
+        if (outerRings.isEmpty())
+            return Collections.emptyList(); // if the outerRing list is empty,
+                                            // cannot build polygons
 
         java.util.Map<ClosedPolyLine, List<ClosedPolyLine>> polygonMap = new HashMap<>();
         for (ClosedPolyLine outerRing : outerRings) {
@@ -270,11 +271,11 @@ public final class OSMToGeoTransformer {
         }
 
         List<Attributed<Polygon>> out = new ArrayList<>();
-        for (Entry<ClosedPolyLine, List<ClosedPolyLine>> polygon : polygonMap
-                .entrySet()) {
-            out.add(new Attributed<Polygon>(new Polygon(polygon.getKey(),
-                    polygon.getValue()), attributes));
-        }
+        polygonMap.entrySet().forEach(
+                polygon -> {
+                    out.add(new Attributed<Polygon>(new Polygon(polygon
+                            .getKey(), polygon.getValue()), attributes));
+                }); //lambda expression so we don't need to import EntrySet
 
         return out;
     }
@@ -338,18 +339,5 @@ public final class OSMToGeoTransformer {
             }
         }
         return false;
-    }
-    
-    /**
-     * Gets the first next neighbor
-     *
-     * @param set of neighbors
-     * @return first next neighbor
-     */
-    private OSMNode getNext(Set<OSMNode> neighbors) {
-        for (OSMNode neighbor : neighbors) {
-            return neighbor;
-        }
-        return null; //would signal that an error occurred
     }
 }
