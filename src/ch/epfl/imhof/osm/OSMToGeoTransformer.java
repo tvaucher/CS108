@@ -199,12 +199,12 @@ public final class OSMToGeoTransformer {
         }
         // Finally, convert the Graph to rings
         Graph<OSMNode> graph = graphBuilder.build();
-        List<OSMNode> unvisited = new ArrayList<>(graph.nodes());
+        Set<OSMNode> unvisited = new HashSet<>(graph.nodes());
         List<ClosedPolyLine> rings = new ArrayList<>();
         while (!unvisited.isEmpty()) {
             PolyLine.Builder polyLineBuilder = new PolyLine.Builder();
-            OSMNode first = unvisited.get(0);
-            unvisited.remove(0);
+            OSMNode first = unvisited.iterator().next();
+            unvisited.remove(first);
             polyLineBuilder.addPoint(nodeToPoint(first));
             Set<OSMNode> neighbors = graph.neighborsOf(first);
             do {
