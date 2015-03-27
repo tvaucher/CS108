@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-69' action='modify' visible='true' lat='0.02860375668' lon='0.00458259661' />
+  <node id='-67' action='modify' visible='true' lat='0.03018941208' lon='0.10583803314' />
+  <node id='-65' action='modify' visible='true' lat='-0.07401079146' lon='0.10991543327' />
+  <node id='-63' action='modify' visible='true' lat='-0.06970687249' lon='-0.03369966016' />
+  <node id='-61' action='modify' visible='true' lat='0.01387981282' lon='0.01704131922' />
+  <node id='-59' action='modify' visible='true' lat='0.01659807948' lon='0.06574359854' />
+  <node id='-57' action='modify' visible='true' lat='-0.00854588772' lon='0.0507931314' />
+  <node id='-55' action='modify' visible='true' lat='-0.02712070955' lon='0.00503564107' />
+  <node id='-53' action='modify' visible='true' lat='-0.05724815754' lon='0.00390302992' />
+  <node id='-51' action='modify' visible='true' lat='-0.05906033444' lon='0.04150572' />
+  <node id='-49' action='modify' visible='true' lat='-0.02349635423' lon='0.03788136433' />
+  <node id='-47' action='modify' visible='true' lat='-0.01715373221' lon='0.0793349323' />
+  <node id='-45' action='modify' visible='true' lat='-0.01783329887' lon='0.07095360982' />
+  <node id='-43' action='modify' visible='true' lat='-0.02666766514' lon='0.06732925415' />
+  <node id='-41' action='modify' visible='true' lat='-0.04048551873' lon='0.0677822986' />
+  <node id='-39' action='modify' visible='true' lat='-0.05022597153' lon='0.08001449899' />
+  <node id='-37' action='modify' visible='true' lat='-0.04796075006' lon='0.09519148836' />
+  <node id='-35' action='modify' visible='true' lat='-0.03708768606' lon='0.09813627734' />
+  <node id='-33' action='modify' visible='true' lat='-0.0250820097' lon='0.09790975511' />
+  <node id='-31' action='modify' visible='true' lat='-0.01511503223' lon='0.09020799931' />
+  <way id='-77' action='modify' visible='true'>
+    <nd ref='-69' />
+    <nd ref='-67' />
+    <nd ref='-65' />
+    <nd ref='-63' />
+    <nd ref='-69' />
+  </way>
+  <way id='-75' action='modify' visible='true'>
+    <nd ref='-61' />
+    <nd ref='-59' />
+    <nd ref='-57' />
+    <nd ref='-61' />
+  </way>
+  <way id='-73' action='modify' visible='true'>
+    <nd ref='-55' />
+    <nd ref='-53' />
+    <nd ref='-51' />
+    <nd ref='-49' />
+    <nd ref='-55' />
+  </way>
+  <way id='-71' action='modify' visible='true'>
+    <nd ref='-47' />
+    <nd ref='-45' />
+    <nd ref='-43' />
+    <nd ref='-41' />
+    <nd ref='-39' />
+    <nd ref='-37' />
+    <nd ref='-35' />
+    <nd ref='-33' />
+    <nd ref='-31' />
+    <nd ref='-47' />
+  </way>
+  <relation id='-79' action='modify' visible='true'>
+    <member type='way' ref='-77' role='outer' />
+    <member type='way' ref='-75' role='inner' />
+    <member type='way' ref='-71' role='inner' />
+    <member type='way' ref='-73' role='inner' />
+    <tag k='building' v='yes' />
+    <tag k='type' v='multipolygon' />
+  </relation>
+</osm>

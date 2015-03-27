@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-22' action='modify' visible='true' lat='-0.01855021029' lon='-0.01652900123' />
+  <node id='-20' action='modify' visible='true' lat='-0.01711290591' lon='0.00772551144' />
+  <node id='-18' action='modify' visible='true' lat='-0.00013474729' lon='0.00781534297' />
+  <node id='-17' action='modify' visible='true' lat='0.0052551444' lon='-0.00997129965' />
+  <node id='-13' action='modify' visible='true' lat='-0.02277229185' lon='-0.02515282796' />
+  <node id='-11' action='modify' visible='true' lat='-0.02106549294' lon='0.01437304455' />
+  <node id='-8' action='modify' visible='true' lat='0.01603492761' lon='0.01077978341' />
+  <node id='-5' action='modify' visible='true' lat='0.01612475914' lon='-0.01536119136' />
+  <way id='-19' action='modify' visible='true'>
+    <nd ref='-17' />
+    <nd ref='-18' />
+    <nd ref='-20' />
+    <nd ref='-22' />
+    <nd ref='-17' />
+  </way>
+  <way id='-9' action='modify' visible='true'>
+    <nd ref='-5' />
+    <nd ref='-8' />
+    <nd ref='-11' />
+    <nd ref='-13' />
+    <nd ref='-5' />
+  </way>
+  <relation id='-28' action='modify' visible='true'>
+    <member type='way' ref='-9' role='outer' />
+    <member type='way' ref='-19' role='inner' />
+    <tag k='leisure' v='park' />
+    <tag k='type' v='multipolygon' />
+  </relation>
+</osm>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-92' action='modify' visible='true' lat='0.0296802601' lon='0.02499398186' />
+  <node id='-90' action='modify' visible='true' lat='-0.01356709766' lon='0.02515415726' />
+  <node id='-88' action='modify' visible='true' lat='-0.01404762386' lon='0.07881291776' />
+  <node id='-86' action='modify' visible='true' lat='0.03816955504' lon='0.08297747828' />
+  <node id='-84' action='modify' visible='true' lat='0.01590517643' lon='0.04149204852' />
+  <node id='-82' action='modify' visible='true' lat='-0.00251499488' lon='0.0406911715' />
+  <node id='-80' action='modify' visible='true' lat='-0.00043271462' lon='0.0656785346' />
+  <node id='-78' action='modify' visible='true' lat='0.02519534929' lon='0.06311572813' />
+  <way id='-96' action='modify' visible='true'>
+    <nd ref='-92' />
+    <nd ref='-90' />
+    <nd ref='-88' />
+    <nd ref='-86' />
+    <nd ref='-92' />
+    <tag k='landuse' v='residential' />
+  </way>
+  <way id='-94' action='modify' visible='true'>
+    <nd ref='-84' />
+    <nd ref='-82' />
+    <nd ref='-80' />
+    <nd ref='-78' />
+    <nd ref='-84' />
+    <tag k='building' v='yes' />
+  </way>
+</osm>
