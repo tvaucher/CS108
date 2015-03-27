@@ -2,6 +2,7 @@ package ch.epfl.imhof.osm;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -56,7 +57,7 @@ public final class OSMMapReader {
      * @return newly build OSMMap
      */
     //@formatter:on
-    public static OSMMap readOSMFile(String fileName, boolean unGZip) {
+    public static OSMMap readOSMFile(String fileName, boolean unGZip) throws SAXException, IOException {
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
         try (BufferedInputStream inStream = new BufferedInputStream(
                 new FileInputStream(fileName));
@@ -170,8 +171,17 @@ public final class OSMMapReader {
             });
             r.parse(new InputSource(i));
             return mapBuilder.build();
-        } catch (Exception e) {
-            System.out.println("Exception raised while reading " + fileName
+        }
+        catch (SAXException saxE) {
+            System.out.println("SAXException");
+            throw new SAXException("Failed reading the file", saxE);
+        }
+        catch (IOException ioE) {
+            System.out.println("IOException");
+            throw new IOException("Cannot find file : " + fileName);
+        }
+        catch (Exception e) {
+            System.out.println("Another exception raised while reading " + fileName
                     + (unGZip ? "(Gzipped)" : ""));
             System.out.println("Exception: " + e.getMessage());
             e.printStackTrace();
