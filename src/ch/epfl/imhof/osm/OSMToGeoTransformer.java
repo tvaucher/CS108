@@ -112,7 +112,7 @@ public final class OSMToGeoTransformer {
             if (!currentAttributes.isEmpty()) {
                 if (way.isClosed()) {
                     builder.addPolyLine(new Attributed<>(new ClosedPolyLine(
-                            nodesToPoints(way.nodes())), currentAttributes));
+                            nodesToPoints(way.nonRepeatingNodes())), currentAttributes));
                 } else {
                     builder.addPolyLine(new Attributed<>(new OpenPolyLine(
                             nodesToPoints(way.nodes())), currentAttributes));
