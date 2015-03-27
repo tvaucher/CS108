@@ -9,10 +9,22 @@ public class PointGeoTest {
     public void constructorFailsOnInvalidLongitude() {
         new PointGeo(5.986310, 0);
     }
-
+    
+    @Test
+    public void constructorSucceedsOnLimitLongitude() {
+        new PointGeo(-Math.PI, 0);
+        new PointGeo(Math.PI, 0);
+    }
+    
     @Test (expected = IllegalArgumentException.class)
     public void constructorFailsOnInvalidLatitude() {
         new PointGeo(0, 1.962314);
+    }
+    
+    @Test
+    public void constructorSucceedsOnLimitLatitude() {
+    	new PointGeo(0, -Math.PI/2);
+    	new PointGeo(0, Math.PI/2);
     }
 
     @Test

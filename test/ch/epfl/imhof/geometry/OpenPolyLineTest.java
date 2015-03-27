@@ -14,16 +14,20 @@ public final class OpenPolyLineTest extends PolyLineTest {
 
     @Test
     public void openPolyLineIsOpen() {
-        assertFalse(new OpenPolyLine(pts3).isClosed());
+        for (List<Point> lpt : pts) {
+            assertFalse(new OpenPolyLine(lpt).isClosed());
+        }
     }
 
     @Test
-    public void builderCorrectlyBuildsOpenPolyLine(){
-        PolyLine.Builder b = new PolyLine.Builder();
-        for (Point p: pts3)
-            b.addPoint(p);
-        PolyLine l = b.buildOpen();
-        assertEqualsPoints(pts3, l.points(), 0);
-        assertFalse(l.isClosed());
+    public void builderCorrectlyBuildsOpenPolyLine() {
+        for (List<Point> lpt : pts) {
+            PolyLine.Builder b = new PolyLine.Builder();
+            for (Point p : lpt)
+                b.addPoint(p);
+            PolyLine l = b.buildOpen();
+            assertEqualsPoints(lpt, l.points(), 0);
+            assertFalse(l.isClosed());
+        }
     }
 }
