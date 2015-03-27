@@ -29,7 +29,12 @@ public final class Graph<N> {
      *            of the nodes that the key's node is connected to.
      */
     public Graph(Map<N, Set<N>> neighbors) {
-        graph = Collections.unmodifiableMap(new HashMap<>(neighbors));
+        Map<N, Set<N>> temporary = new HashMap<>();
+        for (Map.Entry<N, Set<N>> neighbor : neighbors.entrySet()) {
+            temporary.put(neighbor.getKey(), Collections
+                    .unmodifiableSet(new HashSet<>(neighbor.getValue())));
+        }
+        graph = Collections.unmodifiableMap(temporary);
     }
 
     /**
