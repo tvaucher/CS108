@@ -206,7 +206,7 @@ public final class OSMToGeoTransformer {
             OSMNode first = unvisited.iterator().next();
             unvisited.remove(first);
             polyLineBuilder.addPoint(nodeToPoint(first));
-            Set<OSMNode> neighbors = graph.neighborsOf(first);
+            Set<OSMNode> neighbors = new HashSet<>(graph.neighborsOf(first));
             do {
                 if (neighbors.size() == 2) { // Assuming that every node has 2
                                              // neighbors
@@ -215,7 +215,7 @@ public final class OSMToGeoTransformer {
                         OSMNode next = neighbors.iterator().next();
                         unvisited.remove(next);
                         polyLineBuilder.addPoint(nodeToPoint(next));
-                        neighbors = graph.neighborsOf(next);
+                        neighbors = new HashSet<>(graph.neighborsOf(next));
                     }
                     else if (neighbors.size() == 0) { // End of the ring
                         rings.add(polyLineBuilder.buildClosed());
