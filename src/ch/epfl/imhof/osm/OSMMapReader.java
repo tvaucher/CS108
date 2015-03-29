@@ -172,20 +172,5 @@ public final class OSMMapReader {
             r.parse(new InputSource(i));
             return mapBuilder.build();
         }
-        catch (SAXException saxE) {
-            System.out.println("SAXException");
-            throw new SAXException("Failed reading the file", saxE);
-        }
-        catch (IOException ioE) {
-            System.out.println("IOException");
-            throw new IOException("Cannot find file : " + fileName);
-        }
-        catch (Exception e) {
-            System.out.println("Another exception raised while reading " + fileName
-                    + (unGZip ? "(Gzipped)" : ""));
-            System.out.println("Exception: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
     }
 }
