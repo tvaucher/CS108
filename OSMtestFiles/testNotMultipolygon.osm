@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-71' action='modify' visible='true' lat='-0.00723143802' lon='0.02021209389' />
+  <node id='-69' action='modify' visible='true' lat='0.02376043858' lon='0.01967310472' />
+  <node id='-68' action='modify' visible='true' lat='0.02394010163' lon='-0.00134747293' />
+  <node id='-57' action='modify' visible='true' lat='-0.01989768314' lon='-0.01877478944' />
+  <node id='-55' action='modify' visible='true' lat='-0.01837054725' lon='0.02641046935' />
+  <node id='-53' action='modify' visible='true' lat='0.0295994873' lon='0.0243443442' />
+  <node id='-52' action='modify' visible='true' lat='0.02888083516' lon='-0.01616967511' />
+  <way id='-70' action='modify' visible='true'>
+    <nd ref='-68' />
+    <nd ref='-69' />
+    <nd ref='-71' />
+    <nd ref='-68' />
+  </way>
+  <way id='-54' action='modify' visible='true'>
+    <nd ref='-52' />
+    <nd ref='-53' />
+    <nd ref='-55' />
+    <nd ref='-57' />
+    <nd ref='-52' />
+  </way>
+  <relation id='-305' action='modify' visible='true'>
+    <member type='way' ref='-54' role='outer' />
+    <member type='way' ref='-70' role='inner' />
+    <tag k='type' v='route' />
+  </relation>
+</osm>

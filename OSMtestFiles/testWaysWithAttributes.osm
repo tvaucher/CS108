@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-927' action='modify' visible='true' lat='-0.04997126502' lon='0.01749965218' />
+  <node id='-925' action='modify' visible='true' lat='-0.01723353101' lon='0.01698770398' />
+  <node id='-923' action='modify' visible='true' lat='-0.01779756338' lon='-0.01908068311' />
+  <node id='-922' action='modify' visible='true' lat='-0.0505352972' lon='-0.01856873491' />
+  <way id='-924' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='aeroway' v='yes' />
+  </way>
+  <way id='-928' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='amenity' v='yes' />
+  </way>
+  <way id='-929' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='building' v='yes' />
+  </way>
+  <way id='-930' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='harbour' v='yes' />
+  </way>
+  <way id='-931' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='historic' v='yes' />
+  </way>
+  <way id='-932' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='landuse' v='yes' />
+  </way>
+  <way id='-933' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='leisure' v='yes' />
+  </way>
+  <way id='-934' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='man_made' v='yes' />
+  </way>
+  <way id='-935' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='military' v='yes' />
+  </way>
+  <way id='-936' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='natural' v='yes' />
+  </way>
+  <way id='-937' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='office' v='yes' />
+  </way>
+  <way id='-938' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='place' v='yes' />
+  </way>
+  <way id='-939' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='power' v='yes' />
+  </way>
+  <way id='-940' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='public_transport' v='yes' />
+  </way>
+  <way id='-941' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='shop' v='yes' />
+  </way>
+  <way id='-942' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='sport' v='yes' />
+  </way>
+  <way id='-943' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='tourism' v='yes' />
+  </way>
+  <way id='-944' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='water' v='yes' />
+  </way>
+  <way id='-945' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='waterway' v='yes' />
+  </way>
+  <way id='-946' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+    <tag k='wetland' v='yes' />
+  </way>
+  <way id='-947' action='modify' visible='true'>
+    <nd ref='-922' />
+    <nd ref='-923' />
+    <nd ref='-925' />
+    <nd ref='-927' />
+    <nd ref='-922' />
+    <tag k='layer' v='1' />
+  </way>
+</osm>

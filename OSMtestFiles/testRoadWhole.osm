@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version='0.6' upload='true' generator='JOSM'>
+  <node id='-1108' action='modify' visible='true' lat='0.0359086506' lon='0.03385027218' />
+  <node id='-1106' action='modify' visible='true' lat='-0.00033490375' lon='0.03158504989' />
+  <node id='-1104' action='modify' visible='true' lat='-0.0395232463' lon='0.03249113881' />
+  <node id='-1102' action='modify' visible='true' lat='-0.06851807847' lon='0.01482240491' />
+  <node id='-1100' action='modify' visible='true' lat='-0.06874460053' lon='-0.0207415851' />
+  <node id='-1098' action='modify' visible='true' lat='-0.03657845797' lon='-0.00737677356' />
+  <node id='-1096' action='modify' visible='true' lat='-0.01166101514' lon='-0.0261781186' />
+  <node id='-1095' action='modify' visible='true' lat='0.02163775198' lon='-0.01394591822' />
+  <way id='-1097' action='modify' visible='true'>
+    <nd ref='-1095' />
+    <nd ref='-1096' />
+    <nd ref='-1098' />
+    <nd ref='-1100' />
+    <nd ref='-1102' />
+    <nd ref='-1104' />
+    <nd ref='-1106' />
+    <nd ref='-1108' />
+    <tag k='highway' v='road' />
+  </way>
+</osm>
