@@ -3,6 +3,9 @@ package ch.epfl.imhof.osm;
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.osm.OSMEntity.Builder;
+import ch.epfl.imhof.osm.OSMRelation.Member;
+import ch.epfl.imhof.osm.OSMRelation.Member.Type;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -86,5 +89,25 @@ public class OSMRelationTest extends OSMEntityTest{
         OSMRelation.Member testMember = new OSMRelation.Member(OSMRelation.Member.Type.NODE, "test", TEST_NODE_1);
         assertSame(testMember.member(), TEST_NODE_1);
     }
+    
+    // Again, we want to check that the right exception is thrown:
+    @Test (expected=UnsupportedOperationException.class)
+    public void memberListIsUnmodifiable() {
+        List<Member> members = Arrays.asList(
+                new Member(Type.NODE, "inner", new OSMNode(123456, new PointGeo(0, 0), new Attributes(Collections.emptyMap()))),
+                new Member(Type.NODE, "inner", new OSMNode(123457, new PointGeo(0, 0), new Attributes(Collections.emptyMap()))),
+                new Member(Type.NODE, "inner", new OSMNode(123458, new PointGeo(0, 0), new Attributes(Collections.emptyMap())))
+        );
+        OSMRelation r = new OSMRelation(123, members, new Attributes(Collections.emptyMap()));
+        r.members().add(new Member(Type.NODE, "inner", new OSMNode(123459, new PointGeo(0, 0), new Attributes(Collections.emptyMap()))));
+    }
+    
+    @Test (expected = IllegalStateException.class)
+    public void cannotBuildIncomplete() {
+        OSMRelation.Builder b = new OSMRelation.Builder(123);
+        b.setIncomplete();
+        b.build();
+    }
+
 
 }

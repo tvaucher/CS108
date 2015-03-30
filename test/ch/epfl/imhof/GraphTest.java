@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import ch.epfl.imhof.osm.OSMNode;
+
 public class GraphTest {
 
     @Test
@@ -134,6 +136,13 @@ public class GraphTest {
         }
     }
 
+    @Test
+    public void builderCanBuildWithoutNodes() {
+        Graph.Builder<OSMNode> builder = new Graph.Builder<>();
+        builder.build();
+    }
+
+    
     private HashMap<Integer, Set<Integer>> createAdjacencyList() {
 
         HashMap<Integer, Set<Integer>> adjacencyList = new HashMap<>();

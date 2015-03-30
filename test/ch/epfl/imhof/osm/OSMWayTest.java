@@ -4,9 +4,11 @@ import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.osm.OSMEntity.Builder;
 import ch.epfl.imhof.testUtilities.ListNonMutableTestUtility;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -127,5 +129,42 @@ public class OSMWayTest extends OSMEntityTest{
             wayBuilder.setIncomplete();
             wayBuilder.build();
     }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void cantAddToNodesList() {
+        OSMWay.Builder b = new OSMWay.Builder(51740696);
+        PointGeo positionOne = new PointGeo(Math.PI/4, Math.PI/8);
+        PointGeo positionTwo = new PointGeo(2*Math.PI/9, Math.PI/3);
+        OSMNode.Builder builderOne = new OSMNode.Builder(35295150, positionOne);
+        OSMNode.Builder builderTwo = new OSMNode.Builder(25125354, positionTwo); //some random spot in Sweden
+        OSMNode node1 = builderOne.build();
+        OSMNode node2 = builderTwo.build();
+        b.addNode(node1);
+        b.addNode(node2);
+        b.addNode(node1);
+        OSMWay way = b.build();
+        
+        List<OSMNode> list = way.nodes();
+        list.add(node1);
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void cantAddToNonRepeatingNodesList() {
+        OSMWay.Builder b = new OSMWay.Builder(51740696);
+        PointGeo positionOne = new PointGeo(Math.PI/4, Math.PI/8);
+        PointGeo positionTwo = new PointGeo(2*Math.PI/9, Math.PI/3);
+        OSMNode.Builder builderOne = new OSMNode.Builder(35295150, positionOne);
+        OSMNode.Builder builderTwo = new OSMNode.Builder(25125354, positionTwo); //some random spot in Sweden
+        OSMNode node1 = builderOne.build();
+        OSMNode node2 = builderTwo.build();
+        b.addNode(node1);
+        b.addNode(node2);
+        b.addNode(node1);
+        OSMWay way = b.build();
+        
+        List<OSMNode> list = way.nonRepeatingNodes();
+        list.add(node1);
+    }
 
+    
 }
