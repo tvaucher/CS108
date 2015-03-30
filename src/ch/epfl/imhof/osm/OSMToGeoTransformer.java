@@ -112,7 +112,8 @@ public final class OSMToGeoTransformer {
             if (!currentAttributes.isEmpty()) {
                 if (way.isClosed()) {
                     builder.addPolyLine(new Attributed<>(new ClosedPolyLine(
-                            nodesToPoints(way.nonRepeatingNodes())), currentAttributes));
+                            nodesToPoints(way.nonRepeatingNodes())),
+                            currentAttributes));
                 } else {
                     builder.addPolyLine(new Attributed<>(new OpenPolyLine(
                             nodesToPoints(way.nodes())), currentAttributes));
@@ -216,8 +217,7 @@ public final class OSMToGeoTransformer {
                         unvisited.remove(next);
                         polyLineBuilder.addPoint(nodeToPoint(next));
                         neighbors = new HashSet<>(graph.neighborsOf(next));
-                    }
-                    else if (neighbors.size() == 0) { // End of the ring
+                    } else if (neighbors.size() == 0) { // End of the ring
                         rings.add(polyLineBuilder.buildClosed());
                     }
 
@@ -275,7 +275,7 @@ public final class OSMToGeoTransformer {
                 polygon -> {
                     out.add(new Attributed<Polygon>(new Polygon(polygon
                             .getKey(), polygon.getValue()), attributes));
-                }); //lambda expression so we don't need to import EntrySet
+                }); // lambda expression so we don't need to import EntrySet
 
         return out;
     }
