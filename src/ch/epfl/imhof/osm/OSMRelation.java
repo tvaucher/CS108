@@ -21,17 +21,17 @@ public final class OSMRelation extends OSMEntity {
     private final List<Member> members;
 
     /**
-     * Construct a new OSMRelation based on given parameters
+     * Constructs a new OSMRelation based on given parameters
      * 
      * @param id
      *            unique identifier of the relation e.g RLC has id 331569
      * @see {@link http://www.openstreetmap.org/relation/331569}
      * @param members
      *            list of members of the relation
-     * @see Member for more infos
+     * @see Member for more information on the topic
      * @param attributes
      *            list of attributes of the relation
-     * @see Attributes for more infos
+     * @see Attributes for more information on the topic
      */
     public OSMRelation(long id, List<Member> members, Attributes attributes) {
         super(id, attributes);
@@ -50,7 +50,7 @@ public final class OSMRelation extends OSMEntity {
 
     /**
      * Static sub-class of OSMRelation that represents a member of a OSMRelation
-     * A member is composed of his type, role and associated OSMEntity
+     * A member is composed of its type, role and associated OSMEntity
      */
     public static final class Member {
         private final Type type;
@@ -74,8 +74,8 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * returns the type of the current instance
-         * (either NODE, WAY or RELATION)
+         * Rreturns the type of the current instance (either NODE, WAY or
+         * RELATION)
          * 
          * @return type
          */
@@ -84,8 +84,7 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * returns the role of the current instance
-         * (either "inner" or "outer")
+         * Returns the role of the current instance (either "inner" or "outer")
          * 
          * @return role
          */
@@ -94,7 +93,7 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * returns the member of the current instance
+         * Returns the member of the current instance
          * 
          * @return member
          */
@@ -103,10 +102,9 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * enumeration of possible type of entity 
-         * - node : @see {@link OSMNode}
-         * - way : @see {@link OSMWay} 
-         * - relation : @see {@link OSMRelation}
+         * Enumeration of the possible types of entity - node : @see
+         * {@link OSMNode} - way : @see {@link OSMWay} - relation : @see
+         * {@link OSMRelation}
          */
         public enum Type {
             NODE, WAY, RELATION
@@ -114,14 +112,16 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Builder associated to the OSMRelation class. Allow to construct an
-     * OSMRelation object step by step by adding members in the members list
+     * Builder associated to the OSMRelation class. Allows us to construct an
+     * OSMRelation object step by step by adding members in the members list one
+     * at a time.
      */
     public static final class Builder extends OSMEntity.Builder {
         private List<Member> members;
 
         /**
-         * Constructor of the Builder, requires id of the future OSMRelation
+         * Constructor of the Builder, requires id of the OSMRelation that will
+         * be built.
          * 
          * @param id
          *            unique identifier of the future relation
@@ -132,14 +132,14 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * add a new Member into the list based on given parameters
+         * Adds a new Member into the list based on given parameters.
          * 
          * @param type
          *            Type of the new member
          * @param role
          *            Role of the new member
          * @param newMember
-         *            OSMEntity that will be added => either a node, way or
+         *            OSMEntity that will be added: either a node, a way or a
          *            relation.
          */
         public void addMember(Member.Type type, String role, OSMEntity newMember) {
@@ -147,9 +147,10 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Build a new Relation object based on the builder.
+         * Builds a new Relation object based on the data that has been inputted
+         * into this builder.
          * 
-         * @return newly built OSMRelation
+         * @return the newly built OSMRelation
          * @throws IllegalStateException
          *             If the relation is incomplete
          */

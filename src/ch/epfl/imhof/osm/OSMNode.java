@@ -16,7 +16,7 @@ public final class OSMNode extends OSMEntity {
     private final PointGeo position;
 
     /**
-     * Construct a new OSM node.
+     * Constructs a new OSM node.
      * 
      * @param id
      *            The unique ID of the node. Every node is referenced by its ID;
@@ -46,7 +46,8 @@ public final class OSMNode extends OSMEntity {
 
     /**
      * Builder associated to the OSMNode object. Allows you to construct an
-     * OSMNode object safely and easily, since it manages illegal values.
+     * OSMNode object safely and easily, since it manages illegal values and
+     * allows you to add attributes one at a time.
      */
     public final static class Builder extends OSMEntity.Builder {
         private PointGeo position;
@@ -66,7 +67,7 @@ public final class OSMNode extends OSMEntity {
         }
 
         /**
-         * Build a new OSMNode object from the data that has been inputted into
+         * Builds a new OSMNode object from the data that has been inputted into
          * the Builder.
          * 
          * @return The newly created OSMNode object.

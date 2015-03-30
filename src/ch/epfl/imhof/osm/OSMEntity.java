@@ -20,13 +20,13 @@ public abstract class OSMEntity {
     private final Attributes attributes;
 
     /**
-     * Construct a new OSM entity.
+     * Constructs a new OSM entity.
      * 
      * @param id
      *            The unique ID of the entity. Every entity is referenced by its
      *            ID; for instance, the EPFL RLC's relation is 331569, and
-     *            information about it can be seen at
-     *            @see {@link http://www.openstreetmap.org/relation/331569}
+     *            information about it can be seen at:
+     * @see {@link http://www.openstreetmap.org/relation/331569}
      * @param attributes
      *            An Attributes object. @see ch.epfl.imhof.Attributes
      */
@@ -67,7 +67,7 @@ public abstract class OSMEntity {
     }
 
     /**
-     * Get the key's associated value in the attributes, or null if the
+     * Gets the key's associated value in the attributes, or null if the
      * attributes don't contain the key.
      * 
      * @param key
@@ -102,7 +102,8 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Add a (key, value) couple to the attributes map.
+         * Adds a (key, value) couple to the the map of attributes that will be
+         * built into the Entity.
          * 
          * @see ch.epfl.imhof.Attributes
          * 
@@ -116,13 +117,16 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Sets the incompletion to true.
+         * Sets the incompletion to true, which means that the builder won't be
+         * able to build.
          */
         public void setIncomplete() {
             incomplete = true;
         }
 
         /**
+         * Returns whether the entity is complete or not.
+         * 
          * @return incomplete Whether the entity is complete or not.
          */
         public boolean isIncomplete() {

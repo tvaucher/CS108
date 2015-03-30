@@ -19,7 +19,7 @@ public final class Attributes {
     private final Map<String, String> attributes;
 
     /**
-     * Construct an attribute map based on a given map.
+     * Constructs an attribute map based on a given map.
      * 
      * @param attributes
      *            Set of couple (attributes, values)
@@ -30,7 +30,7 @@ public final class Attributes {
     }
 
     /**
-     * Check whether the map attributes is empty or not.
+     * Checks whether the map attributes is empty or not.
      * 
      * @return true if attributes is empty, false otherwise.
      */
@@ -39,7 +39,7 @@ public final class Attributes {
     }
 
     /**
-     * Check whether the map attributes contains the given key.
+     * Checks whether the map attributes contains the given key.
      * 
      * @param key
      *            key to be checked if contained
@@ -50,7 +50,7 @@ public final class Attributes {
     }
 
     /**
-     * Get the associated value to the key in the map attributes, or null if
+     * Gets the associated value to the key in the map attributes, or null if
      * this map contains no mapping for the key.
      * 
      * @param key
@@ -100,12 +100,12 @@ public final class Attributes {
     }
 
     /**
-     * Construct a new instance trough the associated builder with a specified
-     * list of key to keep. Other keys and associated value are not copied.
+     * Constructs a new instance trough the associated builder with a specified
+     * list of keys to keep. Other keys and associated value are not copied.
      * 
      * @param keysToKeep
-     *            Set of keys that need to be keeped in the new object.
-     * @return the newly built Attributes
+     *            the set of keys that need to be kept in the new object.
+     * @return a newly built Attributes object containing only the keys to keep.
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
         Attributes.Builder builder = new Attributes.Builder(); // Using a
@@ -121,17 +121,17 @@ public final class Attributes {
     }
 
     /**
-     * Builder associated to the Attributes class. Allow to construct an
-     * Attributes object step by step by adding couple (key, value) in the
-     * attributes map
+     * Builder associated to the Attributes class. Allows us to construct an
+     * Attributes object step by step by adding (key, value) couples in the
+     * attributes map.
      * 
      */
     public static final class Builder {
         private Map<String, String> attributes = new HashMap<String, String>();
 
         /**
-         * put the couple (key, value) in the attributes map. if the key already
-         * exists in the map, the value is replaced.
+         * Adds a (key, value) couple in the map of attributes that will be
+         * built. If the key already exists in the map, the value is replaced.
          * 
          * @param key
          *            key to be inserted in the map
@@ -143,9 +143,10 @@ public final class Attributes {
         }
 
         /**
-         * Build a new Attributes object based on the builder.
+         * Build a new Attributes object based on the data that was inputted
+         * into this builder.
          * 
-         * @return newly built Attributes
+         * @return the newly built Attributes object
          */
         public Attributes build() {
             return new Attributes(attributes);

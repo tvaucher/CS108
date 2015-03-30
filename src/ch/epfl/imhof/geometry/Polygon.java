@@ -16,7 +16,7 @@ public final class Polygon {
     private final List<ClosedPolyLine> holes;
 
     /**
-     * Construct a polygon with holes from a closed polyline (the shell) and a
+     * Constructs a polygon with holes from a closed polyline (the shell) and a
      * list of closed polylines (the holes). Ideally, we'd check that the holes
      * indeed are inside the shell, but this is complicated and not strictly
      * necessary for this project (we're going to assume that the data from
@@ -26,7 +26,7 @@ public final class Polygon {
      *            A closed polyline that marks the exterior of the polygon.
      * @param holes
      *            A list of closed polylines contained in the holes (but it
-     *            won't be verified -- see above).
+     *            won't be verified -- @see ch.epfl.imhof.Polygon).
      */
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
         this.shell = shell; // The shell is already immutable, so there's no
@@ -37,7 +37,7 @@ public final class Polygon {
     }
 
     /**
-     * Construct a polygon without holes from a closed polyline (the shell).
+     * Constructs a polygon without holes from a closed polyline (the shell).
      * 
      * @param shell
      *            A closed polyline that marks the exterior of the polygon.
@@ -48,7 +48,7 @@ public final class Polygon {
     }
 
     /**
-     * Return the shell of the polygon.
+     * Returns the shell of the polygon.
      * 
      * @return shell The shell, the exterior of the polygon
      */
@@ -57,7 +57,7 @@ public final class Polygon {
     }
 
     /**
-     * Return a list of the holes of the polygon
+     * Returns a list of the holes of the polygon
      * 
      * @return holes A list of holes in the polygon.
      */

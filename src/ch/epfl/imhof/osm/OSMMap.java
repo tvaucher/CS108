@@ -16,7 +16,6 @@ import java.util.Map.Entry;
  * The OSMMap (OpenStreetMaps Map) represents the actual map, a collection of
  * ways and relations.
  * 
- * 
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
@@ -25,7 +24,7 @@ public final class OSMMap {
     private final List<OSMRelation> relations;
 
     /**
-     * Construct a new OSMMap object.
+     * Constructs a new OSMMap object.
      * 
      * @param ways
      *            A collection of OSMWay objects
@@ -67,7 +66,8 @@ public final class OSMMap {
         private HashMap<Long, OSMRelation> relations = new HashMap<>();
 
         /**
-         * Add an OSMNode to the list of nodes that will be included in the map.
+         * Adds an OSMNode to the list of nodes that will be included in the
+         * map.
          * 
          * @param newNode
          *            The node that will be added to the map.
@@ -90,7 +90,7 @@ public final class OSMMap {
         }
 
         /**
-         * Add an OSMWay to the list of ways that will be included in the map.
+         * Adds an OSMWay to the list of ways that will be included in the map.
          * 
          * @param newWay
          *            The way that will be added to the map.
@@ -113,7 +113,7 @@ public final class OSMMap {
         }
 
         /**
-         * Add an OSMRelation to the list of relations that will be included in
+         * Adds an OSMRelation to the list of relations that will be included in
          * the map.
          * 
          * @param newRelation
@@ -136,7 +136,7 @@ public final class OSMMap {
         }
 
         /**
-         * Build a new OSMMap object with the data that has been inputted into
+         * Builds a new OSMMap object with the data that has been inputted into
          * this builder.
          * 
          * @return A new OSMMap object containing the data that has been
@@ -147,7 +147,6 @@ public final class OSMMap {
             return new OSMMap(ways.values(), relations.values());
         }
 
-
         /**
          * A private method for debugging purposes that creates a file in
          * data/debug
@@ -156,26 +155,31 @@ public final class OSMMap {
             File debugDirectory = new File("data/debug");
             if (debugDirectory.exists() && debugDirectory.isDirectory()) {
                 // Will normally be true only locally
-                try (PrintWriter pr = new PrintWriter(new File("data/debug/OSMMap_"
-                        + System.currentTimeMillis() + ".txt"))) {
+                try (PrintWriter pr = new PrintWriter(new File(
+                        "data/debug/OSMMap_" + System.currentTimeMillis()
+                                + ".txt"))) {
                     long startTime = System.currentTimeMillis();
                     pr.println("START PRINTING OSMMAP\n");
                     pr.println("MAP HAS " + nodes.size() + " NODES");
                     pr.println("PRINTING " + ways.size() + " WAYS");
-                    /*for (Entry<Long, OSMWay> way : ways.entrySet()) {
-                        pr.println("  Way : id " + way.getKey() + ", contains "
-                                + way.getValue().nodesCount() + " nodes");
-                    }*/
+                    /*
+                     * for (Entry<Long, OSMWay> way : ways.entrySet()) {
+                     * pr.println("  Way : id " + way.getKey() + ", contains " +
+                     * way.getValue().nodesCount() + " nodes"); }
+                     */
                     pr.println("\nPRINTING " + relations.size() + " RELATIONS");
                     int polygonCounter = 0;
-                    for (Entry<Long, OSMRelation> relation : relations.entrySet()) {
-                        String type = relation.getValue().attributeValue("type");
+                    for (Entry<Long, OSMRelation> relation : relations
+                            .entrySet()) {
+                        String type = relation.getValue()
+                                .attributeValue("type");
                         String multi = "multipolygon";
                         if (type != null && type.equals(multi)) {
                             polygonCounter++;
                         }
                     }
-                    pr.println("THERE'S " + polygonCounter + " MULTYPOLIGON IN OSMMAP");
+                    pr.println("THERE'S " + polygonCounter
+                            + " MULTYPOLIGON IN OSMMAP");
                     pr.println("\nWRITTEN IN "
                             + (System.currentTimeMillis() - startTime) / 1000.
                             + " sec");

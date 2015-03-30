@@ -14,14 +14,14 @@ import java.util.Set;
  * @author Timote Vaucher (246532)
  * 
  * @param <N>
- *            A node. In this project, nodes will be OSMEntities (though the
- *            class accepts anything)
+ *            A node. In this project, nodes will be OSMEntities of some sort
+ *            (though the class accepts anything)
  */
 public final class Graph<N> {
     private final Map<N, Set<N>> graph;
 
     /**
-     * Construct a new Graph object.
+     * Constructs a new Graph object.
      * 
      * @param neighbors
      *            A Map of the neighbors. The keys of the Map each correspond to
@@ -52,9 +52,9 @@ public final class Graph<N> {
      * during the construction).
      * 
      * @param node
-     *            One of the nodes that were passed as an argument during the
+     *            one of the nodes that were passed as an argument during the
      *            construction of the Graph.
-     * @return The node's neighbors (in other words, the key that's tied to the
+     * @return the node's neighbors (in other words, the key that's tied to the
      *         node argument).
      * @throws IllegalArgumentException
      *             if the graph doesn't contain the node.
@@ -72,9 +72,6 @@ public final class Graph<N> {
      * construction of a Graph object by adding the possibility of adding nodes
      * and edges one at a time.
      * 
-     * @author Maxime Kjaer (250694)
-     * @author Timote Vaucher (246532)
-     * 
      * @param <N>
      *            The type of object that the graph's nodes will be (and that
      *            the Builder will accept.
@@ -83,7 +80,7 @@ public final class Graph<N> {
         private Map<N, Set<N>> graph = new HashMap<>();
 
         /**
-         * Add a node to the list of nodes that will be built when using the
+         * Adds a node to the list of nodes that will be built when using the
          * build() method.
          * 
          * @param n

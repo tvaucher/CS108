@@ -10,7 +10,7 @@ public final class Point {
     private final double x, y;
 
     /**
-     * Construct a point with its abscissa and ordinate passed as parameters.
+     * Constructs a point with its abscissa and ordinate passed as parameters.
      * 
      * @param x
      *            Abscissa of the point.
@@ -23,7 +23,7 @@ public final class Point {
     }
 
     /**
-     * Return the abscissa of the point.
+     * Returns the abscissa of the point.
      * 
      * @return x Abscissa of the point.
      */
@@ -32,7 +32,7 @@ public final class Point {
     }
 
     /**
-     * Return the ordinate of the point.
+     * Returns the ordinate of the point.
      * 
      * @return y Ordinate of the point.
      */

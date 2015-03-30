@@ -11,7 +11,7 @@ import java.util.List;
  */
 public final class OpenPolyLine extends PolyLine {
     /**
-     * Construct an open polyline from a list of points.
+     * Constructs an open polyline from a list of points.
      * 
      * @param points
      *            A list of points.

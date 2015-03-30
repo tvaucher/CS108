@@ -24,7 +24,7 @@ public final class Map {
     private final List<Attributed<Polygon>> polygons;
 
     /**
-     * Construct a new Map of polylines and polygons
+     * Constructs a new Map of polylines and polygons
      * 
      * @param polyLines
      *            a list of attributed PolyLine objects
@@ -40,7 +40,7 @@ public final class Map {
     }
 
     /**
-     * Getter for the polylines of the map.
+     * A getter for the polylines of the map.
      * 
      * @return a list of all the attributed polylines in the map
      */
@@ -49,7 +49,7 @@ public final class Map {
     }
 
     /**
-     * Getter for the polygons of the map
+     * A getter for the polygons of the map
      * 
      * @return a list of all the attributed polygons in the map
      */
@@ -66,7 +66,7 @@ public final class Map {
         private List<Attributed<Polygon>> polygons = new ArrayList<>();
 
         /**
-         * Add an attributed polyline to the list of polylines that will be a
+         * Adds an attributed polyline to the list of polylines that will be a
          * part of the map.
          * 
          * @param newPolyLine
@@ -77,8 +77,8 @@ public final class Map {
         }
 
         /**
-         * Add an attributed polygon to the list of polyhons that will be a part
-         * of the map.
+         * Adds an attributed polygon to the list of polygons that will be a
+         * part of the map.
          * 
          * @param newPolygon
          *            a polygon with attributes.

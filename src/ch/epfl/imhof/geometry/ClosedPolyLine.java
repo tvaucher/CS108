@@ -13,7 +13,7 @@ public final class ClosedPolyLine extends PolyLine {
     private final int pointSize;
 
     /**
-     * Construct a closed polyline from a list of points.
+     * Constructs a closed polyline from a list of points.
      * 
      * @param points
      *            A list of points (the last one shouldn't necessarily be the
@@ -36,7 +36,7 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Return the signed area of the closed polyline.
+     * Returns the signed area of the closed polyline.
      * 
      * @return area The signed area of the closed polyline.
      */
@@ -51,12 +51,12 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Return whether the closed polyline containts a point
+     * Returns whether the closed polyline contains a point or not.
      * 
      * @param p
      *            The point to be checked
-     * @return true or false True if the point is in the closed polyline, false
-     *         if it isn't in the closed polyline.
+     * @return True if the point is in the closed polyline, false if it isn't in
+     *         the closed polyline.
      * 
      */
     public boolean containsPoint(Point p) {
@@ -89,8 +89,8 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Return whether the Point p is to the left of the line formed by the
-     * points p1 or p2.
+     * Returns whether the Point p is to the left of the line formed by the
+     * points p1 and p2.
      * 
      * @param p
      *            The point that we want to know about.
@@ -98,7 +98,8 @@ public final class ClosedPolyLine extends PolyLine {
      *            One point of the line
      * @param p2
      *            Another point of line.
-     * @return
+     * @return True if the point p is to the left of the line formed by the
+     *         points p1 and p2, false otherwise.
      */
     private boolean isLeftFromLine(Point p, Point p1, Point p2) {
         return (p1.x() - p.x()) * (p2.y() - p.y()) > (p2.x() - p.x())

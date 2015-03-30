@@ -15,7 +15,7 @@ public abstract class PolyLine {
     private final List<Point> points;
 
     /**
-     * Construct a polyline from a list of points.
+     * Constructs a polyline from a list of points.
      * 
      * @param points
      *            A list of points that will form a polyline
@@ -31,12 +31,12 @@ public abstract class PolyLine {
     }
 
     /**
-     * Return true if the polyline is closed, false if it's open.
+     * Returns true if the polyline is closed, false if it's open.
      */
     public abstract boolean isClosed();
 
     /**
-     * Return the list of points that make up the polyline.
+     * Returns the list of points that make up the polyline.
      * 
      * @return points The list of points that make up the polyline.
      */
@@ -45,7 +45,7 @@ public abstract class PolyLine {
     }
 
     /**
-     * Return the first point of the polyline
+     * Returns the first point of the polyline
      * 
      * @return points.get(0); The first point of the polyline
      */
@@ -74,6 +74,9 @@ public abstract class PolyLine {
         }
 
         /**
+         * Builds an OpenPolyLine object from the data that was inputted into
+         * this builder.
+         * 
          * @return new OpenPolyLine object A new, open polyline object
          */
         public OpenPolyLine buildOpen() {
@@ -81,6 +84,9 @@ public abstract class PolyLine {
         }
 
         /**
+         * Builds a ClosedPolyLine object from the data that was inputted into
+         * this builder.
+         * 
          * @return new ClosedPolyLine object A new, closed polyline object
          */
         public ClosedPolyLine buildClosed() {

@@ -11,7 +11,7 @@ public final class PointGeo {
     private final double latitude;
 
     /**
-     * Construct a point with its longitude and latitude passed as parameters.
+     * Constructs a point with its longitude and latitude passed as parameters.
      * 
      * @param longitude
      *            Longitude of the point, in radians.

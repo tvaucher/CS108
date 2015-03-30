@@ -25,7 +25,7 @@ import ch.epfl.imhof.PointGeo;
  */
 public final class OSMMapReader {
     private OSMMapReader() {
-    }; // Constructor is private in order to prevent instanciation
+    }; // Constructor is private in order to prevent instantiation
 
     //@formatter:off
     /**
@@ -33,7 +33,7 @@ public final class OSMMapReader {
      * extension) builds a OSMMap with the complete OSMEntites that are
      * described in the read file.
      * 
-     * Only take into account the following entities (markup): 
+     * Only takes the following entities (markup) into account: 
      *   - OSMNode (node)
      *     - unique identifier (id) 
      *     - latitude in degree (lat) 
@@ -51,13 +51,14 @@ public final class OSMMapReader {
      *     - attributes (tag k="key" v="value")
      * 
      * @param fileName
-     *            path of the osm file containing the map to be read
+     *            the path of the osm file containing the map to be read
      * @param unGZip
      *            true if file is in gzip, false otherwise
-     * @return newly build OSMMap
+     * @return newly built OSMMap
      */
     //@formatter:on
-    public static OSMMap readOSMFile(String fileName, boolean unGZip) throws SAXException, IOException {
+    public static OSMMap readOSMFile(String fileName, boolean unGZip)
+            throws SAXException, IOException {
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
         try (BufferedInputStream inStream = new BufferedInputStream(
                 new FileInputStream(fileName));

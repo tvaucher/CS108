@@ -20,7 +20,7 @@ public final class OSMWay extends OSMEntity {
     private final List<OSMNode> nodes;
 
     /**
-     * Construct a new OSM Way. Its nodes are in spherical coordinates instead
+     * Constructs a new OSM Way. Its nodes are in spherical coordinates instead
      * of Cartesian coordinates.
      * 
      * @param id
@@ -131,7 +131,7 @@ public final class OSMWay extends OSMEntity {
         }
 
         /**
-         * Add a node to the way that will be constructed by the Builder.
+         * Adds a node to the way that will be constructed by the Builder.
          * 
          * @param newNode
          *            An OSMNode object that will be added to the way.
@@ -141,7 +141,7 @@ public final class OSMWay extends OSMEntity {
         }
 
         /**
-         * Build a new OSMWay object from the data that has been inputted into
+         * Builds a new OSMWay object from the data that has been inputted into
          * the Builder
          * 
          * @return The newly created OSMWay object.

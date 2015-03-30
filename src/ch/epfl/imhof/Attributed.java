@@ -17,12 +17,12 @@ public final class Attributed<T> {
     private final Attributes attributes;
 
     /**
-     * Construct the object of a specified type and a list of attributes
+     * Constructs the object of a specified type and a list of attributes
      * 
      * @param value
-     *            Of the specified type
+     *            value of the specified type of entity
      * @param attributes
-     *            Associated list of attributes
+     *            the associated list of attributes
      */
     public Attributed(T value, Attributes attributes) {
         this.value = requireNonNull(value);
@@ -30,7 +30,7 @@ public final class Attributed<T> {
     }
 
     /**
-     * Return the value attribute of type T
+     * Returns the value of the entity of type T
      * 
      * @return value
      */
@@ -39,7 +39,7 @@ public final class Attributed<T> {
     }
 
     /**
-     * Return the list of attributes associated to the current instance
+     * Returns the list of attributes associated to the current instance
      * 
      * @return attributes
      */
@@ -48,7 +48,7 @@ public final class Attributed<T> {
     }
 
     /**
-     * @see ch.epfl.imhof.Attributes#contains(String) Check whether the map
+     * @see ch.epfl.imhof.Attributes#contains(String) Checks whether the map
      *      attributes contains the given key.
      * 
      * @param key
@@ -60,9 +60,9 @@ public final class Attributed<T> {
     }
 
     /**
-     * @see ch.epfl.imhof.Attributes#get(String) Get the associated value to the
-     *      key in the map attributes, or null if this map contains no mapping
-     *      for the key.
+     * @see ch.epfl.imhof.Attributes#get(String) Gets the associated value to
+     *      the key in the map attributes, or null if this map contains no
+     *      mapping for the key.
      * 
      * @param key
      *            key whose associated value is to be returned
