@@ -1,8 +1,8 @@
 package ch.epfl.imhof.osm;
 
 import static org.junit.Assert.*;
-import java.lang.reflect.*;
 
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +92,7 @@ public class OSMMapTest {
         return testWay;
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void waysListNonModifiable() throws Exception{
         
@@ -156,6 +157,7 @@ public class OSMMapTest {
     }
     
     
+    @SuppressWarnings("unchecked")
     @Test
     public void relationsListNonModifiable() throws Exception{
         
