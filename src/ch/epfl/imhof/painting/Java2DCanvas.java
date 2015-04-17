@@ -26,9 +26,11 @@ public class Java2DCanvas implements Canvas {
     
     public Java2DCanvas(Point bl, Point tr, int width, int height, int dpi, Color bg) {
         if (height < 0 || width < 0)
-            throw new IllegalArgumentException("width and heght must be bigger than 0");
+            throw new IllegalArgumentException("Width and height must be bigger than 0");
         if (dpi < 0)
-            throw new IllegalArgumentException("resolution must be bigger than 0");
+            throw new IllegalArgumentException("Resolution must be bigger than 0");
+        if (bl.x() > tr.x() || bl.y() > tr.y())
+            throw new IllegalArgumentException("The bottom left point must be below and to the left of the top right point");
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         ctx = image.createGraphics();
         
@@ -108,7 +110,8 @@ public class Java2DCanvas implements Canvas {
             }
             path.lineTo(p.x(), p.y());
         }
-        if(polyLine.isClosed()) path.closePath();
+        if (polyLine.isClosed())
+            path.closePath();
         return path;
     }
 
