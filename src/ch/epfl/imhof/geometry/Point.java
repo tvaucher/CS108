@@ -67,10 +67,9 @@ public final class Point {
      */
     public static Function<Point, Point> alignedCoordinateChange(
             Point oldPoint1, Point newPoint1, Point oldPoint2, Point newPoint2) {
-        if (oldPoint1.x == oldPoint2.x || oldPoint1.y == oldPoint2.y
-                || newPoint1.x == newPoint2.x || newPoint1.y == newPoint2.y)
+        if (oldPoint1.x == oldPoint2.x || oldPoint1.y == oldPoint2.y)
             throw new IllegalArgumentException(
-                    "Pair of points cannot be horizontally or vertically aligned");
+                    "Please give two different, valid points the initial coordinates (they should not have the same x or y)");
 
         // We need to find two equations of the type (ax)*X+(bx) and
         // (ay)*Y+(by), which will handle both translation and dilation.
