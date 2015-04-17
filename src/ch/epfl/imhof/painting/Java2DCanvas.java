@@ -100,7 +100,6 @@ public class Java2DCanvas implements Canvas {
             shell.subtract(new Area(pathPolyLine(p)));
         }
         ctx.fill(shell);
-        System.out.println("drawing Polygon");
     }
     
     private Shape pathPolyLine(PolyLine polyLine) {

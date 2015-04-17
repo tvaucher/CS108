@@ -46,7 +46,7 @@ public class PainterTest {
             new Java2DCanvas(bl, tr, 800, 530, 72, Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier
-        lakesPainter.drawMap(map, canvas);
+        painter.drawMap(map, canvas);
         try {
             ImageIO.write(canvas.image(), "png", new File("loz.png"));
         }
