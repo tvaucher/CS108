@@ -38,13 +38,15 @@ public class Java2DCanvas implements Canvas {
         ctx.setRenderingHint(KEY_ANTIALIASING,
                 VALUE_ANTIALIAS_ON);
         
-        //Set Background color
-        ctx.setBackground(bg.toAWTColor());
-        
+        ctx.setColor(bg.toAWTColor());
+        ctx.fillRect(0, 0, width, height);
         //Change the scale
         double scalingFactor = dpi*1d/CANVAS_DPI;
         ctx.scale(scalingFactor, scalingFactor);
         projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0, height*scalingFactor), tr, new Point(width*scalingFactor, 0));
+        //Set Background color
+        //ctx.setBackground(bg.toAWTColor());
+        //System.out.println(ctx.getBackground().getRGB() + "RGB : " + ctx.getBackground().getRed() + " r " + ctx.getBackground().getGreen() + " g " + ctx.getBackground().getBlue() + " b");
     }
     
     public BufferedImage image() { return image; }
@@ -86,6 +88,7 @@ public class Java2DCanvas implements Canvas {
         
         //creating the polygon
         ctx.draw(stroke.createStrokedShape(pathPolyLine(polyLine)));
+        System.out.println("drawing polyLine");
     }
 
     @Override
@@ -97,6 +100,7 @@ public class Java2DCanvas implements Canvas {
             shell.subtract(new Area(pathPolyLine(p)));
         }
         ctx.fill(shell);
+        System.out.println("drawing Polygon");
     }
     
     private Shape pathPolyLine(PolyLine polyLine) {

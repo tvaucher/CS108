@@ -59,7 +59,32 @@ public interface Painter {
     
     public default Painter when(Predicate<Attributed<?>> predicate) {
         return (map, canvas) -> {
-            // TODO: Figure something out here!
+            Map.Builder builder = new Map.Builder();
+            for (Attributed<PolyLine> p : map.polyLines())
+                if (predicate.test(p)) builder.addPolyLine(p);
+            for (Attributed<Polygon> p : map.polygons())
+                if (predicate.test(p)) builder.addPolygon(p);
+            drawMap(builder.build(), canvas);
+        };
+    }
+    
+    public default Painter above(Painter that) {
+        return (map, canvas) -> {
+            that.drawMap(map, canvas);
+            this.drawMap(map, canvas);
+        };
+    }
+    
+    public default Painter layered() {
+        return (map, canvas) -> {
+            Painter out = null;
+            for (int i = -5; i <= 5; ++i) {
+                Predicate<Attributed<?>> predicate = Filters.onLayer(i);
+                Painter current = when(predicate);
+                if (out == null) out = current;
+                else out = current.above(out);
+            }
+            out.drawMap(map, canvas);
         };
     }
 }
