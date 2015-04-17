@@ -74,10 +74,10 @@ public final class Point {
         // We need to find two equations of the type (ax)*X+(bx) and
         // (ay)*Y+(by), which will handle both translation and dilation.
         double ax = (newPoint1.x - newPoint2.x) / (oldPoint1.x - oldPoint2.x);
-        double bx = newPoint2.x - Math.signum(oldPoint2.x) * ax * oldPoint2.x;
+        double bx = newPoint2.x - ax * oldPoint2.x;
 
         double ay = (newPoint1.y - newPoint2.y) / (oldPoint1.y - oldPoint2.y);
-        double by = newPoint2.y - Math.signum(oldPoint2.y) * ay * oldPoint2.y;
+        double by = newPoint2.y - ay * oldPoint2.y;
         
         // Check the results
         if (newPoint1.x != ax * oldPoint1.x + bx || newPoint2.x != ax * oldPoint2.x + bx) {

@@ -12,7 +12,6 @@ import ch.epfl.imhof.osm.OSMMap;
 import ch.epfl.imhof.osm.OSMMapReader;
 import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
-import ch.epfl.imhof.projection.EquirectangularProjection;
 
 public class PainterTest {
     public static void main(String[] args) {
