@@ -43,7 +43,7 @@ public class Java2DCanvas implements Canvas {
         //Change the scale
         double scalingFactor = dpi*1d/CANVAS_DPI;
         ctx.scale(scalingFactor, scalingFactor);
-        projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0, height*scalingFactor), tr, new Point(width*scalingFactor, 0));
+        projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0, height/scalingFactor), tr, new Point(width/scalingFactor, 0));
         //Set Background color
         //ctx.setBackground(bg.toAWTColor());
         //System.out.println(ctx.getBackground().getRGB() + "RGB : " + ctx.getBackground().getRed() + " r " + ctx.getBackground().getGreen() + " g " + ctx.getBackground().getBlue() + " b");
@@ -83,12 +83,12 @@ public class Java2DCanvas implements Canvas {
         
         //parameters for the stroke
         ctx.setColor(style.color().toAWTColor());
-        BasicStroke stroke = new BasicStroke(style.width(),
-                cap, join, 10f, style.dashingPattern(), 0f);
+        BasicStroke stroke = style.dashingPattern().length == 0 ? new BasicStroke(style.width(),
+                cap, join, 10f) : new BasicStroke(style.width(),
+                        cap, join, 10f, style.dashingPattern(), 0f);
         
         //creating the polygon
         ctx.draw(stroke.createStrokedShape(pathPolyLine(polyLine)));
-        System.out.println("drawing polyLine");
     }
 
     @Override
