@@ -1,6 +1,6 @@
 package ch.epfl.imhof.painting;
 
-public final class Color {
+public class Color {
     private final double r, g, b;
 
     public final static Color RED = new Color(1, 0, 0);
@@ -35,7 +35,7 @@ public final class Color {
         double r = ((packedRGB >> 16) & 0xFF) / 255d;
         double g = ((packedRGB >>  8) & 0xFF) / 255d;
         double b = ((packedRGB >>  0) & 0xFF) / 255d;
-        return rgb(r,g,b);          
+        return rgb(r, g, b);          
     }
 
     public double r() { return r; }
