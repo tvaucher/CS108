@@ -78,26 +78,7 @@ public final class Point {
 
         double ay = (newPoint1.y - newPoint2.y) / (oldPoint1.y - oldPoint2.y);
         double by = newPoint2.y - ay * oldPoint2.y;
-        
-        // Check the results
-        if (newPoint1.x != ax * oldPoint1.x + bx || newPoint2.x != ax * oldPoint2.x + bx) {
-            System.out.println("There is an error in the equation for x!!!!");
-            System.out.println("Theory: (" + oldPoint1.x + ", " + oldPoint1.y + ") => (" + newPoint1.x + ", " + newPoint1.y + ")");
-            System.out.println("Theory: (" + oldPoint2.x + ", " + oldPoint2.y + ") => (" + newPoint2.x + ", " + newPoint2.y + ")");
-            System.out.println("Practice: (" + oldPoint1.x + ", " + oldPoint1.y + ") => (" + (ax*oldPoint1.x+bx) + ", " + (ax*newPoint1.y+bx) + ")");
-            System.out.println("The equation is: " + ax + "x + " + bx);
-            System.out.println();
-        }
-        else System.out.println("Equation for x is correct!");
-        if (newPoint1.y != ay * oldPoint1.y + by || newPoint2.y != ay * oldPoint2.y + by) {
-            System.out.println("There is an error in the equation for y!!!!");
-            System.out.println("(" + oldPoint2.x + ", " + oldPoint2.y + ") => (" + newPoint2.x + ", " + newPoint2.y + ")");
-            System.out.println("The equation is: " + ay + "y + " + by);
-            System.out.println();
-        }
-        
-        
-        
+
         return point -> new Point(ax * point.x() + bx, ay * point.y() + by);
     }
 }
