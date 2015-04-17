@@ -42,6 +42,29 @@ public final class Point {
         return y;
     }
 
+    /**
+     * Changes the frame of a vector space by calculating the translation and
+     * dilation between two frames. It does so by essentially solving a 2x2
+     * matrix (though instead of implementing the Gauss reduction algorithm, it
+     * uses a formula specifically designed for 2x2 matrices).
+     * <p>
+     * It does not support rotation of the frame.
+     * <p>
+     * Giving it "bad" values (i.e. two initial points with the same x or y, or
+     * just two identical points) will result in an IllegalArgumentException
+     * since no information can be gathered from such data.
+     * 
+     * @param oldPoint1
+     *            A Point in the old frame
+     * @param newPoint1
+     *            The same point in the new frame
+     * @param oldPoint2
+     *            Another Point in the old frame
+     * @param newPoint2
+     *            The same point in the new frame
+     * 
+     * @return A Function that translates a Point from one frame to another.
+     */
     public static Function<Point, Point> alignedCoordinateChange(
             Point oldPoint1, Point newPoint1, Point oldPoint2, Point newPoint2) {
         if (oldPoint1.x == oldPoint2.x || oldPoint1.y == oldPoint2.y)
