@@ -1,6 +1,6 @@
 package ch.epfl.imhof.painting;
 
-public final class Color {
+public class Color {
     private final double r, g, b;
 
     public final static Color RED = new Color(1, 0, 0);

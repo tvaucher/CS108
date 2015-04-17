@@ -1,6 +1,6 @@
 package ch.epfl.imhof.painting;
 
-public final class LineStyle {
+public class LineStyle {
     private final float width;
     private final Color color;
     private final LineCap lineCap;
