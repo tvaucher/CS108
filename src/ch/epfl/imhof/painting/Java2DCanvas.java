@@ -171,7 +171,8 @@ public class Java2DCanvas implements Canvas {
                 path.moveTo(p.x(), p.y());
                 first = false;
             }
-            path.lineTo(p.x(), p.y());
+            else
+                path.lineTo(p.x(), p.y());
         }
         if (polyLine.isClosed())
             path.closePath();
