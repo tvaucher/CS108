@@ -14,7 +14,7 @@ public class LineStyle {
     private final LineCap lineCap;
     private final LineJoin lineJoin;
     private final float[] dashingPattern;
-    private final static float[] EMPTY = {};
+    public final static float[] EMPTY = {};
 
     /**
      * Constructs a new LineStyle object
