@@ -76,7 +76,7 @@ public interface Painter {
      * @return a new painter with given parameters that draws polylines.
      */
     public static Painter line(float width, Color color, LineCap lineCap,
-            LineJoin lineJoin, float[] dashingPattern) {
+            LineJoin lineJoin, float... dashingPattern) {
         return line(new LineStyle(width, color, lineCap, lineJoin,
                 dashingPattern));
     }
@@ -127,7 +127,7 @@ public interface Painter {
      *         polygons.
      */
     public static Painter outline(float width, Color color, LineCap lineCap,
-            LineJoin lineJoin, float[] dashingPattern) {
+            LineJoin lineJoin, float... dashingPattern) {
         return outline(new LineStyle(width, color, lineCap, lineJoin,
                 dashingPattern));
     }
