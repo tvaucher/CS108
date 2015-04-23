@@ -189,6 +189,6 @@ public class LineStyle {
      * An enumeration of the possible line joining styles.
      */
     public enum LineJoin {
-        BEVEL, MITER, ROUND
+        MITER, ROUND, BEVEL
     }
 }

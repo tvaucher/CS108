@@ -106,39 +106,13 @@ public class Java2DCanvas implements Canvas {
      */
     @Override
     public void drawPolyLine(PolyLine polyLine, LineStyle style) {
-        int cap = 0, join = 0;
-
-        // Generates cap style for BasicStroke type
-        switch (style.lineCap()) {
-        case BUTT:
-            cap = BasicStroke.CAP_BUTT;
-            break;
-        case ROUND:
-            cap = BasicStroke.CAP_ROUND;
-            break;
-        case SQUARE:
-            cap = BasicStroke.CAP_SQUARE;
-            break;
-        }
-
-        // Generates join style for BasicStroke type
-        switch (style.lineJoin()) {
-        case BEVEL:
-            join = BasicStroke.JOIN_BEVEL;
-            break;
-        case MITER:
-            join = BasicStroke.JOIN_MITER;
-            break;
-        case ROUND:
-            join = BasicStroke.JOIN_ROUND;
-            break;
-        }
-
         // parameters for the stroke
         ctx.setColor(style.color().toAWTColor());
         BasicStroke stroke = style.dashingPattern().length == 0 ? new BasicStroke(
-                style.width(), cap, join, 10f) : new BasicStroke(style.width(),
-                cap, join, 10f, style.dashingPattern(), 0f);
+                style.width(), style.lineCap().ordinal(), style.lineJoin()
+                        .ordinal(), 10f) : new BasicStroke(style.width(), style
+                .lineCap().ordinal(), style.lineJoin().ordinal(), 10f,
+                style.dashingPattern(), 0f);
 
         // creating the polygon
         ctx.draw(stroke.createStrokedShape(pathPolyLine(polyLine)));
@@ -170,8 +144,7 @@ public class Java2DCanvas implements Canvas {
             if (first) {
                 path.moveTo(p.x(), p.y());
                 first = false;
-            }
-            else
+            } else
                 path.lineTo(p.x(), p.y());
         }
         if (polyLine.isClosed())
