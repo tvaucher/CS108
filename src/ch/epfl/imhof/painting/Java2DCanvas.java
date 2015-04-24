@@ -29,9 +29,6 @@ public class Java2DCanvas implements Canvas {
 
     private final Function<Point, Point> projectedToCanvas;
     private final static int CANVAS_DPI = 72;
-    //private final float scalingFactor;
-
-    // private final double scalingFactor;
 
     /**
      * Constructs a new Java2D object.
@@ -69,7 +66,7 @@ public class Java2DCanvas implements Canvas {
                     "The bottom left point must be below and to the left of the top right point");
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         ctx = image.createGraphics();
-        
+
         ctx.setColor(bg.toAWTColor());
         ctx.fillRect(0, 0, width, height);
         // Change the scale
@@ -78,7 +75,7 @@ public class Java2DCanvas implements Canvas {
         projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0,
                 height / scalingFactor), tr,
                 new Point(width / scalingFactor, 0));
-        
+
         // Set antialiasing
         ctx.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
@@ -103,16 +100,13 @@ public class Java2DCanvas implements Canvas {
      */
     @Override
     public void drawPolyLine(PolyLine polyLine, LineStyle style) {
-        // parameters for the stroke
-        BasicStroke stroke = style.dashingPattern().length == 0 ? new BasicStroke(
-                style.width(), style.lineCap().ordinal(), style.lineJoin()
-                        .ordinal(), 10f) : new BasicStroke(style.width(), style
-                .lineCap().ordinal(), style.lineJoin().ordinal(), 10f,
-                style.dashingPattern(), 0f);
-
         // creating the polygon
         ctx.setColor(style.color().toAWTColor());
-        ctx.setStroke(stroke);
+        // parameters for the stroke
+        ctx.setStroke(new BasicStroke(style.width(), style.lineCap().ordinal(),
+                style.lineJoin().ordinal(), 10f,
+                style.dashingPattern().length == 0 ? null : style
+                        .dashingPattern(), 0f));
         ctx.draw(pathPolyLine(polyLine));
     }
 
