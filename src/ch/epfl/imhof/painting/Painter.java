@@ -107,7 +107,9 @@ public interface Painter {
     public static Painter outline(LineStyle style) {
         return (map, canvas) -> {
             for (Attributed<Polygon> polygon : map.polygons()) {
-                canvas.drawPolyLine(polygon.value().shell(), style);
+                for (PolyLine polyline : polygon.value().holes())
+                    canvas.drawPolyLine(polyline, style);
+                canvas.drawPolyLine(polygon.value().shell(), style); 
             }
         };
     }
@@ -145,6 +147,16 @@ public interface Painter {
      */
     public static Painter outline(float width, Color color) {
         return outline(new LineStyle(width, color));
+    }
+
+    /**
+     * Empty painter, for a basis so that we don't have null exception and stuff
+     * 
+     * @return a painter that do nothing
+     */
+    public static Painter empty() {
+        return (map, canvas) -> {
+        };
     }
 
     /**
@@ -190,14 +202,11 @@ public interface Painter {
      */
     public default Painter layered() {
         return (map, canvas) -> {
-            Painter out = null;
+            Painter out = empty();
             for (int i = -5; i <= 5; ++i) {
                 Predicate<Attributed<?>> predicate = Filters.onLayer(i);
                 Painter current = when(predicate);
-                if (out == null)
-                    out = current;
-                else
-                    out = current.above(out);
+                out = current.above(out);
             }
             out.drawMap(map, canvas);
         };
