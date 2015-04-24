@@ -109,7 +109,7 @@ public interface Painter {
             for (Attributed<Polygon> polygon : map.polygons()) {
                 for (PolyLine polyline : polygon.value().holes())
                     canvas.drawPolyLine(polyline, style);
-                canvas.drawPolyLine(polygon.value().shell(), style); 
+                canvas.drawPolyLine(polygon.value().shell(), style);
             }
         };
     }
@@ -150,9 +150,10 @@ public interface Painter {
     }
 
     /**
-     * Empty painter, for a basis so that we don't have null exception and stuff
+     * Empty painter that does nothing. Useful as a basis for stacking painters
+     * (with above) so that we don't have null exception.
      * 
-     * @return a painter that do nothing
+     * @return a painter that does nothing
      */
     public static Painter empty() {
         return (map, canvas) -> {
@@ -203,11 +204,8 @@ public interface Painter {
     public default Painter layered() {
         return (map, canvas) -> {
             Painter out = empty();
-            for (int i = -5; i <= 5; ++i) {
-                Predicate<Attributed<?>> predicate = Filters.onLayer(i);
-                Painter current = when(predicate);
-                out = current.above(out);
-            }
+            for (int i = -5; i <= 5; ++i)
+                out = when(Filters.onLayer(i)).above(out);
             out.drawMap(map, canvas);
         };
     }
