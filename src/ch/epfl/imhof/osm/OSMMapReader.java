@@ -24,6 +24,13 @@ import ch.epfl.imhof.PointGeo;
  *
  */
 public final class OSMMapReader {
+    // Defining attributes as they are named by the OpenStreetMaps
+    // specification:
+    private static final String NODE = "node", WAY = "way", ND = "nd",
+            RELATION = "relation", MEMBER = "member", TAG = "tag", ID = "id",
+            REFERENCE = "ref", LONGITUDE = "lon", LATITUDE = "lat", KEY = "k",
+            VALUE = "v", TYPE = "type", ROLE = "role";
+
     private OSMMapReader() {
     }; // Constructor is private in order to prevent instantiation
 
@@ -76,24 +83,25 @@ public final class OSMMapReader {
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
                     switch (qName) {
-                    case "node": {
-                        long id = Long.parseLong(atts.getValue("id"));
-                        double lon = Double.parseDouble(atts.getValue("lon"));
-                        double lat = Double.parseDouble(atts.getValue("lat"));
+                    case NODE: {
+                        long id = Long.parseLong(atts.getValue(ID));
+                        double lon = Double.parseDouble(atts
+                                .getValue(LONGITUDE));
+                        double lat = Double.parseDouble(atts.getValue(LATITUDE));
                         PointGeo point = new PointGeo(Math.toRadians(lon), Math
                                 .toRadians(lat));
                         nodeBuilder = new OSMNode.Builder(id, point);
                         currentParentBuilder = nodeBuilder;
                         break;
                     }
-                    case "way": {
-                        long id = Long.parseLong(atts.getValue("id"));
+                    case WAY: {
+                        long id = Long.parseLong(atts.getValue(ID));
                         wayBuilder = new OSMWay.Builder(id);
                         currentParentBuilder = wayBuilder;
                         break;
                     }
-                    case "nd": {
-                        long ref = Long.parseLong(atts.getValue("ref"));
+                    case ND: {
+                        long ref = Long.parseLong(atts.getValue(REFERENCE));
                         OSMNode referencedNode = mapBuilder.nodeForId(ref);
                         if (referencedNode != null)
                             wayBuilder.addNode(referencedNode);
@@ -101,18 +109,18 @@ public final class OSMMapReader {
                             wayBuilder.setIncomplete();
                         break;
                     }
-                    case "relation": {
-                        long id = Long.parseLong(atts.getValue("id"));
+                    case RELATION: {
+                        long id = Long.parseLong(atts.getValue(ID));
                         relationBuilder = new OSMRelation.Builder(id);
                         currentParentBuilder = relationBuilder;
                         break;
                     }
-                    case "member": {
-                        String type = atts.getValue("type");
-                        long ref = Long.parseLong(atts.getValue("ref"));
-                        String role = atts.getValue("role");
+                    case MEMBER: {
+                        String type = atts.getValue(TYPE);
+                        long ref = Long.parseLong(atts.getValue(REFERENCE));
+                        String role = atts.getValue(ROLE);
                         switch (type) {
-                        case "node":
+                        case NODE:
                             OSMNode referencedNode = mapBuilder.nodeForId(ref);
                             if (referencedNode != null)
                                 relationBuilder.addMember(
@@ -121,7 +129,7 @@ public final class OSMMapReader {
                             else
                                 relationBuilder.setIncomplete();
                             break;
-                        case "way":
+                        case WAY:
                             OSMWay referencedWay = mapBuilder.wayForId(ref);
                             if (referencedWay != null)
                                 relationBuilder.addMember(
@@ -130,7 +138,7 @@ public final class OSMMapReader {
                             else
                                 relationBuilder.setIncomplete();
                             break;
-                        case "relation":
+                        case RELATION:
                             OSMRelation referencedRelation = mapBuilder
                                     .relationForId(ref);
                             if (referencedRelation != null)
@@ -143,9 +151,9 @@ public final class OSMMapReader {
                         }
                         break;
                     }
-                    case "tag":
-                        String k = atts.getValue("k");
-                        String v = atts.getValue("v");
+                    case TAG:
+                        String k = atts.getValue(KEY);
+                        String v = atts.getValue(VALUE);
                         currentParentBuilder.setAttribute(k, v);
                         break;
                     }
@@ -155,15 +163,15 @@ public final class OSMMapReader {
                 public void endElement(String uri, String lName, String qName)
                         throws SAXException {
                     switch (qName) {
-                    case "node":
+                    case NODE:
                         if (!nodeBuilder.isIncomplete())
                             mapBuilder.addNode(nodeBuilder.build());
                         break;
-                    case "way":
+                    case WAY:
                         if (!wayBuilder.isIncomplete())
                             mapBuilder.addWay(wayBuilder.build());
                         break;
-                    case "relation":
+                    case RELATION:
                         if (!relationBuilder.isIncomplete())
                             mapBuilder.addRelation(relationBuilder.build());
                         break;
