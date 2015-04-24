@@ -61,9 +61,9 @@ public final class Map {
      * A Builder for the Map, which will assist in the creation of a such object
      * by allowing us to add polylines and polygons one at a time.
      */
-    public static class Builder {
-        private List<Attributed<PolyLine>> polyLines = new ArrayList<>();
-        private List<Attributed<Polygon>> polygons = new ArrayList<>();
+    public final static class Builder {
+        private final List<Attributed<PolyLine>> polyLines = new ArrayList<>();
+        private final List<Attributed<Polygon>> polygons = new ArrayList<>();
 
         /**
          * Adds an attributed polyline to the list of polylines that will be a
