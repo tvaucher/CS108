@@ -50,7 +50,7 @@ public final class OSMNode extends OSMEntity {
      * allows you to add attributes one at a time.
      */
     public final static class Builder extends OSMEntity.Builder {
-        private PointGeo position;
+        private final PointGeo position;
 
         /**
          * Constructor of the OSMNode Builder. Requires the ID that will be

@@ -85,9 +85,9 @@ public abstract class OSMEntity {
      * value) in the attributes map
      */
     public static abstract class Builder {
-        protected long id;
+        protected final long id;
         private boolean incomplete;
-        protected Attributes.Builder b = new Attributes.Builder();
+        protected final Attributes.Builder b = new Attributes.Builder();
 
         /**
          * Constructor for the Builder. Requires the unique ID of the future

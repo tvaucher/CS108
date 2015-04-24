@@ -61,7 +61,7 @@ public abstract class PolyLine {
      * @author Timote Vaucher (246532)
      */
     public static final class Builder {
-        private List<Point> points = new ArrayList<Point>();
+        private final List<Point> points = new ArrayList<Point>();
 
         /**
          * Adds a point to the list of points that will be built as a polyline.

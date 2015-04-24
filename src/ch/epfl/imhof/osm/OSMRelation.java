@@ -117,7 +117,7 @@ public final class OSMRelation extends OSMEntity {
      * at a time.
      */
     public static final class Builder extends OSMEntity.Builder {
-        private List<Member> members;
+        private final List<Member> members;
 
         /**
          * Constructor of the Builder, requires id of the OSMRelation that will
