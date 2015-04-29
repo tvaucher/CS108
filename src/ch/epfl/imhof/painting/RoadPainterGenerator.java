@@ -17,7 +17,7 @@ public final class RoadPainterGenerator {
         Painter bridgeInside = empty(), bridgeBorder = empty(), roadInside = empty(), roadBorder = empty(), tunnel = empty();
         Predicate<Attributed<?>> bridgePredicate = Filters.tagged("bridge"),
                 tunnelPredicate = Filters.tagged("tunnel"),
-                roadPredicate = bridgePredicate.negate().and(tunnelPredicate.negate());
+                roadPredicate = bridgePredicate.or(tunnelPredicate).negate(); //De Morgan's law
         for (RoadSpec spec : specs) {
             //Définition des styles
             float[] tunnelDashingStyle = {2*spec.w_i(), 2*spec.w_i()};
@@ -28,11 +28,6 @@ public final class RoadPainterGenerator {
             tunnelStyle = new LineStyle(spec.w_i()/2, spec.c_c(), LineCap.BUTT, LineJoin.ROUND, tunnelDashingStyle);
             
             //Définition des peintres
-            /*bridgeInside = line(bridgeInsideStyle).when(spec.roadType().and(bridgePredicate)).above(bridgeInside);
-            bridgeBorder = line(bridgeBorderStyle).when(spec.roadType().and(bridgePredicate)).above(bridgeBorder);
-            roadInside = line(roadInsideStyle).when(spec.roadType().and(roadPredicate)).above(roadInside);
-            roadBorder = line(roadBorderStyle).when(spec.roadType().and(roadPredicate)).above(roadBorder);
-            tunnel = line(tunnelStyle).when(spec.roadType().and(tunnelPredicate)).above(tunnel);*/
             bridgeInside = bridgeInside.above(line(bridgeInsideStyle).when(spec.roadType().and(bridgePredicate)));
             bridgeBorder = bridgeBorder.above(line(bridgeBorderStyle).when(spec.roadType().and(bridgePredicate)));
             roadInside = roadInside.above(line(roadInsideStyle).when(spec.roadType().and(roadPredicate)));
