@@ -67,48 +67,40 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public Vector3 normalAt(PointGeo p) throws IllegalArgumentException {
         if (!contains(p))
-            throw new IllegalArgumentException("Your point is in another file"); // Mario
-                                                                                 // ref
-        // AKA Your princess is in another castle
+            throw new IllegalArgumentException("Your point is in another file");
+        // Mario ref, AKA Your princess is in another castle
 
         // Calculating the grid number that we have to get data from.
-        int i = (int) ((p.longitude() - bl.longitude()) / delta);
-        int j = (int) ((tr.latitude() - p.latitude()) / delta);
+        int i = (int) Math.floor((p.longitude() - bl.longitude()) / delta);
+        int j = (int) Math.floor((tr.latitude() - p.latitude()) / delta);
 
         // z will be our table of heights for the 4 points around p.
         short[][] z = new short[2][2];
         // Fetching heights of the 4 points around p
-        z[0][0] = buffer.get(i + side * j);
-        z[0][1] = buffer.get(i + side * j + 1);
-        z[1][0] = buffer.get(i + side * j + side);
-        z[1][1] = buffer.get(i + side * j + 1 + side);
+        z[0][0] = buffer.get(i + side * (j + 1));
+        z[0][1] = buffer.get(i + side * j);
+        z[1][0] = buffer.get((i + 1) + side * (j + 1));
+        z[1][1] = buffer.get(i + side * (j + 1));
 
-        // For the sake of legibility:
-        i = 0;
-        j = 0;
-        double halfS = 0.5 * s; // Cache it this time around (whether this
+        double halfS = s/2d; // Cache it this time around (whether this
                                 // optimizes the performance is dubious at best,
                                 // but points were taken off last time).
         double n1 = halfS
-                * (z[i][j] - z[i + 1][j] + z[i][j + 1] - z[i + 1][j + 1]);
+                * (z[0][0] - z[1][0] + z[0][1] - z[1][1]);
         double n2 = halfS
-                * (z[i][j] + z[i + 1][j] - z[i][j + 1] - z[i + 1][j + 1]);
+                * (z[0][0] + z[1][0] - z[0][1] - z[1][1]);
         double n3 = s * s;
-
-        /*
-         * For debugging purposes, we can print the points around p:
-         * System.out.println("(i, j): " + z[0][0]);
-         * System.out.println("(i, j+1): " + z[0][1]);
-         * System.out.println("(i+1, j): " + z[1][0]);
-         * System.out.println("(i+1, j+1): " + z[1][1]);
-         */
+        
+        // For debugging purposes, we can print the points around p:
+        /*System.out.println("(i, j): " + z[0][0]);
+        System.out.println("(i, j+1): " + z[0][1]);
+        System.out.println("(i+1, j): " + z[1][0]);
+        System.out.println("(i+1, j+1): " + z[1][1]);*/
 
         return new Vector3(n1, n2, n3);
     }
 
     private boolean contains(PointGeo p) {
-        // TODO Would this work south of the Equator? Should we put Math.abs on
-        // everything?
         return p.latitude() >= bl.latitude() && p.longitude() >= bl.longitude()
                 && p.latitude() <= tr.latitude()
                 && p.longitude() <= tr.longitude();
