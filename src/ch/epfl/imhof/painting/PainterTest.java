@@ -3,10 +3,13 @@ package ch.epfl.imhof.painting;
 import java.io.File;
 //import java.util.function.Predicate;
 
+
 import javax.imageio.ImageIO;
+
 
 //import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
+import ch.epfl.imhof.PointGeo;
 //import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.osm.OSMMap;
@@ -40,7 +43,7 @@ public class PainterTest {
         Painter restPainter = Painter.line(0.5f, Color.gray(0.7)).layered();
 
         Painter painter = buildingsPainter.above(restPainter).above(forestPainter).above(beachPainter).above(lakesPainter);*/
-        Painter painter = SwissPainter.painter();
+        /*Painter painter = SwissPainter.painter();
         OSMToGeoTransformer transformer = new OSMToGeoTransformer(new CH1903Projection());
         OSMMap osmMap = null;
         try {
@@ -50,7 +53,7 @@ public class PainterTest {
             System.out.println("unsuccessful reading");
             e.printStackTrace();
         }
-        Map map = transformer.transform(osmMap); // Lue depuis lausanne.osm.gz
+        Map map = transformer.transform(osmMap); // Lue depuis lausanne.osm.gz*/
 
         // La toile
 
@@ -72,14 +75,22 @@ public class PainterTest {
         // LAUSANNE:
         Point bl = new Point(532510, 150590);
         Point tr = new Point(539570, 155260);
+
+        // VALAIS:
+        PointGeo blGeo = new PointGeo(Math.toRadians(7.2), Math.toRadians(46.2));
+        PointGeo trGeo = new PointGeo(Math.toRadians(7.8), Math.toRadians(46.8));
         
         Java2DCanvas canvas =
-            new Java2DCanvas(bl, tr, 800*2, 530*2, 150, Color.WHITE);
+            new Java2DCanvas(bl, tr, 800, 800, 72, Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier
-        painter.drawMap(map, canvas);
+        //painter.drawMap(map, canvas); 
+        
+        //BW MAP
+        canvas.drawBWMap(new File("data/HGT/N46E007.hgt"), blGeo, trGeo);
         try {
-            ImageIO.write(canvas.image(), "png", new File("data/image/Lausanne150dpi.png"));
+            
+            ImageIO.write(canvas.image(), "png", new File("data/image/BWtest.png"));
         }
         catch (Exception e) {
             System.out.println("unsuccessful writing");

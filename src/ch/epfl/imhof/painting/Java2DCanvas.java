@@ -1,10 +1,7 @@
 package ch.epfl.imhof.painting;
 
-import java.util.function.Function;
-
-import ch.epfl.imhof.geometry.Point;
-import ch.epfl.imhof.geometry.PolyLine;
-import ch.epfl.imhof.geometry.Polygon;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -12,9 +9,15 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.function.Function;
 
-import static java.awt.RenderingHints.KEY_ANTIALIASING;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.Vector3;
+import ch.epfl.imhof.dem.HGTDigitalElevationModel;
+import ch.epfl.imhof.geometry.Point;
+import ch.epfl.imhof.geometry.PolyLine;
+import ch.epfl.imhof.geometry.Polygon;
 
 /**
  * Java2DCanvas represents a concrete implementation of the canvas that we need
@@ -142,6 +145,23 @@ public class Java2DCanvas implements Canvas {
         if (polyLine.isClosed())
             path.closePath();
         return path;
+    }
+    
+    public void drawBWMap(File hgt, PointGeo bl, PointGeo tr) {
+        double delta = (tr.longitude()-bl.longitude())/(image.getWidth());
+        
+        try (HGTDigitalElevationModel model =new HGTDigitalElevationModel(hgt);){
+            for (int i = 0; i < image.getWidth(); ++i) {
+                for (int j = 0; j < image.getHeight(); ++j) {
+                    Vector3 normal = model.normalAt(new PointGeo(bl.longitude()+i*delta, tr.latitude()-j*delta));
+                    ctx.setColor(Color.gray((normal.normalized().y()+1)/2d).toAWTColor());
+                    ctx.drawRect(i, j, 0, 0);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

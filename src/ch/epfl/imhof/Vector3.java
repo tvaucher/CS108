@@ -58,4 +58,6 @@ public class Vector3 {
     public double scalarProduct(Vector3 that) {
         return x * that.x + y * that.y + z * that.z;
     }
+    
+    public double y() { return y; }
 }
