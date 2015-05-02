@@ -59,5 +59,7 @@ public class Vector3 {
         return x * that.x + y * that.y + z * that.z;
     }
     
-    public double y() { return y; }
+    public double y() { 
+        return y;
+    }
 }

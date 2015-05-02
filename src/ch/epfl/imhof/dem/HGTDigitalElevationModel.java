@@ -12,17 +12,16 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3;
 
 public class HGTDigitalElevationModel implements DigitalElevationModel {
-    private static final double DELTA = 0.000001;
     private final PointGeo bl, tr;
     private final double delta; // [rad]
-    private final double s; // the distance a dot and the next, in m
+    private final double s; // the distance a dot and the next, in [m]
     private final FileInputStream stream;
-    private final ShortBuffer buffer;
+    private ShortBuffer buffer;
     private final int side; // The number of points on one axis in the
                             // altitude plot (usually 3601)
 
     private final static Pattern hgtPattern = Pattern
-            .compile("^([NS])(\\d{2})([EW])(\\d{3}).hgt$");
+            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3}).hgt$");
     private final static double oneDegToRad = Math.PI / 180;
 
     public HGTDigitalElevationModel(File hgt) throws IOException {
@@ -32,19 +31,19 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException("Invalid file name");
 
         // Test about the length
+        
         long length = hgt.length();
         double dSide = Math.sqrt(length / 2);
-        if (dSide % 1 >= DELTA)
+        side = (int) dSide;
+        if (side != dSide)
             throw new IllegalArgumentException(
                     "File must contain a sqrt of length must be even and an integer");
 
-        side = (int) dSide;
-
         // Creation of bottom left point
-        double lat = Math.toRadians((m.group(1).equals("N") ? 1d : -1d)
-                * Integer.parseInt(m.group(2)));
-        double lon = Math.toRadians((m.group(3).equals("E") ? 1d : -1d)
-                * Integer.parseInt(m.group(4)));
+        double lat = Math.toRadians((m.group("latOrien").equals("N") ? 1d : -1d)
+                * Integer.parseInt(m.group("latCoor")));
+        double lon = Math.toRadians((m.group("lonOrien").equals("E") ? 1d : -1d)
+                * Integer.parseInt(m.group("lonCoor")));
         bl = new PointGeo(lon, lat);
         tr = new PointGeo(lon + oneDegToRad, lat + oneDegToRad);
 
@@ -62,6 +61,7 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public void close() throws Exception {
         stream.close();
+        buffer = null;
     }
 
     @Override
@@ -80,15 +80,13 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
         z[0][0] = buffer.get(i + side * (j + 1));
         z[0][1] = buffer.get(i + side * j);
         z[1][0] = buffer.get((i + 1) + side * (j + 1));
-        z[1][1] = buffer.get(i + side * (j + 1));
+        z[1][1] = buffer.get((i + 1) + side * j);
 
         double halfS = s/2d; // Cache it this time around (whether this
                                 // optimizes the performance is dubious at best,
                                 // but points were taken off last time).
-        double n1 = halfS
-                * (z[0][0] - z[1][0] + z[0][1] - z[1][1]);
-        double n2 = halfS
-                * (z[0][0] + z[1][0] - z[0][1] - z[1][1]);
+        double n1 = halfS * (z[0][0] - z[1][0] + z[0][1] - z[1][1]);
+        double n2 = halfS * (z[0][0] + z[1][0] - z[0][1] - z[1][1]);
         double n3 = s * s;
         
         // For debugging purposes, we can print the points around p:
@@ -101,8 +99,9 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
     }
 
     private boolean contains(PointGeo p) {
-        return p.latitude() >= bl.latitude() && p.longitude() >= bl.longitude()
-                && p.latitude() <= tr.latitude()
+        return     p.latitude()  >= bl.latitude()
+                && p.longitude() >= bl.longitude()
+                && p.latitude()  <= tr.latitude()
                 && p.longitude() <= tr.longitude();
     }
 
