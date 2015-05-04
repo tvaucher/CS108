@@ -154,8 +154,8 @@ public class Java2DCanvas implements Canvas {
             for (int i = 0; i < image.getWidth(); ++i) {
                 for (int j = 0; j < image.getHeight(); ++j) {
                     Vector3 normal = model.normalAt(new PointGeo(bl.longitude()+i*delta, tr.latitude()-j*delta));
-                    ctx.setColor(Color.gray((normal.normalized().y()+1)/2d).toAWTColor());
-                    ctx.drawRect(i, j, 0, 0);
+                    int color = ((int) ((normal.normalized().y()+1)/2d*255.9999))*(256*257+1);
+                    image.setRGB(i, j, color);
                 }
             }
         }

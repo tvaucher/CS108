@@ -37,31 +37,14 @@ public final class RoadPainterGenerator {
      */
     public static Painter painterForRoads(RoadSpec... specs) {
         Painter bridgeInside = empty(), bridgeBorder = empty(), roadInside = empty(), roadBorder = empty(), tunnel = empty();
-        Predicate<Attributed<?>> bridgePredicate = Filters.tagged("bridge"), tunnelPredicate = Filters
-                .tagged("tunnel"), roadPredicate = bridgePredicate.or(
-                tunnelPredicate).negate(); // De Morgan's law
-        for (RoadSpec spec : specs) {
-            // Définition des styles
-            float[] tunnelDashingStyle = { 2 * spec.w_i(), 2 * spec.w_i() };
-            LineStyle bridgeInsideStyle = new LineStyle(spec.w_i(), spec.c_i(),
-                    LineCap.ROUND, LineJoin.ROUND, LineStyle.EMPTY), bridgeBorderStyle = new LineStyle(
-                    spec.w_i() + 2 * spec.w_c(), spec.c_c(), LineCap.BUTT,
-                    LineJoin.ROUND, LineStyle.EMPTY), roadInsideStyle = bridgeInsideStyle, roadBorderStyle = bridgeBorderStyle
-                    .withLineCap(LineCap.ROUND), tunnelStyle = new LineStyle(
-                    spec.w_i() / 2, spec.c_c(), LineCap.BUTT, LineJoin.ROUND,
-                    tunnelDashingStyle);
 
+        for (RoadSpec spec : specs) {
             // Définition des peintres
-            bridgeInside = bridgeInside.above(line(bridgeInsideStyle).when(
-                    spec.roadType().and(bridgePredicate)));
-            bridgeBorder = bridgeBorder.above(line(bridgeBorderStyle).when(
-                    spec.roadType().and(bridgePredicate)));
-            roadInside = roadInside.above(line(roadInsideStyle).when(
-                    spec.roadType().and(roadPredicate)));
-            roadBorder = roadBorder.above(line(roadBorderStyle).when(
-                    spec.roadType().and(roadPredicate)));
-            tunnel = tunnel.above(line(tunnelStyle).when(
-                    spec.roadType().and(tunnelPredicate)));
+            bridgeInside = bridgeInside.above(spec.brideInside());
+            bridgeBorder = bridgeBorder.above(spec.brideBorder());
+            roadInside = roadInside.above(spec.roadInside());
+            roadBorder = roadBorder.above(spec.roadBorder());
+            tunnel = tunnel.above(spec.tunnel());
         }
         return bridgeInside.above(bridgeBorder).above(roadInside)
                 .above(roadBorder).above(tunnel);
@@ -76,8 +59,19 @@ public final class RoadPainterGenerator {
      */
     public static class RoadSpec {
         private final Predicate<Attributed<?>> roadType;
-        private final float w_i, w_c;
-        private final Color c_i, c_c;
+
+        private final static Predicate<Attributed<?>> bridgePredicate = Filters
+                .tagged("bridge");
+        private final static Predicate<Attributed<?>> tunnelPredicate = Filters
+                .tagged("tunnel");
+        private final static Predicate<Attributed<?>> roadPredicate = bridgePredicate
+                .or(tunnelPredicate).negate(); // De Morgan's law
+
+        private final LineStyle bridgeInsideStyle;
+        private final LineStyle bridgeBorderStyle;
+        private final LineStyle roadInsideStyle;
+        private final LineStyle roadBorderStyle;
+        private final LineStyle tunnelStyle;
 
         /**
          * Construct a RoadSpec object
@@ -96,55 +90,62 @@ public final class RoadPainterGenerator {
         public RoadSpec(Predicate<Attributed<?>> roadType, float w_i,
                 Color c_i, float w_c, Color c_c) {
             this.roadType = roadType;
-            this.w_i = w_i;
-            this.c_i = c_i;
-            this.w_c = w_c;
-            this.c_c = c_c;
+
+            float[] tunnelDashingStyle = { 2 * w_i, 2 * w_i };
+            bridgeInsideStyle = new LineStyle(w_i, c_i, LineCap.ROUND,
+                    LineJoin.ROUND, LineStyle.EMPTY);
+            bridgeBorderStyle = new LineStyle(w_i + 2 * w_c, c_c, LineCap.BUTT,
+                    LineJoin.ROUND, LineStyle.EMPTY);
+            roadInsideStyle = bridgeInsideStyle;
+            roadBorderStyle = bridgeBorderStyle.withLineCap(LineCap.ROUND);
+            tunnelStyle = new LineStyle(w_i / 2, c_c, LineCap.BUTT,
+                    LineJoin.ROUND, tunnelDashingStyle);
         }
 
         /**
-         * getter for the predicate
+         * painter for the inside of bridge for a certain spec
          * 
-         * @return roadType
+         * @return bridge inside painter
          */
-        public Predicate<Attributed<?>> roadType() {
-            return roadType;
+        public Painter brideInside() {
+            return line(bridgeInsideStyle).when(roadType.and(bridgePredicate));
         }
 
         /**
-         * getter for width 1
+         * painter for the border of bridge for a certain spec
          * 
-         * @return w_i
+         * @return bridge border painter
          */
-        public float w_i() {
-            return w_i;
+        public Painter brideBorder() {
+            return line(bridgeBorderStyle).when(roadType.and(bridgePredicate));
         }
 
         /**
-         * getter for width 2
+         * painter for the inside of roads for a certain spec
          * 
-         * @return w_c
+         * @return road inside painter
          */
-        public float w_c() {
-            return w_c;
+        public Painter roadInside() {
+            return line(roadInsideStyle).when(roadType.and(roadPredicate));
         }
 
         /**
-         * getter for color 1
+         * painter for the border of roads for a certain spec
          * 
-         * @return c_i
+         * @return road border painter
          */
-        public Color c_i() {
-            return c_i;
+        public Painter roadBorder() {
+            return line(roadBorderStyle).when(roadType.and(roadPredicate));
         }
 
         /**
-         * getter for color 2
+         * painter for the tunnels for a certain spec
          * 
-         * @return c_c
+         * @return tunnel painter
          */
-        public Color c_c() {
-            return c_c;
+        public Painter tunnel() {
+            return line(tunnelStyle).when(roadType.and(tunnelPredicate));
         }
+
     }
 }
