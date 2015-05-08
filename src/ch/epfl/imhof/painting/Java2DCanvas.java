@@ -26,7 +26,7 @@ import ch.epfl.imhof.geometry.Polygon;
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
-public class Java2DCanvas implements Canvas {
+public final class Java2DCanvas implements Canvas {
     private final BufferedImage image;
     private final Graphics2D ctx;
 

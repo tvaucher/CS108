@@ -8,7 +8,7 @@ package ch.epfl.imhof.painting;
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
-public class LineStyle {
+public final class LineStyle {
     private final float width;
     private final Color color;
     private final LineCap lineCap;

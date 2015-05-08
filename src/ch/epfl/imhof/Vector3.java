@@ -6,7 +6,7 @@ package ch.epfl.imhof;
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
-public class Vector3 {
+public final class Vector3 {
     private double x, y, z;
 
     /**

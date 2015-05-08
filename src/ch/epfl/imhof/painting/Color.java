@@ -8,7 +8,7 @@ package ch.epfl.imhof.painting;
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
-public class Color {
+public final class Color {
     private final double r, g, b;
 
     public final static Color RED = new Color(1, 0, 0);

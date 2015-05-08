@@ -20,7 +20,7 @@ import ch.epfl.imhof.Vector3;
  * @author Maxime Kjaer (250694)
  * @author Timote Vaucher (246532)
  */
-public class HGTDigitalElevationModel implements DigitalElevationModel {
+public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final PointGeo bl, tr;
     private final double delta; // [rad]
     private final double s; // the distance a dot and the next, in [m]
