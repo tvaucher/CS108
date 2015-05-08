@@ -140,4 +140,13 @@ public final class Color {
     public java.awt.Color toAWTColor() {
         return new java.awt.Color((float) r, (float) g, (float) b);
     }
+    
+    /** 
+     * a getter for the packed RGB color
+     *  
+     * @return packed rgb color
+     */
+    public int packedRBG() {
+        return toAWTColor().getRGB();
+    }
 }
