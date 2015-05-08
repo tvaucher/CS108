@@ -9,12 +9,8 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.function.Function;
 
-import ch.epfl.imhof.PointGeo;
-import ch.epfl.imhof.Vector3;
-import ch.epfl.imhof.dem.HGTDigitalElevationModel;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
