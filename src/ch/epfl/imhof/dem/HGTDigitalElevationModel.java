@@ -130,15 +130,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         double n2 = halfS * (z[0][0] + z[1][0] - z[0][1] - z[1][1]);
         double n3 = s * s;
 
-        // For debugging purposes, we can print the points around p:
-        /*
-         * System.out.println("(i, j): " + z[0][0]);
-         * System.out.println("(i, j+1): " + z[0][1]);
-         * System.out.println("(i+1, j): " + z[1][0]);
-         * System.out.println("(i+1, j+1): " + z[1][1]);
-         */
-
-        return new Vector3(n1, n2, n3);
+        return new Vector3(n1, n2, n3).normalized();
     }
 
     /**
@@ -149,7 +141,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      * @return Whether the given PointGeo object's coordinates are within the
      *         DEM.
      */
-    private boolean contains(PointGeo p) {
+    public boolean contains(PointGeo p) {
         return p.latitude() >= bl.latitude() && p.longitude() >= bl.longitude()
                 && p.latitude() <= tr.latitude()
                 && p.longitude() <= tr.longitude();
