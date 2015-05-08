@@ -32,10 +32,12 @@ public final class ReliefShader {
                     "Width and height must be bigger than 0");
         PointGeo blGeo = projection.inverse(bl);
         PointGeo trGeo = projection.inverse(tr);
-        if (!model.contains(blGeo)
-                || !model.contains(trGeo))
+        if (!model.contains(blGeo) || !model.contains(trGeo))
             throw new IllegalArgumentException(
-                    "The model doesn't contain the whole zone you want to draw : " + blGeo.latitude() + " lat " + blGeo.longitude() + " lon " + trGeo.latitude() + " lat " + trGeo.longitude() + " lon");
+                    "The model doesn't contain the whole zone you want to draw : "
+                            + blGeo.latitude() + " lat " + blGeo.longitude()
+                            + " lon " + trGeo.latitude() + " lat "
+                            + trGeo.longitude() + " lon");
         if (blurRadius < 0)
             throw new IllegalArgumentException(
                     "Variance (aka blur radius) cannot be negative, was : "
@@ -43,10 +45,12 @@ public final class ReliefShader {
 
         if (blurRadius < DELTA)
             return brutRelief(bl, tr, width, height, 0);
-        
+
         Kernel kernel = gaussianBlurKernel(blurRadius);
-        int overflowSize = kernel.getWidth()/2;
-        return bluredRelief(kernel, brutRelief(bl, tr, width, height, overflowSize), width, height, overflowSize);
+        int overflowSize = kernel.getWidth() / 2;
+        return bluredRelief(kernel,
+                brutRelief(bl, tr, width, height, overflowSize), width, height,
+                overflowSize);
     }
 
     private BufferedImage brutRelief(Point bl, Point tr, int width, int height,
@@ -68,37 +72,41 @@ public final class ReliefShader {
                 Vector3 normal = model.normalAt(new PointGeo(tlGeo.longitude()
                         + i * deltaX, tlGeo.latitude() - j * deltaY));
                 double cosAngle = normal.scalarProduct(lightSource);
-                //System.out.println(cosAngle);
+                // System.out.println(cosAngle);
                 double rg = (cosAngle + 1) / 2d;
                 brut.setRGB(i, j, Color.rgb(rg, rg, (0.7 * cosAngle + 1) / 2d)
                         .packedRBG());
             }
         }
-        
+
         return brut;
     }
 
     private Kernel gaussianBlurKernel(double blurRadius) {
-        double sigma = blurRadius/3;
+        double sigma = blurRadius / 3;
         int middle = (int) Math.ceil(blurRadius);
-        int n = 2*middle+1;
+        int n = 2 * middle + 1;
         float[] data = new float[n];
         float sum = 0;
         for (int i = 0; i < n; ++i) {
             int cord = i - middle;
-            data[i] = (float) Math.exp(-(cord*cord)/(2*sigma*sigma));
+            data[i] = (float) Math.exp(-(cord * cord) / (2 * sigma * sigma));
             sum += data[i];
         }
         for (int i = 0; i < n; ++i)
-            data[i] = data[i]/sum;
+            data[i] = data[i] / sum;
         return new Kernel(n, 1, data);
     }
 
-    private BufferedImage bluredRelief(Kernel kernel, BufferedImage brutRelief, int width,
-            int height, int overflowSize) {
-        ConvolveOp transformerX = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-        ConvolveOp transformerY = new ConvolveOp(new Kernel(1, kernel.getWidth(), kernel.getKernelData(null)), ConvolveOp.EDGE_NO_OP, null);
-        return transformerY.filter(transformerX.filter(brutRelief, null), null).getSubimage(overflowSize, overflowSize, width, height);
+    private BufferedImage bluredRelief(Kernel kernel, BufferedImage brutRelief,
+            int width, int height, int overflowSize) {
+        ConvolveOp transformerX = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,
+                null);
+        ConvolveOp transformerY = new ConvolveOp(new Kernel(1,
+                kernel.getWidth(), kernel.getKernelData(null)),
+                ConvolveOp.EDGE_NO_OP, null);
+        return transformerY.filter(transformerX.filter(brutRelief, null), null)
+                .getSubimage(overflowSize, overflowSize, width, height);
     }
 
 }
