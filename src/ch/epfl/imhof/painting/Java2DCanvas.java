@@ -146,22 +146,4 @@ public final class Java2DCanvas implements Canvas {
             path.closePath();
         return path;
     }
-    
-    public void drawBWMap(File hgt, PointGeo bl, PointGeo tr) {
-        double delta = (tr.longitude()-bl.longitude())/(image.getWidth());
-        
-        try (HGTDigitalElevationModel model =new HGTDigitalElevationModel(hgt);){
-            for (int i = 0; i < image.getWidth(); ++i) {
-                for (int j = 0; j < image.getHeight(); ++j) {
-                    Vector3 normal = model.normalAt(new PointGeo(bl.longitude()+i*delta, tr.latitude()-j*delta));
-                    int color = ((int) ((normal.normalized().y()+1)/2d*255.9999))*(256*257+1);
-                    image.setRGB(i, j, color);
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
