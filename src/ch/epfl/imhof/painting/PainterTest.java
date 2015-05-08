@@ -1,15 +1,17 @@
 package ch.epfl.imhof.painting;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 //import java.util.function.Predicate;
 
-
 import javax.imageio.ImageIO;
-
 
 //import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.Vector3;
+import ch.epfl.imhof.dem.HGTDigitalElevationModel;
+import ch.epfl.imhof.dem.ReliefShader;
 //import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.osm.OSMMap;
@@ -43,7 +45,7 @@ public class PainterTest {
         Painter restPainter = Painter.line(0.5f, Color.gray(0.7)).layered();
 
         Painter painter = buildingsPainter.above(restPainter).above(forestPainter).above(beachPainter).above(lakesPainter);*/
-        /*Painter painter = SwissPainter.painter();
+        Painter painter = SwissPainter.painter();
         OSMToGeoTransformer transformer = new OSMToGeoTransformer(new CH1903Projection());
         OSMMap osmMap = null;
         try {
@@ -79,22 +81,35 @@ public class PainterTest {
         // VALAIS:
         PointGeo blGeo = new PointGeo(Math.toRadians(7.2), Math.toRadians(46.2));
         PointGeo trGeo = new PointGeo(Math.toRadians(7.8), Math.toRadians(46.8));
+        //System.out.println(blGeo.latitude() + " " + blGeo.longitude() + " " + trGeo.latitude() + " " + trGeo.longitude());
         
-        Java2DCanvas canvas =
-            new Java2DCanvas(bl, tr, 800, 800, 72, Color.WHITE);
-
-        // Dessin de la carte et stockage dans un fichier
-        //painter.drawMap(map, canvas); 
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 150, Color.WHITE);
+        try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(new File("data/HGT/N46E006.hgt"))) {
+            //System.out.println(proj.inverse(proj.project(blGeo)).longitude());
+            ReliefShader rel = new ReliefShader(new CH1903Projection(), model, new Vector3(-1, 1, 1));   
+            BufferedImage relief = rel.shadedRelief(bl, tr, 800, 530, 5);
+            painter.drawMap(map, canvas);
+            for (int i = 0; i < relief.getWidth(); ++i) {
+                for (int j = 0; j < relief.getHeight(); ++j) {
+                    Color mixed = Color.rgb(canvas.image().getRGB(i, j)).multiplyWith(Color.rgb(relief.getRGB(i, j)));
+                    relief.setRGB(i, j, mixed.packedRBG());
+                }
+            }
+            ImageIO.write(relief, "png", new File("data/image/LausanneOut.png"));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         
         //BW MAP
-        canvas.drawBWMap(new File("data/HGT/N46E007.hgt"), blGeo, trGeo);
+        /*canvas.drawBWMap(new File("data/HGT/N46E007.hgt"), blGeo, trGeo);
         try {
             
-            ImageIO.write(canvas.image(), "png", new File("data/image/BWtest.png"));
+            ImageIO.write(canvas.image(), "png", new File("data/image/BWtest2.png"));
         }
         catch (Exception e) {
             System.out.println("unsuccessful writing");
             e.printStackTrace();
-        }
+        }*/
     }
 }
