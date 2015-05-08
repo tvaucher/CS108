@@ -66,7 +66,7 @@ public final class CH1903Projection implements Projection {
                 - 0.002528 * y1 * y1 
                 - 0.0447 * x1Squared * y1 
                 - 0.014 * Math.pow(y1, 3);
-        double conversionFraction = 100 / 36;
+        double conversionFraction = 100d / 36d;
         double longitudeRadians = Math.toRadians(longitude0 * conversionFraction);
         double latitudeRadians = Math.toRadians(latitude0 * conversionFraction);
 
