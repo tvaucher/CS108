@@ -2,6 +2,7 @@ package ch.epfl.imhof;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -22,8 +23,14 @@ public class Main {
     private final static double INCHES_PER_METRE = 39.3700787; // in
                                                                // inches/metre
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
+    private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");
 
     public static void main(String[] args) {
+        if (args.length != 8)
+            throw new IllegalArgumentException(
+                    "Le nombre d'arguments fourni est incorrect\n attendu 8, donné "
+                            + args.length);
+
         String mapName = args[0];
         String hgtName = args[1];
 
@@ -52,7 +59,8 @@ public class Main {
         OSMMap osmMap = null;
 
         try {
-            osmMap = OSMMapReader.readOSMFile("data/OSM/" + mapName, true);
+            osmMap = OSMMapReader.readOSMFile("data/OSM/" + mapName, gzPattern
+                    .matcher(mapName).matches());
 
         } catch (Exception e) {
             System.out.println("An error occured while reading the file.");
@@ -69,17 +77,23 @@ public class Main {
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);
-            for (int i = 0; i < relief.getWidth(); ++i) {
-                for (int j = 0; j < relief.getHeight(); ++j) {
-                    Color mixed = Color.rgb(canvas.image().getRGB(i, j))
-                            .multiplyWith(Color.rgb(relief.getRGB(i, j)));
-                    relief.setRGB(i, j, mixed.packedRBG());
-                }
-            }
-            ImageIO.write(relief, "png", new File("data/image/" + outputName));
+            ImageIO.write(relief, "png", new File("data/image/relief_" + outputName));
+            ImageIO.write(mix(canvas.image(), relief), "png", new File("data/image/" + outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.");
             e.printStackTrace();
         }
+    }
+    
+    private static BufferedImage mix(BufferedImage i1, BufferedImage i2) {
+        BufferedImage out = new BufferedImage(i1.getWidth(), i1.getHeight(), i1.getType());
+        for (int i = 0; i < i1.getWidth(); ++i) {
+            for (int j = 0; j < i1.getHeight(); ++j) {
+                Color mixed = Color.rgb(i1.getRGB(i, j))
+                        .multiplyWith(Color.rgb(i2.getRGB(i, j)));
+                out.setRGB(i, j, mixed.packedRBG());
+            }
+        }
+        return out;
     }
 }
