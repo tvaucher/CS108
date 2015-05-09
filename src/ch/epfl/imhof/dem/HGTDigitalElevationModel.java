@@ -30,7 +30,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                             // altitude plot (usually 3601)
 
     private final static Pattern hgtPattern = Pattern
-            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3}).hgt$");
+            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt$");
     private final static double oneDegToRad = Math.PI / 180;
 
     /**
