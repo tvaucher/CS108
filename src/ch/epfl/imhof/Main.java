@@ -18,6 +18,7 @@ import ch.epfl.imhof.painting.Java2DCanvas;
 import ch.epfl.imhof.painting.Painter;
 import ch.epfl.imhof.painting.SwissPainter;
 import ch.epfl.imhof.projection.CH1903Projection;
+import ch.epfl.imhof.projection.Projection;
 
 public class Main {
     private final static double INCHES_PER_METRE = 39.3700787; // in
@@ -35,17 +36,23 @@ public class Main {
         String hgtName = args[1];
 
         // Coordinates will directly be stored in radians:
-        Double blLongitude = Math.toRadians(Double.parseDouble(args[2]));
-        Double blLatitude = Math.toRadians(Double.parseDouble(args[3]));
-        Double trLongitude = Math.toRadians(Double.parseDouble(args[4]));
-        Double trLatitude = Math.toRadians(Double.parseDouble(args[5]));
+        double blLongitude = Math.toRadians(Double.parseDouble(args[2]));
+        double blLatitude = Math.toRadians(Double.parseDouble(args[3]));
+        double trLongitude = Math.toRadians(Double.parseDouble(args[4]));
+        double trLatitude = Math.toRadians(Double.parseDouble(args[5]));
         int dpi = Integer.parseInt(args[6]);
         String outputName = args[7];
 
         // Now, convert the input to metrics that we can use:
-        CH1903Projection projector = new CH1903Projection();
+        Projection projector = new CH1903Projection();
         Point bl = projector.project(new PointGeo(blLongitude, blLatitude));
         Point tr = projector.project(new PointGeo(trLongitude, trLatitude));
+        PointGeo unprojeted = projector.inverse(bl);
+        System.out.println(blLongitude + " " + blLatitude);
+        System.out.println(unprojeted.longitude() + " " + unprojeted.latitude());
+        PointGeo blGeo = new PointGeo(blLongitude, blLatitude);
+        PointGeo trGeo = new PointGeo(trLongitude, trLatitude);
+        
         double resolution = dpi * INCHES_PER_METRE;
         double blur = (resolution * BLUR_RADIUS) / (1000d); // in pixels
         int height = (int) Math.round(resolution * (1d / 25000)
@@ -55,7 +62,7 @@ public class Main {
 
         Painter painter = SwissPainter.painter();
         OSMToGeoTransformer transformer = new OSMToGeoTransformer(
-                new CH1903Projection());
+                projector);
         OSMMap osmMap = null;
 
         try {
@@ -72,12 +79,13 @@ public class Main {
                 Color.WHITE);
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 new File("data/HGT/" + hgtName))) {
-            ReliefShader rel = new ReliefShader(new CH1903Projection(), model,
+            ReliefShader rel = new ReliefShader(projector, model,
                     new Vector3(-1, 1, 1));
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);
             ImageIO.write(relief, "png", new File("data/image/relief_" + outputName));
+            ImageIO.write(canvas.image(), "png", new File("data/image/brut_" + outputName));
             ImageIO.write(mix(canvas.image(), relief), "png", new File("data/image/" + outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.");

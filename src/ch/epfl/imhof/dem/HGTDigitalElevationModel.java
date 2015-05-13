@@ -31,7 +31,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     private final static Pattern hgtPattern = Pattern
             .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt$");
-    private final static double oneDegToRad = Math.PI / 180;
+    private final static double oneDegToRad = Math.toRadians(1);
 
     /**
      * Constructs a new HGTDigitalElevationModel from a given .hgt file.
@@ -61,7 +61,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Test about the length
 
         long length = hgt.length();
-        double dSide = Math.sqrt(length / 2);
+        double dSide = Math.sqrt(length / 2d);
         side = (int) dSide;
         if (side != dSide)
             throw new IllegalArgumentException(
@@ -79,6 +79,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         // Computation of resolution
         delta = oneDegToRad / side;
+        System.out.println(delta);
         s = Earth.RADIUS * delta;
         // 1 deg (in rad) contains side points (2 bytes/point)
 
@@ -112,8 +113,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Mario ref, AKA Your princess is in another castle
 
         // Calculating the grid number that we have to get data from.
-        int i = (int) Math.floor((p.longitude() - bl.longitude()) / delta);
-        int j = (int) Math.floor((tr.latitude() - p.latitude()) / delta);
+        int i = (int) ((p.longitude() - bl.longitude()) / delta) - 1;
+        int j = (int) ((tr.latitude() - p.latitude()) / delta);
 
         // z will be our table of heights for the 4 points around p.
         short[][] z = new short[2][2];

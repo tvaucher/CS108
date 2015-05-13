@@ -147,6 +147,10 @@ public final class Color {
      * @return packed rgb color
      */
     public int packedRBG() {
-        return toAWTColor().getRGB();
+        double base = 255.9999d;
+        int red = (int) (r*base);
+        int green = (int) (g*base);
+        int blue = (int) (b*base);
+        return red*256*256+green*256+blue;
     }
 }
