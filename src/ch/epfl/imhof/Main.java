@@ -49,10 +49,11 @@ public class Main {
         Point tr = projector.project(new PointGeo(trLongitude, trLatitude));
         PointGeo unprojeted = projector.inverse(bl);
         System.out.println(blLongitude + " " + blLatitude);
-        System.out.println(unprojeted.longitude() + " " + unprojeted.latitude());
+        System.out
+                .println(unprojeted.longitude() + " " + unprojeted.latitude());
         PointGeo blGeo = new PointGeo(blLongitude, blLatitude);
         PointGeo trGeo = new PointGeo(trLongitude, trLatitude);
-        
+
         double resolution = dpi * INCHES_PER_METRE;
         double blur = (resolution * BLUR_RADIUS) / (1000d); // in pixels
         int height = (int) Math.round(resolution * (1d / 25000)
@@ -61,8 +62,7 @@ public class Main {
                 / (tr.y() - bl.y()));
 
         Painter painter = SwissPainter.painter();
-        OSMToGeoTransformer transformer = new OSMToGeoTransformer(
-                projector);
+        OSMToGeoTransformer transformer = new OSMToGeoTransformer(projector);
         OSMMap osmMap = null;
 
         try {
@@ -79,26 +79,30 @@ public class Main {
                 Color.WHITE);
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 new File("data/HGT/" + hgtName))) {
-            ReliefShader rel = new ReliefShader(projector, model,
-                    new Vector3(-1, 1, 1));
+            ReliefShader rel = new ReliefShader(projector, model, new Vector3(
+                    -1, 1, 1));
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);
-            ImageIO.write(relief, "png", new File("data/image/relief_" + outputName));
-            ImageIO.write(canvas.image(), "png", new File("data/image/brut_" + outputName));
-            ImageIO.write(mix(canvas.image(), relief), "png", new File("data/image/" + outputName));
+            ImageIO.write(relief, "png", new File("data/image/relief_"
+                    + outputName));
+            ImageIO.write(canvas.image(), "png", new File("data/image/brut_"
+                    + outputName));
+            ImageIO.write(mix(canvas.image(), relief), "png", new File(
+                    "data/image/" + outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.");
             e.printStackTrace();
         }
     }
-    
+
     private static BufferedImage mix(BufferedImage i1, BufferedImage i2) {
-        BufferedImage out = new BufferedImage(i1.getWidth(), i1.getHeight(), i1.getType());
+        BufferedImage out = new BufferedImage(i1.getWidth(), i1.getHeight(),
+                i1.getType());
         for (int i = 0; i < i1.getWidth(); ++i) {
             for (int j = 0; j < i1.getHeight(); ++j) {
-                Color mixed = Color.rgb(i1.getRGB(i, j))
-                        .multiplyWith(Color.rgb(i2.getRGB(i, j)));
+                Color mixed = Color.rgb(i1.getRGB(i, j)).multiplyWith(
+                        Color.rgb(i2.getRGB(i, j)));
                 out.setRGB(i, j, mixed.packedRBG());
             }
         }
