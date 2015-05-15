@@ -3,6 +3,7 @@ package ch.epfl.imhof.dem;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.util.function.Function;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3;
@@ -55,13 +56,21 @@ public final class ReliefShader {
 
     private BufferedImage brutRelief(Point bl, Point tr, int width, int height,
             int overflowSize) {
-        PointGeo blGeo = projection.inverse(bl);
+        /*PointGeo blGeo = projection.inverse(bl);
         PointGeo trGeo = projection.inverse(tr);
-        double deltaX = (trGeo.longitude() - blGeo.longitude()) / width;
-        double deltaY = (trGeo.latitude() - blGeo.latitude()) / height;
+        double deltaXGeo = (trGeo.longitude() - blGeo.longitude()) / width;
+        double deltaYGeo = (trGeo.latitude() - blGeo.latitude()) / height;
+        System.out.println(deltaXGeo + " " + deltaYGeo);
         PointGeo tlGeo = new PointGeo(blGeo.longitude()
                 - (overflowSize * deltaX), trGeo.latitude()
-                + (overflowSize * deltaY));
+                + (overflowSize * deltaY));*/
+        /*double deltaX = (tr.x() - bl.x()) / width;
+        double deltaY = (tr.y() - bl.y()) / height;
+        Point tl = new Point(bl.x() - (overflowSize * deltaX), tr.y() + (overflowSize * deltaY));
+        System.out.println(deltaX + " " + deltaY);*/
+        Function<Point, Point> projectedToImage = Point.alignedCoordinateChange(new Point(overflowSize,
+                height + overflowSize), bl, new Point(width + overflowSize, overflowSize), tr);
+        
         int newWidth = width + 2 * overflowSize;
         int newHeight = height + 2 * overflowSize;
 
@@ -69,10 +78,11 @@ public final class ReliefShader {
                 BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < newWidth; ++i) {
             for (int j = 0; j < newHeight; ++j) {
-                Vector3 normal = model.normalAt(new PointGeo(tlGeo.longitude()
-                        + i * deltaX, tlGeo.latitude() - j * deltaY));
+                //Vector3 normal = model.normalAt(new PointGeo(tlGeo.longitude() + i * deltaX, tlGeo.latitude() - j * deltaY));
+                //Vector3 normal = model.normalAt(projection.inverse(new Point(tl.x() + i * deltaX, tl.y() - j * deltaY)));
+                Point point = projectedToImage.apply(new Point(i, j));
+                Vector3 normal = model.normalAt(projection.inverse(point));
                 double cosAngle = normal.scalarProduct(lightSource);
-                // System.out.println(cosAngle);
                 double rg = (cosAngle + 1) / 2d;
                 brut.setRGB(i, j, Color.rgb(rg, rg, (0.7 * cosAngle + 1) / 2d)
                         .packedRBG());
