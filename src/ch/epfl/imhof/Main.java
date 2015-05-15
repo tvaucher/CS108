@@ -29,7 +29,7 @@ public class Main {
     public static void main(String[] args) {
         if (args.length != 8)
             throw new IllegalArgumentException(
-                    "Le nombre d'arguments fourni est incorrect\n attendu 8, donné "
+                    "Le nombre d'arguments fourni est incorrect.\n  Nombre d'arguments attendus: 8\n  Nombre d'arguments donnés: "
                             + args.length);
 
         String mapName = args[0];
