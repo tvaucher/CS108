@@ -20,12 +20,37 @@ import ch.epfl.imhof.painting.SwissPainter;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
+/**
+ * The Main class is what ties everything else together. It's the main
+ * orchestrator of the rest of the code, which manages inputs and outputs.
+ * 
+ * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
+ */
 public class Main {
     private final static double INCHES_PER_METRE = 39.3700787; // in
                                                                // inches/metre
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
     private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");
 
+    // @formatter:off
+    /**
+     * The method to execute to create a map.
+     * 
+     * @param args
+     *            It takes a list of 8 strings: 
+     *            - The name of the .osm or .osm.gz file 
+     *            - The name of the .hgt file
+     *            - The longitude of the bottom left point
+     *            - The latitude of the bottom left point
+     *            - The longitude of the top right point
+     *            - The latitude of the top right point
+     *            - The resolution (in dpi) of the map
+     *            - The name of the outputted file.
+     * @throws IllegalArgumentException
+     *             if there are more or less than 8 arguments.
+     */
+    // @formatter:on
     public static void main(String[] args) {
         if (args.length != 8)
             throw new IllegalArgumentException(
