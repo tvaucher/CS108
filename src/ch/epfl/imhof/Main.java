@@ -72,7 +72,7 @@ public class Main {
         Projection projector = new CH1903Projection();
         Point bl = projector.project(new PointGeo(blLongitude, blLatitude));
         Point tr = projector.project(new PointGeo(trLongitude, trLatitude));
-        
+
         double resolution = dpi * INCHES_PER_METRE;
         double blur = (resolution * BLUR_RADIUS) / (1000d); // in pixels
         int height = (int) Math.round(resolution * (1d / 25000)
@@ -85,8 +85,8 @@ public class Main {
         OSMMap osmMap = null;
 
         try {
-            osmMap = OSMMapReader.readOSMFile("data/OSM/" + mapName, gzPattern
-                    .matcher(mapName).matches());
+            osmMap = OSMMapReader.readOSMFile(mapName,
+                    gzPattern.matcher(mapName).matches());
 
         } catch (Exception e) {
             System.out.println("An error occured while reading the file.");
@@ -97,18 +97,14 @@ public class Main {
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
-                new File("data/HGT/" + hgtName))) {
+                new File(hgtName))) {
             ReliefShader rel = new ReliefShader(projector, model, new Vector3(
                     -1, 1, 1));
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);
-            ImageIO.write(relief, "png", new File("data/image/relief_"
-                    + outputName));
-            ImageIO.write(canvas.image(), "png", new File("data/image/brut_"
-                    + outputName));
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
-                    "data/image/" + outputName));
+                    outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.");
             e.printStackTrace();
