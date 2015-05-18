@@ -123,8 +123,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         // Calculating the grid number that we have to get data from.
         Point point = geoToHGT.apply(proj.project(p));
-        int i = (int) point.x();
-        int j = (int) point.y();
+        double difX = -0.9d, difY = -0.3d;
+        int i = (int) Math.floor(point.x()+difX);
+        int j = (int) Math.floor(point.y()+difY);
 
         // z will be our table of heights for the 4 points around p.
         short[][] z = new short[2][2];
