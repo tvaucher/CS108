@@ -82,10 +82,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                         * Integer.parseInt(m.group("lonCoor")));
         bl = new PointGeo(lon, lat);
         tr = new PointGeo(lon + oneDegToRad, lat + oneDegToRad);
-        
+
         geoToHGT = Point.alignedCoordinateChange(proj.project(bl), new Point(0,
-                side), proj.project(tr),
-                new Point(side, 0));
+                side - 1), proj.project(tr), new Point(side - 1, 0));
         // Computation of resolution
         delta = oneDegToRad / side;
 
@@ -123,9 +122,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         // Calculating the grid number that we have to get data from.
         Point point = geoToHGT.apply(proj.project(p));
-        double difX = -0.9d, difY = -0.3d;
-        int i = (int) Math.floor(point.x()+difX);
-        int j = (int) Math.floor(point.y()+difY);
+        int i = (int) Math.floor(point.x());
+        int j = (int) Math.floor(point.y());
 
         // z will be our table of heights for the 4 points around p.
         short[][] z = new short[2][2];
