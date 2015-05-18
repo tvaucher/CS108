@@ -72,13 +72,7 @@ public class Main {
         Projection projector = new CH1903Projection();
         Point bl = projector.project(new PointGeo(blLongitude, blLatitude));
         Point tr = projector.project(new PointGeo(trLongitude, trLatitude));
-        PointGeo unprojeted = projector.inverse(bl);
-        System.out.println(blLongitude + " " + blLatitude);
-        System.out
-                .println(unprojeted.longitude() + " " + unprojeted.latitude());
-        PointGeo blGeo = new PointGeo(blLongitude, blLatitude);
-        PointGeo trGeo = new PointGeo(trLongitude, trLatitude);
-
+        
         double resolution = dpi * INCHES_PER_METRE;
         double blur = (resolution * BLUR_RADIUS) / (1000d); // in pixels
         int height = (int) Math.round(resolution * (1d / 25000)
