@@ -5,11 +5,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3;
+import ch.epfl.imhof.geometry.Point;
+import ch.epfl.imhof.projection.EquirectangularProjection;
+import ch.epfl.imhof.projection.Projection;
 
 /**
  * HGTDigitalElevationModel is a class that can read and interpret Digital
@@ -28,10 +32,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private ShortBuffer buffer;
     private final int side; // The number of points on one axis in the
                             // altitude plot (usually 3601)
+    private final Function<Point, Point> geoToHGT;
 
     private final static Pattern hgtPattern = Pattern
             .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt$");
     private final static double oneDegToRad = Math.toRadians(1);
+    private final static Projection proj = new EquirectangularProjection();
 
     /**
      * Constructs a new HGTDigitalElevationModel from a given .hgt file.
@@ -76,10 +82,13 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                         * Integer.parseInt(m.group("lonCoor")));
         bl = new PointGeo(lon, lat);
         tr = new PointGeo(lon + oneDegToRad, lat + oneDegToRad);
-
+        
+        geoToHGT = Point.alignedCoordinateChange(proj.project(bl), new Point(0,
+                side), proj.project(tr),
+                new Point(side, 0));
         // Computation of resolution
         delta = oneDegToRad / side;
-        System.out.println(delta);
+
         s = Earth.RADIUS * delta;
         // 1 deg (in rad) contains side points (2 bytes/point)
 
@@ -113,8 +122,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Mario ref, AKA Your princess is in another castle
 
         // Calculating the grid number that we have to get data from.
-        int i = (int) ((p.longitude() - bl.longitude()) / delta) - 1;
-        int j = (int) ((tr.latitude() - p.latitude()) / delta);
+        Point point = geoToHGT.apply(proj.project(p));
+        int i = (int) point.x();
+        int j = (int) point.y();
 
         // z will be our table of heights for the 4 points around p.
         short[][] z = new short[2][2];
