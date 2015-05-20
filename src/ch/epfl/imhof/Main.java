@@ -32,6 +32,7 @@ public class Main {
                                                                // inches/metre
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
     private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");
+    private final static Vector3 LIGHT_VECTOR = new Vector3(-1, 1, 1);
 
     // @formatter:off
     /**
@@ -98,8 +99,7 @@ public class Main {
                 Color.WHITE);
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 new File(hgtName))) {
-            ReliefShader rel = new ReliefShader(projector, model, new Vector3(
-                    -1, 1, 1));
+            ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);

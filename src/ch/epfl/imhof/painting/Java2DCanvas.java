@@ -27,7 +27,7 @@ public final class Java2DCanvas implements Canvas {
     private final Graphics2D ctx;
 
     private final Function<Point, Point> projectedToCanvas;
-    private final static int CANVAS_DPI = 72;
+    private final static double CANVAS_DPI = 72d;
 
     /**
      * Constructs a new Java2D object.
@@ -69,7 +69,7 @@ public final class Java2DCanvas implements Canvas {
         ctx.setColor(bg.toAWTColor());
         ctx.fillRect(0, 0, width, height);
         // Change the scale
-        double scalingFactor = dpi * 1d / CANVAS_DPI;
+        double scalingFactor = dpi / CANVAS_DPI;
         ctx.scale(scalingFactor, scalingFactor);
         projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0,
                 height / scalingFactor), tr,
