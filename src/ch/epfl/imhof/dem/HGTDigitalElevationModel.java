@@ -85,6 +85,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         geoToHGT = Point.alignedCoordinateChange(proj.project(bl), new Point(0,
                 side - 1), proj.project(tr), new Point(side - 1, 0));
+        //The reason of the -1 is explained here : {@link https://piazza.com/class/i39wbwd15v83mt?cid=388}
+        
         // Computation of resolution
         delta = oneDegToRad / side;
 
