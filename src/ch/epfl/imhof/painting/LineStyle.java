@@ -179,7 +179,7 @@ public final class LineStyle {
     }
 
     /**
-     * An enumeration of the possible line capping styles. 
+     * An enumeration of the possible line capping styles.
      */
     public enum LineCap {
         BUTT, ROUND, SQUARE

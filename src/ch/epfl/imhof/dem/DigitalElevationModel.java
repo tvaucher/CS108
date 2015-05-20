@@ -14,8 +14,8 @@ public interface DigitalElevationModel extends AutoCloseable {
     /**
      * Returns a normal vector of point p, based on the 4 closest point of the
      * DEM map. Uses a formula that takes the average of 2 normal vector based
-     * on the 4 previous points. Method can be seen here 
-     * {@link http://cs108.epfl.ch/p10_dem.html#sec-1-3}
+     * on the 4 previous points. Method can be seen at the following link:
+     * {@link http ://cs108.epfl.ch/p10_dem.html#sec-1-3}
      * 
      * @param p
      *            point from which we look for the normal vector

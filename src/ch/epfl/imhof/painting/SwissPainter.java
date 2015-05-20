@@ -31,34 +31,58 @@ public final class SwissPainter {
         Color white = Color.WHITE;
 
         Painter roadPainter = RoadPainterGenerator.painterForRoads(
-                new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange, 0.5f, black),
-                new RoadSpec(tagged("highway", "primary"), 1.7f, lightRed, 0.35f, black),
-                new RoadSpec(tagged("highway", "motorway_link", "trunk_link"), 1.7f, orange, 0.35f, black),
-                new RoadSpec(tagged("highway", "secondary"), 1.7f, lightYellow, 0.35f, black),
-                new RoadSpec(tagged("highway", "primary_link"), 1.7f, lightRed, 0.35f, black),
-                new RoadSpec(tagged("highway", "tertiary"), 1.7f, white, 0.35f, black),
-                new RoadSpec(tagged("highway", "secondary_link"), 1.7f, lightYellow, 0.35f, black),
-                new RoadSpec(tagged("highway", "residential", "living_street", "unclassified"), 1.2f, white, 0.15f, black),
-                new RoadSpec(tagged("highway", "service", "pedestrian"), 0.5f, white, 0.15f, black));
+                new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
+                        0.5f, black),
+                new RoadSpec(tagged("highway", "primary"), 1.7f, lightRed,
+                        0.35f, black),
+                new RoadSpec(tagged("highway", "motorway_link", "trunk_link"),
+                        1.7f, orange, 0.35f, black),
+                new RoadSpec(tagged("highway", "secondary"), 1.7f, lightYellow,
+                        0.35f, black),
+                new RoadSpec(tagged("highway", "primary_link"), 1.7f, lightRed,
+                        0.35f, black),
+                new RoadSpec(tagged("highway", "tertiary"), 1.7f, white, 0.35f,
+                        black),
+                new RoadSpec(tagged("highway", "secondary_link"), 1.7f,
+                        lightYellow, 0.35f, black),
+                new RoadSpec(tagged("highway", "residential", "living_street",
+                        "unclassified"), 1.2f, white, 0.15f, black),
+                new RoadSpec(tagged("highway", "service", "pedestrian"), 0.5f,
+                        white, 0.15f, black));
 
-        Painter fgPainter =
-                roadPainter
-                .above(line(0.5f, darkGray, LineCap.ROUND, LineJoin.MITER, 1f, 2f).when(tagged("highway", "footway", "steps", "path", "track", "cycleway")))
+        Painter fgPainter = roadPainter
+                .above(line(0.5f, darkGray, LineCap.ROUND, LineJoin.MITER, 1f,
+                        2f).when(
+                        tagged("highway", "footway", "steps", "path", "track",
+                                "cycleway")))
                 .above(polygon(darkGray).when(tagged("building")))
-                .above(polygon(lightBlue).when(tagged("leisure", "swimming_pool")))
-                .above(line(0.7f, darkRed).when(tagged("railway", "rail", "turntable")))
-                .above(line(0.5f, darkRed).when(tagged("railway", "subway", "narrow_gauge", "light_rail")))
+                .above(polygon(lightBlue).when(
+                        tagged("leisure", "swimming_pool")))
+                .above(line(0.7f, darkRed).when(
+                        tagged("railway", "rail", "turntable")))
+                .above(line(0.5f, darkRed).when(
+                        tagged("railway", "subway", "narrow_gauge",
+                                "light_rail")))
                 .above(polygon(lightGreen).when(tagged("leisure", "pitch")))
                 .above(line(1, darkGray).when(tagged("man_made", "pier")))
                 .layered();
 
-        Painter bgPainter =
-                outline(1, darkBlue).above(polygon(lightBlue)).when(tagged("natural", "water").or(tagged("waterway", "riverbank")))
-                .above(line(1, lightBlue).above(line(1.5f, darkBlue)).when(tagged("waterway", "river", "canal")))
+        Painter bgPainter = outline(1, darkBlue)
+                .above(polygon(lightBlue))
+                .when(tagged("natural", "water").or(
+                        tagged("waterway", "riverbank")))
+                .above(line(1, lightBlue).above(line(1.5f, darkBlue)).when(
+                        tagged("waterway", "river", "canal")))
                 .above(line(1, darkBlue).when(tagged("waterway", "stream")))
-                .above(polygon(darkGreen).when(tagged("natural", "wood").or(tagged("landuse", "forest"))))
-                .above(polygon(lightGreen).when(tagged("landuse", "grass", "recreation_ground", "meadow", "cemetery").or(tagged("leisure", "park"))))
-                .above(polygon(lightGray).when(tagged("landuse", "residential", "industrial")))
+                .above(polygon(darkGreen).when(
+                        tagged("natural", "wood").or(
+                                tagged("landuse", "forest"))))
+                .above(polygon(lightGreen).when(
+                        tagged("landuse", "grass", "recreation_ground",
+                                "meadow", "cemetery").or(
+                                tagged("leisure", "park"))))
+                .above(polygon(lightGray).when(
+                        tagged("landuse", "residential", "industrial")))
                 .layered();
 
         PAINTER = fgPainter.above(bgPainter);

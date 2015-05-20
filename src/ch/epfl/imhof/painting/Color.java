@@ -12,7 +12,7 @@ public final class Color {
     private final double r, g, b;
     private final static double BASE = 255.9999d;
     private final static int BYTE = 256;
-    
+
     public final static Color RED = new Color(1, 0, 0);
     public final static Color GREEN = new Color(0, 1, 0);
     public final static Color BLUE = new Color(0, 0, 1);
@@ -142,16 +142,16 @@ public final class Color {
     public java.awt.Color toAWTColor() {
         return new java.awt.Color((float) r, (float) g, (float) b);
     }
-    
-    /** 
+
+    /**
      * a getter for the packed RGB color
-     *  
+     * 
      * @return packed rgb color
      */
     public int packedRBG() {
-        int red = (int) (r*BASE);
-        int green = (int) (g*BASE);
-        int blue = (int) (b*BASE);
-        return red*BYTE*BYTE+green*BYTE+blue;
+        int red = (int) (r * BASE);
+        int green = (int) (g * BASE);
+        int blue = (int) (b * BASE);
+        return red * BYTE * BYTE + green * BYTE + blue;
     }
 }
