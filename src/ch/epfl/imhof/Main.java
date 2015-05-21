@@ -32,6 +32,7 @@ public class Main {
                                                                // inches/metre
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
     private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");
+    private final static Vector3 LIGHT_VECTOR = new Vector3(-1, 1, 1);
 
     // @formatter:off
     /**
@@ -85,8 +86,7 @@ public class Main {
         OSMMap osmMap = null;
 
         try {
-            osmMap = OSMMapReader.readOSMFile(mapName,
-                    gzPattern.matcher(mapName).matches());
+            osmMap = OSMMapReader.readOSMFile(mapName);
 
         } catch (Exception e) {
             System.out.println("An error occured while reading the file.");
@@ -96,10 +96,8 @@ public class Main {
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
-        try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
-                new File(hgtName))) {
-            ReliefShader rel = new ReliefShader(projector, model, new Vector3(
-                    -1, 1, 1));
+        try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(hgtName);) {
+            ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             painter.drawMap(map, canvas);
