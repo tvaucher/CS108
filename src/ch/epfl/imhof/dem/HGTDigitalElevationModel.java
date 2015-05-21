@@ -1,13 +1,21 @@
 package ch.epfl.imhof.dem;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ShortBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel.MapMode;
+import java.nio.channels.ReadableByteChannel;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3;
@@ -35,7 +43,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final Function<Point, Point> geoToHGT;
 
     private final static Pattern hgtPattern = Pattern
-            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt$");
+            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt\\d*$");
+    private final static Pattern urlPattern = Pattern
+            .compile("^http://.+[NS]\\d{2}[EW]\\d{3}\\.zip$");
     private final static double oneDegToRad = Math.toRadians(1);
     private final static Projection proj = new EquirectangularProjection();
 
@@ -60,12 +70,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      */
     public HGTDigitalElevationModel(File hgt) throws IOException {
         // Uses regex to test and get parts of the args in the file name
+        System.out.println("\""+hgt.getName()+"\"");
         Matcher m = hgtPattern.matcher(hgt.getName());
         if (!m.matches())
             throw new IllegalArgumentException("Invalid file name");
 
         // Test about the length
-
         long length = hgt.length();
         double dSide = Math.sqrt(length / 2d);
         side = (int) dSide;
@@ -95,6 +105,10 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         stream = new FileInputStream(hgt);
         buffer = stream.getChannel().map(MapMode.READ_ONLY, 0, length)
                 .asShortBuffer();
+    }
+
+    public HGTDigitalElevationModel(String address) throws IOException {
+        this(readOnlineFile(address));
     }
 
     /*
@@ -155,6 +169,41 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return p.latitude() >= bl.latitude() && p.longitude() >= bl.longitude()
                 && p.latitude() <= tr.latitude()
                 && p.longitude() <= tr.longitude();
+    }
+
+    private static File readOnlineFile(String address) throws IOException {
+        Matcher m = urlPattern.matcher(address);
+        if (!m.matches())
+            throw new IllegalArgumentException("Invalid url");
+        // Write zipped file
+        URL url = new URL(address);
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        File temp = File.createTempFile("temp", ".hgt.zip");
+        FileOutputStream fos = new FileOutputStream(temp);
+        fos.getChannel().transferFrom(rbc, 0, Integer.MAX_VALUE);
+        fos.close();
+
+        // Unzip zipped file
+        ZipInputStream zin = new ZipInputStream(new BufferedInputStream(
+                new FileInputStream(temp)));
+        ZipEntry ze = zin.getNextEntry();
+        File hgt = File.createTempFile(ze.getName(), "");
+        //hgt.deleteOnExit();
+        byte[] buf = new byte[1024];
+        if (ze != null) {
+            System.out.println("Unzipping " + ze.getName());
+            BufferedOutputStream fout = new BufferedOutputStream(
+                    new FileOutputStream(hgt));
+            int len = 0;
+            while ((len = zin.read(buf)) > 0) {
+                fout.write(buf, 0, len);
+            }
+            zin.closeEntry();
+            fout.close();
+        }
+        zin.close();
+        System.out.println("out");
+        return hgt;
     }
 
 }
