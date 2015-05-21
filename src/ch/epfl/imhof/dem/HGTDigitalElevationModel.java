@@ -70,7 +70,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      */
     public HGTDigitalElevationModel(File hgt) throws IOException {
         // Uses regex to test and get parts of the args in the file name
-        System.out.println("\""+hgt.getName()+"\"");
+        System.out.println("\"" + hgt.getName() + "\"");
         Matcher m = hgtPattern.matcher(hgt.getName());
         if (!m.matches())
             throw new IllegalArgumentException("Invalid file name");
@@ -95,6 +95,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         geoToHGT = Point.alignedCoordinateChange(proj.project(bl), new Point(0,
                 side - 1), proj.project(tr), new Point(side - 1, 0));
+        // The reason for the -1 is explained here : {@link
+        // https://piazza.com/class/i39wbwd15v83mt?cid=388}
+
         // Computation of resolution
         delta = oneDegToRad / side;
 
@@ -188,7 +191,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                 new FileInputStream(temp)));
         ZipEntry ze = zin.getNextEntry();
         File hgt = File.createTempFile(ze.getName(), "");
-        //hgt.deleteOnExit();
+        // hgt.deleteOnExit();
         byte[] buf = new byte[1024];
         if (ze != null) {
             System.out.println("Unzipping " + ze.getName());
