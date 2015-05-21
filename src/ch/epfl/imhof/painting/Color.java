@@ -10,7 +10,9 @@ package ch.epfl.imhof.painting;
  */
 public final class Color {
     private final double r, g, b;
-
+    private final static double BASE = 255.9999d;
+    private final static int BYTE = 256;
+    
     public final static Color RED = new Color(1, 0, 0);
     public final static Color GREEN = new Color(0, 1, 0);
     public final static Color BLUE = new Color(0, 0, 1);
@@ -147,10 +149,9 @@ public final class Color {
      * @return packed rgb color
      */
     public int packedRBG() {
-        double base = 255.9999d;
-        int red = (int) (r*base);
-        int green = (int) (g*base);
-        int blue = (int) (b*base);
-        return red*256*256+green*256+blue;
+        int red = (int) (r*BASE);
+        int green = (int) (g*BASE);
+        int blue = (int) (b*BASE);
+        return red*BYTE*BYTE+green*BYTE+blue;
     }
 }
