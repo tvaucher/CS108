@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
 import org.xml.sax.Attributes;
@@ -56,7 +57,7 @@ public final class OSMMapReader {
      *       - unique identifier of member (ref="id") 
      *       - role of member, normally inner or outer (role="outer") 
      *     - attributes (tag k="key" v="value")
-     * 
+     *
      * @param fileName
      *            the path of the osm file containing the map to be read
      * @param unGZip
@@ -66,120 +67,132 @@ public final class OSMMapReader {
     //@formatter:on
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws SAXException, IOException {
-        OSMMap.Builder mapBuilder = new OSMMap.Builder();
+
         try (BufferedInputStream inStream = new BufferedInputStream(
                 new FileInputStream(fileName));
                 InputStream i = unGZip ? new GZIPInputStream(inStream)
                         : inStream;) {
-            XMLReader r = XMLReaderFactory.createXMLReader();
+            return parse(i);
+        }
+    }
 
-            r.setContentHandler(new DefaultHandler() {
-                private OSMEntity.Builder currentParentBuilder;
-                private OSMRelation.Builder relationBuilder;
-                private OSMWay.Builder wayBuilder;
-                private OSMNode.Builder nodeBuilder;
+    public static OSMMap readOSMFile(String address)
+            throws SAXException, IOException {
+        URL file = new URL(address);
+        try (InputStream i = file.openStream();) {
+            return parse(i);
+        }
+    }
 
-                @Override
-                public void startElement(String uri, String lName,
-                        String qName, Attributes atts) throws SAXException {
-                    switch (qName) {
-                    case NODE: {
-                        long id = Long.parseLong(atts.getValue(ID));
-                        double lon = Double.parseDouble(atts
-                                .getValue(LONGITUDE));
-                        double lat = Double.parseDouble(atts.getValue(LATITUDE));
-                        PointGeo point = new PointGeo(Math.toRadians(lon), Math
-                                .toRadians(lat));
-                        nodeBuilder = new OSMNode.Builder(id, point);
-                        currentParentBuilder = nodeBuilder;
-                        break;
-                    }
-                    case WAY: {
-                        long id = Long.parseLong(atts.getValue(ID));
-                        wayBuilder = new OSMWay.Builder(id);
-                        currentParentBuilder = wayBuilder;
-                        break;
-                    }
-                    case ND: {
-                        long ref = Long.parseLong(atts.getValue(REFERENCE));
+    private static OSMMap parse(InputStream i) throws SAXException, IOException {
+        OSMMap.Builder mapBuilder = new OSMMap.Builder();
+        XMLReader r = XMLReaderFactory.createXMLReader();
+
+        r.setContentHandler(new DefaultHandler() {
+            private OSMEntity.Builder currentParentBuilder;
+            private OSMRelation.Builder relationBuilder;
+            private OSMWay.Builder wayBuilder;
+            private OSMNode.Builder nodeBuilder;
+
+            @Override
+            public void startElement(String uri, String lName, String qName,
+                    Attributes atts) throws SAXException {
+                switch (qName) {
+                case NODE: {
+                    long id = Long.parseLong(atts.getValue(ID));
+                    double lon = Double.parseDouble(atts.getValue(LONGITUDE));
+                    double lat = Double.parseDouble(atts.getValue(LATITUDE));
+                    PointGeo point = new PointGeo(Math.toRadians(lon), Math
+                            .toRadians(lat));
+                    nodeBuilder = new OSMNode.Builder(id, point);
+                    currentParentBuilder = nodeBuilder;
+                    break;
+                }
+                case WAY: {
+                    long id = Long.parseLong(atts.getValue(ID));
+                    wayBuilder = new OSMWay.Builder(id);
+                    currentParentBuilder = wayBuilder;
+                    break;
+                }
+                case ND: {
+                    long ref = Long.parseLong(atts.getValue(REFERENCE));
+                    OSMNode referencedNode = mapBuilder.nodeForId(ref);
+                    if (referencedNode != null)
+                        wayBuilder.addNode(referencedNode);
+                    else
+                        wayBuilder.setIncomplete();
+                    break;
+                }
+                case RELATION: {
+                    long id = Long.parseLong(atts.getValue(ID));
+                    relationBuilder = new OSMRelation.Builder(id);
+                    currentParentBuilder = relationBuilder;
+                    break;
+                }
+                case MEMBER: {
+                    String type = atts.getValue(TYPE);
+                    long ref = Long.parseLong(atts.getValue(REFERENCE));
+                    String role = atts.getValue(ROLE);
+                    switch (type) {
+                    case NODE:
                         OSMNode referencedNode = mapBuilder.nodeForId(ref);
                         if (referencedNode != null)
-                            wayBuilder.addNode(referencedNode);
+                            relationBuilder.addMember(
+                                    OSMRelation.Member.Type.NODE, role,
+                                    referencedNode);
                         else
-                            wayBuilder.setIncomplete();
-                        break;
-                    }
-                    case RELATION: {
-                        long id = Long.parseLong(atts.getValue(ID));
-                        relationBuilder = new OSMRelation.Builder(id);
-                        currentParentBuilder = relationBuilder;
-                        break;
-                    }
-                    case MEMBER: {
-                        String type = atts.getValue(TYPE);
-                        long ref = Long.parseLong(atts.getValue(REFERENCE));
-                        String role = atts.getValue(ROLE);
-                        switch (type) {
-                        case NODE:
-                            OSMNode referencedNode = mapBuilder.nodeForId(ref);
-                            if (referencedNode != null)
-                                relationBuilder.addMember(
-                                        OSMRelation.Member.Type.NODE, role,
-                                        referencedNode);
-                            else
-                                relationBuilder.setIncomplete();
-                            break;
-                        case WAY:
-                            OSMWay referencedWay = mapBuilder.wayForId(ref);
-                            if (referencedWay != null)
-                                relationBuilder.addMember(
-                                        OSMRelation.Member.Type.WAY, role,
-                                        referencedWay);
-                            else
-                                relationBuilder.setIncomplete();
-                            break;
-                        case RELATION:
-                            OSMRelation referencedRelation = mapBuilder
-                                    .relationForId(ref);
-                            if (referencedRelation != null)
-                                relationBuilder.addMember(
-                                        OSMRelation.Member.Type.RELATION, role,
-                                        referencedRelation);
-                            else
-                                relationBuilder.setIncomplete();
-                            break;
-                        }
-                        break;
-                    }
-                    case TAG:
-                        String k = atts.getValue(KEY);
-                        String v = atts.getValue(VALUE);
-                        currentParentBuilder.setAttribute(k, v);
-                        break;
-                    }
-                }
-
-                @Override
-                public void endElement(String uri, String lName, String qName)
-                        throws SAXException {
-                    switch (qName) {
-                    case NODE:
-                        if (!nodeBuilder.isIncomplete())
-                            mapBuilder.addNode(nodeBuilder.build());
+                            relationBuilder.setIncomplete();
                         break;
                     case WAY:
-                        if (!wayBuilder.isIncomplete())
-                            mapBuilder.addWay(wayBuilder.build());
+                        OSMWay referencedWay = mapBuilder.wayForId(ref);
+                        if (referencedWay != null)
+                            relationBuilder.addMember(
+                                    OSMRelation.Member.Type.WAY, role,
+                                    referencedWay);
+                        else
+                            relationBuilder.setIncomplete();
                         break;
                     case RELATION:
-                        if (!relationBuilder.isIncomplete())
-                            mapBuilder.addRelation(relationBuilder.build());
+                        OSMRelation referencedRelation = mapBuilder
+                                .relationForId(ref);
+                        if (referencedRelation != null)
+                            relationBuilder.addMember(
+                                    OSMRelation.Member.Type.RELATION, role,
+                                    referencedRelation);
+                        else
+                            relationBuilder.setIncomplete();
                         break;
                     }
+                    break;
                 }
-            });
-            r.parse(new InputSource(i));
-            return mapBuilder.build();
-        }
+                case TAG:
+                    String k = atts.getValue(KEY);
+                    String v = atts.getValue(VALUE);
+                    currentParentBuilder.setAttribute(k, v);
+                    break;
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String lName, String qName)
+                    throws SAXException {
+                switch (qName) {
+                case NODE:
+                    if (!nodeBuilder.isIncomplete())
+                        mapBuilder.addNode(nodeBuilder.build());
+                    break;
+                case WAY:
+                    if (!wayBuilder.isIncomplete())
+                        mapBuilder.addWay(wayBuilder.build());
+                    break;
+                case RELATION:
+                    if (!relationBuilder.isIncomplete())
+                        mapBuilder.addRelation(relationBuilder.build());
+                    break;
+                }
+            }
+        });
+        r.parse(new InputSource(i));
+        return mapBuilder.build();
     }
 }
