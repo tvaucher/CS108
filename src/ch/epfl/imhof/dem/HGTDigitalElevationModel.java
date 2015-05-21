@@ -43,7 +43,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final Function<Point, Point> geoToHGT;
 
     private final static Pattern hgtPattern = Pattern
-            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt\\d*$");
+            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt.+$");
     private final static Pattern urlPattern = Pattern
             .compile("^http://.+[NS]\\d{2}[EW]\\d{3}\\.zip$");
     private final static double oneDegToRad = Math.toRadians(1);
