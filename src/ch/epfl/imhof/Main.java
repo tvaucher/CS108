@@ -19,6 +19,7 @@ import ch.epfl.imhof.painting.Painter;
 import ch.epfl.imhof.painting.SwissPainter;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
+import ch.epfl.imhof.utility.QueryGenerator;
 
 /**
  * The Main class is what ties everything else together. It's the main
@@ -58,26 +59,37 @@ public class Main {
                     "Le nombre d'arguments fourni est incorrect.\n  Nombre d'arguments attendus: 8\n  Nombre d'arguments donnés: "
                             + args.length);
 
-        String mapName = args[0];
-        String hgtName = args[1];
+        String string = args[3] + " " + args[2] + " " + args[5] + " " + args[4];
+        QueryGenerator qg = new QueryGenerator(string);
+        Point bl = qg.bl();
+        //System.out.println("bl : " + Math.toDegrees(bl.latitude()) + ", " + Math.toDegrees(bl.longitude()));
+        Point tr = qg.tr();
+        //System.out.println("tr : " + Math.toDegrees(tr.latitude()) + ", " + Math.toDegrees(tr.longitude()));
+        
+        String urlOsm = qg.getURLosm();
+        String urlHgt = qg.getURLhgt();
+        
+        //String mapName = args[0];
+        //String hgtName = args[1];
 
         // Coordinates will directly be stored in radians:
-        double blLongitude = Math.toRadians(Double.parseDouble(args[2]));
+        /*double blLongitude = Math.toRadians(Double.parseDouble(args[2]));
         double blLatitude = Math.toRadians(Double.parseDouble(args[3]));
         double trLongitude = Math.toRadians(Double.parseDouble(args[4]));
-        double trLatitude = Math.toRadians(Double.parseDouble(args[5]));
+        double trLatitude = Math.toRadians(Double.parseDouble(args[5]));*/
         int dpi = Integer.parseInt(args[6]);
         String outputName = args[7];
 
+        
         // Now, convert the input to metrics that we can use:
         Projection projector = new CH1903Projection();
-        Point bl = projector.project(new PointGeo(blLongitude, blLatitude));
-        Point tr = projector.project(new PointGeo(trLongitude, trLatitude));
+        /*Point bl = projector.project(blGeo);
+        Point tr = projector.project(trGeo);*/
 
         double resolution = dpi * INCHES_PER_METRE;
         double blur = (resolution * BLUR_RADIUS) / (1000d); // in pixels
         int height = (int) Math.round(resolution * (1d / 25000)
-                * (trLatitude - blLatitude) * Earth.RADIUS);
+                * qg.getDiff() * Earth.RADIUS);
         int width = (int) Math.round(height * (tr.x() - bl.x())
                 / (tr.y() - bl.y()));
 
@@ -86,7 +98,7 @@ public class Main {
         OSMMap osmMap = null;
 
         try {
-            osmMap = OSMMapReader.readOSMFile(mapName);
+            osmMap = OSMMapReader.readOSMFile(urlOsm);
 
         } catch (Exception e) {
             System.out.println("An error occured while reading the file.");
@@ -96,7 +108,7 @@ public class Main {
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
-        try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(hgtName);) {
+        try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(urlHgt);) {
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
