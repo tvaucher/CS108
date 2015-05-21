@@ -97,7 +97,7 @@ public final class ReliefShader {
 
     private BufferedImage brutRelief(Point bl, Point tr, int width, int height,
             int overflowSize) {
-        
+
         Function<Point, Point> projectedToImage = Point
                 .alignedCoordinateChange(new Point(overflowSize, height
                         + overflowSize), bl, new Point(width + overflowSize,
