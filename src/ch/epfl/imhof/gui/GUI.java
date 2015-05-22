@@ -108,17 +108,18 @@ public class GUI {
         JFormattedTextField outField = new JFormattedTextField();
 
         // Buttons:
-        FileButton osmButton = new OpenFileButton(osmField);
+        OpenFileButton osmButton = new OpenFileButton(osmField);
         osmButton.setFileFilter(new FileNameExtensionFilter(
                 "Open Street Maps (*.osm, *.osm.gz)", "osm", "gz"));
 
-        FileButton hgtButton = new OpenFileButton("Choose File...", hgtField);
+        OpenFileButton hgtButton = new OpenFileButton("Choose File...", hgtField);
         hgtButton.setFileFilter(new FileNameExtensionFilter("HGT (*.hgt)",
                 "hgt"));
 
-        FileButton outButton = new SaveFileButton(outField);
+        SaveFileButton outButton = new SaveFileButton(outField);
         outButton.setFileFilter(new FileNameExtensionFilter("PNG (*.png)",
                 "png"));
+        outButton.setDefaultExtension("png");
 
         JButton create = new JButton("Create Map");
         JButton exit = new JButton("Exit");
