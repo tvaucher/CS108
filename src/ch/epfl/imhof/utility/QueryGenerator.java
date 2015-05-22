@@ -50,8 +50,8 @@ public class QueryGenerator {
                 int minLonInt = Integer.parseInt(m.group(2));
                 int maxLonInt = Integer.parseInt(m.group(4));
 
-                bl = proj.inverse(new Point(minLonInt, minLatInt));
-                tr = proj.inverse(new Point(maxLonInt, maxLatInt));
+                bl = proj.inverse(new Point(minLatInt, minLonInt));
+                tr = proj.inverse(new Point(maxLatInt, maxLonInt));
                 minLat = format.format(Math.toDegrees(bl.latitude()));
                 maxLat = format.format(Math.toDegrees(tr.latitude()));
                 minLon = format.format(Math.toDegrees(bl.longitude()));
