@@ -116,7 +116,7 @@ public class MapMaker {
     }
     
     private void automaticMapMaker(String[] args) {
-        String string = args[1] + " " + args[0] + " " + args[3] + " " + args[2];
+        String string = args[1].trim() + " " + args[0].trim() + " " + args[3].trim() + " " + args[2].trim();
         QueryGenerator qg = new QueryGenerator(string);
         Point bl = qg.bl();
         Point tr = qg.tr();
