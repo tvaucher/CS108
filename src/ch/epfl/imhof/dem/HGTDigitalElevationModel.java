@@ -43,7 +43,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final Function<Point, Point> geoToHGT;
 
     private final static Pattern hgtPattern = Pattern
-            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})\\.hgt.+$");
+            .compile("^(?<latOrien>[NS])(?<latCoor>\\d{2})(?<lonOrien>[EW])(?<lonCoor>\\d{3})(\\.hgt|\\.hgt.+)$");
     private final static Pattern urlPattern = Pattern
             .compile("^http://.+[NS]\\d{2}[EW]\\d{3}\\.zip$");
     private final static double oneDegToRad = Math.toRadians(1);
@@ -73,7 +73,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         System.out.println("\"" + hgt.getName() + "\"");
         Matcher m = hgtPattern.matcher(hgt.getName());
         if (!m.matches())
-            throw new IllegalArgumentException("Invalid file name");
+            throw new IllegalArgumentException("Invalid file name: " + hgt.getName());
 
         // Test about the length
         long length = hgt.length();
