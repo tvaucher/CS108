@@ -28,17 +28,23 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class OSMToGeoTransformer {
     private final Projection projection;
-    private final Set<String> closedAttributes = new HashSet<>((Arrays.asList(
-            "aeroway", "amenity", "building", "harbour", "historic", "landuse",
-            "leisure", "man_made", "military", "natural", "office", "place",
-            "power", "public_transport", "shop", "sport", "tourism", "water",
-            "waterway", "wetland")));
-    private final Set<String> polyLineAttributes = new HashSet<>(
+    private static final Set<String> closedAttributes = new HashSet<>(
+            (Arrays.asList("aeroway", "amenity", "building", "harbour",
+                    "historic", "landuse", "leisure", "man_made", "military",
+                    "natural", "office", "place", "power", "public_transport",
+                    "shop", "sport", "tourism", "water", "waterway", "wetland")));
+    private static final Set<String> polyLineAttributes = new HashSet<>(
             (Arrays.asList("bridge", "highway", "layer", "man_made", "railway",
                     "tunnel", "waterway")));
-    private final Set<String> polygonAttributes = new HashSet<>((Arrays.asList(
-            "building", "landuse", "layer", "leisure", "natural", "waterway")));
-    private final double DELTA = 1e-5;
+    private static final Set<String> polygonAttributes = new HashSet<>(
+            (Arrays.asList("building", "landuse", "layer", "leisure",
+                    "natural", "waterway")));
+    private static final Set<String> pointGeoAttributes = new HashSet<>(
+            Arrays.asList("name", "place")); 
+    private static final Set<String> placeAttributes = new HashSet<>(
+            Arrays.asList("village", "hamlet", "town", "city"));
+    
+    private static final double DELTA = 1e-5;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -61,9 +67,14 @@ public final class OSMToGeoTransformer {
     public Map transform(OSMMap map) {
         // Declaration of vars for this method
         final Map.Builder builder = new Map.Builder();
+        final List<OSMNode> nodes = map.nodes();
         final List<OSMWay> ways = map.ways();
         final List<OSMRelation> relations = map.relations();
 
+        for (OSMNode node : nodes) {
+            transformNode(node, builder);
+        }
+        
         for (OSMWay way : ways) {
             transformWay(way, builder);
         }
@@ -76,9 +87,35 @@ public final class OSMToGeoTransformer {
     }
 
     // @formatter:off
-    ////////////////////////////
+    // //////////////////////////
+    // TRANSFORMATION OF NODES //
+    // //////////////////////////
+    // @formatter:on
+
+    /**
+     * A private method that takes care of getting place names
+     * 
+     * @param node
+     *            An OSMNode that may be a place.
+     * @param builder
+     *            The Builder of the Map that the transformed node will be added
+     *            to.
+     */
+    private void transformNode(OSMNode node, Map.Builder builder) {
+        Attributes currentAttributes = node.attributes().keepOnlyKeys(pointGeoAttributes);
+        if (containsAll(currentAttributes, pointGeoAttributes)) {
+            String place = currentAttributes.get("place");
+            if (isContained(place, placeAttributes)) {
+                builder.addPlace(new Attributed<>(node.position(), currentAttributes));
+            }
+        }
+        //ToDo => notempty, contains any placeAttrs => create new Attributed PointGeo
+    }
+    
+    // @formatter:off
+    // //////////////////////////
     // TRANSFORMATION OF WAYS //
-    ////////////////////////////
+    // //////////////////////////
     // @formatter:on
 
     /**
@@ -123,9 +160,9 @@ public final class OSMToGeoTransformer {
     }
 
     // @formatter:off
-    /////////////////////////////////
+    // ///////////////////////////////
     // TRANSFORMATION OF RELATIONS //
-    /////////////////////////////////
+    // ///////////////////////////////
     // To get an idea of how relations behave, see
     // https://gist.github.com/MaximeKjaer/ac694beccf722a33853c
     // @formatter:on
@@ -281,9 +318,9 @@ public final class OSMToGeoTransformer {
     }
 
     // @formatter:off
-    //////////////////////
+    // ////////////////////
     // Utlility methods //
-    //////////////////////
+    // ////////////////////
     // @formatter:on
 
     /**
@@ -333,11 +370,23 @@ public final class OSMToGeoTransformer {
                         .equals("1"))) {
             return true;
         }
-        for (String attribute : closedAttributes) {
-            if (entityAttributes.contains(attribute)) {
-                return true;
-            }
+        for (String attr : closedAttributes) {
+            if (entityAttributes.contains(attr)) return true;
         }
         return false;
+    }
+    
+    private boolean isContained(String str, Set<String> possibilities) {
+        for (String pos : possibilities) {
+            if (str.equals(pos)) return true;
+        }
+        return false;
+    }
+    
+    private boolean containsAll(Attributes attributes, Set<String> constraint) {
+        for (String con : constraint) {
+            if (!attributes.contains(con)) return false;
+        }
+        return true;
     }
 }

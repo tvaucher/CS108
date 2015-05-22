@@ -2,15 +2,11 @@ package ch.epfl.imhof.osm;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * The OSMMap (OpenStreetMaps Map) represents the actual map, a collection of
@@ -20,6 +16,7 @@ import java.util.Map.Entry;
  * @author Timote Vaucher (246532)
  */
 public final class OSMMap {
+    private final List<OSMNode> nodes;
     private final List<OSMWay> ways;
     private final List<OSMRelation> relations;
 
@@ -31,13 +28,24 @@ public final class OSMMap {
      * @param relations
      *            A collection of OSMRelation objects
      */
-    public OSMMap(Collection<OSMWay> ways, Collection<OSMRelation> relations) {
+    public OSMMap(Collection<OSMNode> nodes, Collection<OSMWay> ways, Collection<OSMRelation> relations) {
+        this.nodes = Collections.unmodifiableList(new ArrayList<>(
+                requireNonNull(nodes)));
         this.ways = Collections.unmodifiableList(new ArrayList<>(
                 requireNonNull(ways)));
         this.relations = Collections.unmodifiableList(new ArrayList<>(
                 requireNonNull(relations)));
     }
-
+    
+    /**
+     * Getter for the list of nodes.
+     * 
+     * @return ways The list of nodes in the map.
+     */
+    public List<OSMNode> nodes() {
+        return nodes;
+    }
+    
     /**
      * Getter for the list of ways.
      * 
@@ -143,50 +151,7 @@ public final class OSMMap {
          *         inputted into this builder.
          */
         public OSMMap build() {
-            printMapInFile();
-            return new OSMMap(ways.values(), relations.values());
-        }
-
-        /**
-         * A private method for debugging purposes that creates a file in
-         * data/debug
-         */
-        private void printMapInFile() { // FOR DEBUGING PURPOSES
-            File debugDirectory = new File("data/debug");
-            if (debugDirectory.exists() && debugDirectory.isDirectory()) {
-                // Will normally be true only locally
-                try (PrintWriter pr = new PrintWriter(new File(
-                        "data/debug/OSMMap_" + System.currentTimeMillis()
-                                + ".txt"))) {
-                    long startTime = System.currentTimeMillis();
-                    pr.println("START PRINTING OSMMAP\n");
-                    pr.println("MAP HAS " + nodes.size() + " NODES");
-                    pr.println("PRINTING " + ways.size() + " WAYS");
-                    /*
-                     * for (Entry<Long, OSMWay> way : ways.entrySet()) {
-                     * pr.println("  Way : id " + way.getKey() + ", contains " +
-                     * way.getValue().nodesCount() + " nodes"); }
-                     */
-                    pr.println("\nPRINTING " + relations.size() + " RELATIONS");
-                    int polygonCounter = 0;
-                    for (Entry<Long, OSMRelation> relation : relations
-                            .entrySet()) {
-                        String type = relation.getValue()
-                                .attributeValue("type");
-                        String multi = "multipolygon";
-                        if (type != null && type.equals(multi)) {
-                            polygonCounter++;
-                        }
-                    }
-                    pr.println("THERE'S " + polygonCounter
-                            + " MULTYPOLIGON IN OSMMAP");
-                    pr.println("\nWRITTEN IN "
-                            + (System.currentTimeMillis() - startTime) / 1000.
-                            + " sec");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+            return new OSMMap(nodes.values(), ways.values(), relations.values());
         }
     }
 }

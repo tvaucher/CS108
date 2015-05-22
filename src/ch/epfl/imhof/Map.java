@@ -1,13 +1,11 @@
 package ch.epfl.imhof;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
@@ -20,6 +18,7 @@ import ch.epfl.imhof.geometry.Polygon;
  * 
  */
 public final class Map {
+    private final List<Attributed<PointGeo>> places;
     private final List<Attributed<PolyLine>> polyLines;
     private final List<Attributed<Polygon>> polygons;
 
@@ -31,12 +30,24 @@ public final class Map {
      * @param polygons
      *            a list of attributed Polygon objects
      */
-    public Map(List<Attributed<PolyLine>> polyLines,
+    public Map(List<Attributed<PointGeo>> places,
+            List<Attributed<PolyLine>> polyLines,
             List<Attributed<Polygon>> polygons) {
+        this.places = Collections.unmodifiableList(new ArrayList<>(
+                requireNonNull(places)));
         this.polyLines = Collections.unmodifiableList(new ArrayList<>(
                 requireNonNull(polyLines)));
         this.polygons = Collections.unmodifiableList(new ArrayList<>(
                 requireNonNull(polygons)));
+    }
+
+    /**
+     * A getter for the places of the map.
+     * 
+     * @return a list of all the attributed places in the map
+     */
+    public List<Attributed<PointGeo>> places() {
+        return places;
     }
 
     /**
@@ -62,9 +73,21 @@ public final class Map {
      * by allowing us to add polylines and polygons one at a time.
      */
     public final static class Builder {
+        private final List<Attributed<PointGeo>> places = new ArrayList<>();
         private final List<Attributed<PolyLine>> polyLines = new ArrayList<>();
         private final List<Attributed<Polygon>> polygons = new ArrayList<>();
 
+        /**
+         * Adds an attributed PointGeo to the list of places that will be a
+         * part of the map.
+         * 
+         * @param newPlace
+         *            a PointGeo with attributes.
+         */
+        public void addPlace(Attributed<PointGeo> newPlace) {
+            places.add(newPlace);
+        }
+        
         /**
          * Adds an attributed polyline to the list of polylines that will be a
          * part of the map.
@@ -95,44 +118,7 @@ public final class Map {
          * @return the newly constructed Map
          */
         public Map build() {
-            printMapInFile();
-            return new Map(polyLines, polygons);
-        }
-
-        /**
-         * A private method for debugging purposes that creates a file in
-         * data/debug
-         */
-        private void printMapInFile() { // FOR DEBUGING PURPOSES
-            File debugDirectory = new File("data/debug");
-            if (debugDirectory.exists() && debugDirectory.isDirectory()) {
-                // Will normally be true only locally
-                try (PrintWriter pr = new PrintWriter(
-                        new File("data/debug/Map_" + System.currentTimeMillis()
-                                + ".txt"))) {
-                    long startTime = System.currentTimeMillis();
-                    pr.println("START PRINTING MAP\n");
-                    pr.println("THERE'S " + polyLines.size() + " POLYLINES");
-                    pr.println("THERE'S " + polygons.size() + " POLYGONS");
-                    pr.println("START PRINTING POLYGONS");
-                    int counter = 1;
-                    for (Attributed<Polygon> polygon : polygons) {
-                        pr.println("  #" + counter++ + " POLYGON");
-                        // pr.println("  AREA OF " +
-                        // polygon.value().shell().area());
-                        pr.println("    HAS "
-                                + polygon.value().shell().points().size()
-                                + " POINTS");
-                        pr.println("    HAS " + polygon.value().holes().size()
-                                + " HOLES");
-                    }
-                    pr.println("\nWRITTEN IN "
-                            + (System.currentTimeMillis() - startTime) / 1000.
-                            + " sec");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+            return new Map(places, polyLines, polygons);
         }
     }
 }

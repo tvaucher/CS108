@@ -106,6 +106,9 @@ public class Main {
         }
 
         Map map = transformer.transform(osmMap);
+        for (Attributed<PointGeo> place : map.places()) {
+            System.out.println(place.attributeValue("name"));
+        }
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(urlHgt);) {
