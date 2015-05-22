@@ -1,5 +1,8 @@
 package ch.epfl.imhof.painting;
 
+import java.awt.Font;
+
+import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
@@ -32,4 +35,18 @@ public interface Canvas {
      *            The Color that will be used to fill said Polygon.
      */
     public void drawPolygon(Polygon polygon, Color color);
+
+    /**
+     * A method that draws a PlaceName onto the canvas.
+     * 
+     * @param point
+     *            Position of place
+     * @param name
+     *            Name of place
+     * @param font
+     *            font to draw
+     * @param color
+     *            color of the text
+     */
+    public void drawPlace(Point point, String name, Font font, Color color);
 }

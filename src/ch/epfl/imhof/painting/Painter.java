@@ -1,9 +1,11 @@
 package ch.epfl.imhof.painting;
 
+import java.awt.Font;
 import java.util.function.Predicate;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
+import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 import ch.epfl.imhof.painting.LineStyle.LineCap;
@@ -161,6 +163,24 @@ public interface Painter {
     }
 
     /**
+     * Basic painter that draws all the places it received with given font
+     * 
+     * @param font
+     *            font that will be used to draw place
+     * @return a painter that draws place name
+     */
+    public static Painter place(Font font, Color color) {
+        return (map, canvas) -> {
+            for (Attributed<Point> place : map.places()) {
+                String name = place.attributeValue("name");
+                if (place.attributeValue("place").equals("city"))
+                    name = name.toUpperCase();
+                canvas.drawPlace(place.value(), name, font, color);
+            }
+        };
+    }
+
+    /**
      * Derives a painter by adding a filter on the painter. So that the painter
      * only draws the elements that satisfy the predicates.
      * 
@@ -169,8 +189,11 @@ public interface Painter {
      * @return the derived painter
      */
     public default Painter when(Predicate<Attributed<?>> predicate) {
-        return (map, canvas) -> {
+        return (map, canvas) -> { 
             Map.Builder builder = new Map.Builder();
+            for (Attributed<Point> p : map.places())
+                if (predicate.test(p))
+                    builder.addPlace(p);
             for (Attributed<PolyLine> p : map.polyLines())
                 if (predicate.test(p))
                     builder.addPolyLine(p);

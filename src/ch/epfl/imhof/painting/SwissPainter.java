@@ -5,12 +5,14 @@ import static ch.epfl.imhof.painting.Color.rgb;
 import static ch.epfl.imhof.painting.Filters.tagged;
 import static ch.epfl.imhof.painting.Painter.line;
 import static ch.epfl.imhof.painting.Painter.outline;
+import static ch.epfl.imhof.painting.Painter.place;
 import static ch.epfl.imhof.painting.Painter.polygon;
-import ch.epfl.imhof.painting.Color;
+
+import java.awt.Font;
+import java.io.File;
+
 import ch.epfl.imhof.painting.LineStyle.LineCap;
 import ch.epfl.imhof.painting.LineStyle.LineJoin;
-import ch.epfl.imhof.painting.Painter;
-import ch.epfl.imhof.painting.RoadPainterGenerator;
 import ch.epfl.imhof.painting.RoadPainterGenerator.RoadSpec;
 
 public final class SwissPainter {
@@ -29,6 +31,17 @@ public final class SwissPainter {
         Color lightRed = rgb(0.95, 0.7, 0.6);
         Color lightBlue = rgb(0.8, 0.9, 0.95);
         Color white = Color.WHITE;
+        Font baseFont = null;
+        try {
+            baseFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+                    "DoulosSILR.ttf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Font cityFont = baseFont.deriveFont(Font.PLAIN, 17);
+        Font townFont = baseFont.deriveFont(Font.PLAIN, 13);
+        Font villageFont = baseFont.deriveFont(Font.ITALIC, 11);
+        //Font defaultFont = baseFont.deriveFont(Font.ITALIC, 9);
 
         Painter roadPainter = RoadPainterGenerator.painterForRoads(
                 new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
@@ -85,7 +98,17 @@ public final class SwissPainter {
                         tagged("landuse", "residential", "industrial")))
                 .layered();
 
-        PAINTER = fgPainter.above(bgPainter);
+        Painter placePainter = place(cityFont, black)
+                .when(tagged("place", "city"))
+                .above(place(townFont, black).when(tagged("place", "town")))
+                .above(place(villageFont, black).when(
+                        tagged("place", "village", "hamlet")));
+                /*.above(place(defaultFont, black).when(
+                        tagged("place", "borough", "suburb", "quarter",
+                                "isolate_dwelling", "farm", "archipelago",
+                                "island", "islet")));*/
+
+        PAINTER = placePainter.above(fgPainter.above(bgPainter));
     }
 
     public static Painter painter() {

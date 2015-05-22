@@ -4,6 +4,8 @@ import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 
 import java.awt.BasicStroke;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Area;
@@ -25,6 +27,7 @@ import ch.epfl.imhof.geometry.Polygon;
 public final class Java2DCanvas implements Canvas {
     private final BufferedImage image;
     private final Graphics2D ctx;
+    private final double scalingFactor;
 
     private final Function<Point, Point> projectedToCanvas;
     private final static double CANVAS_DPI = 72d;
@@ -69,7 +72,7 @@ public final class Java2DCanvas implements Canvas {
         ctx.setColor(bg.toAWTColor());
         ctx.fillRect(0, 0, width, height);
         // Change the scale
-        double scalingFactor = dpi / CANVAS_DPI;
+        scalingFactor = dpi / CANVAS_DPI;
         ctx.scale(scalingFactor, scalingFactor);
         projectedToCanvas = Point.alignedCoordinateChange(bl, new Point(0,
                 height / scalingFactor), tr,
@@ -77,7 +80,8 @@ public final class Java2DCanvas implements Canvas {
 
         // Set antialiasing
         ctx.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
+        System.out
+                .println(width / scalingFactor + " " + height / scalingFactor);
     }
 
     /**
@@ -125,6 +129,47 @@ public final class Java2DCanvas implements Canvas {
             shell.subtract(new Area(pathPolyLine(p)));
         }
         ctx.fill(shell);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * ch.epfl.imhof.painting.Canvas#drawPlace(ch.epfl.imhof.geometry.Point,
+     * java.lang.String, java.awt.Font)
+     */
+    @Override
+    public void drawPlace(Point point, String name, Font font, Color color) {
+        FontMetrics metrics = ctx.getFontMetrics(font);
+        int height = metrics.getHeight();
+        int width = metrics.stringWidth(name);
+        double halfHeight = height / 2d;
+        double halfWidth = width / 2d;
+        double imgHeight = image.getHeight() / scalingFactor;
+        double imgWidth = image.getWidth() / scalingFactor;
+        Point p = projectedToCanvas.apply(point);
+        double posX = p.x() - halfWidth;
+        if (posX < 0 && p.x() >= 0)
+            posX = 2;
+        else if (posX > imgWidth - halfWidth && p.x() - width <= imgWidth)
+            posX = imgWidth - width;
+        double posY = p.y() - halfHeight;
+        if (posY < 0 && p.y() >= 0)
+            posY = 2;
+        else if (posY > imgHeight - halfHeight && p.y() - height <= imgHeight) {
+            posY = imgHeight - height;
+        }
+        System.out.println(name + " : " + posX + " " + posY);
+        ctx.setFont(font);
+        ctx.setColor(Color.WHITE.toAWTColor());
+        for (int i = -2; i <= 2; ++i) {
+            for (int j = -2; j <= 2; ++j) {
+                ctx.drawString(name, (float) posX + 0.3f * i, (float) posY
+                        + 0.25f * j);
+            }
+        }
+        ctx.setColor(color.toAWTColor());
+        ctx.drawString(name, (float) posX, (float) posY);
     }
 
     private Shape pathPolyLine(PolyLine polyLine) {
