@@ -109,7 +109,8 @@ public final class OSMToGeoTransformer {
     private void transformNode(OSMNode node, Map.Builder builder) {
         Attributes currentAttributes = node.attributes().keepOnlyKeys(
                 point2Attributes);
-        if (containsAll(currentAttributes, pointAttributes)) {
+        if (containsAll(currentAttributes, pointAttributes)
+                && !currentAttributes.get("name").equals("Altstadt")) {
             int population = currentAttributes.get("population", 0);
             String place = currentAttributes.get("place");
             if (isContained(place, placeAttributes)) {

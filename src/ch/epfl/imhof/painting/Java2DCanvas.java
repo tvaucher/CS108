@@ -151,10 +151,8 @@ public final class Java2DCanvas implements Canvas {
             posX = 2;
         else if (posX > imgWidth - halfWidth && p.x() - width <= imgWidth)
             posX = imgWidth - width;
-        double posY = p.y() - halfHeight;
-        if (posY < 0 && p.y() >= 0)
-            posY = 2;
-        else if (posY > imgHeight - halfHeight && p.y() - height <= imgHeight) {
+        double posY = p.y();
+        if (posY > imgHeight - halfHeight && p.y() - height <= imgHeight) {
             posY = imgHeight - height;
         }
         ctx.setFont(font);
