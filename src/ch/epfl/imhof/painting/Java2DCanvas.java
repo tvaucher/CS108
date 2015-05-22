@@ -80,8 +80,6 @@ public final class Java2DCanvas implements Canvas {
 
         // Set antialiasing
         ctx.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-        System.out
-                .println(width / scalingFactor + " " + height / scalingFactor);
     }
 
     /**
@@ -159,7 +157,6 @@ public final class Java2DCanvas implements Canvas {
         else if (posY > imgHeight - halfHeight && p.y() - height <= imgHeight) {
             posY = imgHeight - height;
         }
-        System.out.println(name + " : " + posX + " " + posY);
         ctx.setFont(font);
         ctx.setColor(Color.WHITE.toAWTColor());
         for (int i = -2; i <= 2; ++i) {

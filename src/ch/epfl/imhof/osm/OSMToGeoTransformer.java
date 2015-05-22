@@ -39,12 +39,14 @@ public final class OSMToGeoTransformer {
     private static final Set<String> polygonAttributes = new HashSet<>(
             (Arrays.asList("building", "landuse", "layer", "leisure",
                     "natural", "waterway")));
-    private static final Set<String> pointGeoAttributes = new HashSet<>(
+    private static final Set<String> pointAttributes = new HashSet<>(
+            Arrays.asList("name", "place"));
+    private static final Set<String> point2Attributes = new HashSet<>(
             Arrays.asList("name", "place", "population"));
     private static final Set<String> placeAttributes = new HashSet<>(
-            Arrays.asList("village", "hamlet", "town", "city"));/*, "borough",
+            Arrays.asList("village", "hamlet", "town", "city", "borough",
                     "suburb", "quarter", "isolate_dwelling", "farm",
-                    "archipelago", "island", "islet"));*/
+                    "archipelago", "island", "islet"));
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
@@ -106,12 +108,18 @@ public final class OSMToGeoTransformer {
      */
     private void transformNode(OSMNode node, Map.Builder builder) {
         Attributes currentAttributes = node.attributes().keepOnlyKeys(
-                pointGeoAttributes);
-        if (containsAll(currentAttributes, pointGeoAttributes)) {
+                point2Attributes);
+        if (containsAll(currentAttributes, pointAttributes)) {
             int population = currentAttributes.get("population", 0);
-            if (population >= MINPOPULATION) {
-                String place = currentAttributes.get("place");
-                if (isContained(place, placeAttributes)) {
+            String place = currentAttributes.get("place");
+            if (isContained(place, placeAttributes)) {
+                if (place.equals("village") || place.equals("hamlet")) {
+                    if (population >= MINPOPULATION) {
+                        builder.addPlace(new Attributed<>(nodeToPoint(node),
+                                currentAttributes));
+                    }
+                }
+                else {
                     builder.addPlace(new Attributed<>(nodeToPoint(node),
                             currentAttributes));
                 }
