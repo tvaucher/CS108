@@ -34,7 +34,11 @@ public class GUI {
     private static void createUI() {
         JFrame frame = new JFrame("The Imhof Project");
         
-        // COMPONENTS
+        ////////////////////////
+        ////// COMPONENTS //////
+        ////////////////////////
+        // Here, we will be defining the individual components.
+        
         // Image:
         JLabel logoLabel = null;
         try {
@@ -90,99 +94,115 @@ public class GUI {
         JButton exit = new JButton("Exit");
         exit.addActionListener(e -> System.exit(0));
         
-
-        // CONTENT PANEL
+        ////////////////////////////
+        /////// CONTENT PANEL //////
+        ////////////////////////////
+        // Here, we put all the components into a content field.
         JPanel content = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         // Default values
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(1, 1, 1, 1);
-        
         // Add the logo to the top right.
-        gbc.gridx = 4;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         content.add(logoLabel, gbc);
         
+        //////////////////
+        // INPUTS PANEL //
+        //////////////////
+        // We're putting the inputs into a separate panel to make the layout easier to change.
+        JPanel inputs = new JPanel(new GridBagLayout());
+        GridBagConstraints inc = new GridBagConstraints();
+        inc.fill = GridBagConstraints.HORIZONTAL;
+        inc.insets = new Insets(1, 1, 1, 1);
+        
         // Add input lines:
-        gbc.anchor = GridBagConstraints.WEST;
+        inc.anchor = GridBagConstraints.WEST;
         
         // OSM file:
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        content.add(osmLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(osmField), gbc);
-        gbc.gridx = 2;
-        content.add(osmButton, gbc);
+        inc.gridx = 0;
+        inc.gridy = 0;
+        inputs.add(osmLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(osmField), inc);
+        inc.gridx = 2;
+        inputs.add(osmButton, inc);
 
         // HGT file:
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        content.add(hgtLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(hgtField), gbc);
-        gbc.gridx = 2;
-        content.add(hgtButton, gbc);
+        inc.gridx = 0;
+        inc.gridy = 1;
+        inputs.add(hgtLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(hgtField), inc);
+        inc.gridx = 2;
+        inputs.add(hgtButton, inc);
         
         // BL longitude
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        content.add(blLongLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(blLongField), gbc);
+        inc.gridx = 0;
+        inc.gridy = 2;
+        inputs.add(blLongLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(blLongField), inc);
         
         // BL latitude
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        content.add(blLatLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(blLatField), gbc);
+        inc.gridx = 0;
+        inc.gridy = 3;
+        inputs.add(blLatLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(blLatField), inc);
         
         // TR longitude
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        content.add(trLongLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(trLongField), gbc);
+        inc.gridx = 0;
+        inc.gridy = 4;
+        inputs.add(trLongLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(trLongField), inc);
         
         // TR latitude
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        content.add(trLatLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(trLatField), gbc);
+        inc.gridx = 0;
+        inc.gridy = 5;
+        inputs.add(trLatLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(trLatField), inc);
         
         // Resolution
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        content.add(dpiLabel, gbc);
-        gbc.gridx = 1;
-        content.add(dpiField, gbc);
+        inc.gridx = 0;
+        inc.gridy = 6;
+        inputs.add(dpiLabel, inc);
+        inc.gridx = 1;
+        inputs.add(dpiField, inc);
         
         // Output name
+        inc.gridx = 0;
+        inc.gridy = 7;
+        inputs.add(outLabel, inc);
+        inc.gridx = 1;
+        inputs.add(formatted(outField), inc);
+        inc.gridx = 2;
+        inputs.add(outButton, inc);
+        
         gbc.gridx = 0;
-        gbc.gridy = 8;
-        content.add(outLabel, gbc);
-        gbc.gridx = 1;
-        content.add(formatted(outField), gbc);
-        gbc.gridx = 2;
-        content.add(outButton, gbc);
-              
+        gbc.gridy = 1;
+        content.add(inputs, gbc);
         // Add buttons to bottom right
         JPanel actionButtons = new JPanel();
         actionButtons.add(create);
         actionButtons.add(exit);
-        gbc.gridx = 4;
-        gbc.gridy = 10;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         content.add(actionButtons, gbc);
         
         
         // Style the content
         content.setBorder(new EmptyBorder(10, 10, 10, 10));
-        
-        // FRAME
+
+        ///////////////////
+        ////// FRAME //////
+        ///////////////////
+        // Finally, we can create the frame.
         frame.setLayout(new BorderLayout());
         frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         frame.setLocationRelativeTo(null); // Center the window
@@ -192,6 +212,7 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
     }
+    
     
     private static void fileChooser(JFrame frame, JTextField text, FileFilter filter) {
         JFileChooser fc = new JFileChooser();
