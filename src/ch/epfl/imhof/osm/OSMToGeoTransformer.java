@@ -40,11 +40,14 @@ public final class OSMToGeoTransformer {
             (Arrays.asList("building", "landuse", "layer", "leisure",
                     "natural", "waterway")));
     private static final Set<String> pointGeoAttributes = new HashSet<>(
-            Arrays.asList("name", "place")); 
+            Arrays.asList("name", "place", "population"));
     private static final Set<String> placeAttributes = new HashSet<>(
-            Arrays.asList("village", "hamlet", "town", "city"));
-    
+            Arrays.asList("village", "hamlet", "town", "city"));/*, "borough",
+                    "suburb", "quarter", "isolate_dwelling", "farm",
+                    "archipelago", "island", "islet"));*/
+
     private static final double DELTA = 1e-5;
+    private static final int MINPOPULATION = 500;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -74,7 +77,7 @@ public final class OSMToGeoTransformer {
         for (OSMNode node : nodes) {
             transformNode(node, builder);
         }
-        
+
         for (OSMWay way : ways) {
             transformWay(way, builder);
         }
@@ -102,16 +105,22 @@ public final class OSMToGeoTransformer {
      *            to.
      */
     private void transformNode(OSMNode node, Map.Builder builder) {
-        Attributes currentAttributes = node.attributes().keepOnlyKeys(pointGeoAttributes);
+        Attributes currentAttributes = node.attributes().keepOnlyKeys(
+                pointGeoAttributes);
         if (containsAll(currentAttributes, pointGeoAttributes)) {
-            String place = currentAttributes.get("place");
-            if (isContained(place, placeAttributes)) {
-                builder.addPlace(new Attributed<>(nodeToPoint(node), currentAttributes));
+            int population = currentAttributes.get("population", 0);
+            if (population >= MINPOPULATION) {
+                String place = currentAttributes.get("place");
+                if (isContained(place, placeAttributes)) {
+                    builder.addPlace(new Attributed<>(nodeToPoint(node),
+                            currentAttributes));
+                }
             }
         }
-        //ToDo => notempty, contains any placeAttrs => create new Attributed PointGeo
+        // ToDo => notempty, contains any placeAttrs => create new Attributed
+        // PointGeo
     }
-    
+
     // @formatter:off
     // //////////////////////////
     // TRANSFORMATION OF WAYS //
@@ -371,21 +380,24 @@ public final class OSMToGeoTransformer {
             return true;
         }
         for (String attr : closedAttributes) {
-            if (entityAttributes.contains(attr)) return true;
+            if (entityAttributes.contains(attr))
+                return true;
         }
         return false;
     }
-    
+
     private boolean isContained(String str, Set<String> possibilities) {
         for (String pos : possibilities) {
-            if (str.equals(pos)) return true;
+            if (str.equals(pos))
+                return true;
         }
         return false;
     }
-    
+
     private boolean containsAll(Attributes attributes, Set<String> constraint) {
         for (String con : constraint) {
-            if (!attributes.contains(con)) return false;
+            if (!attributes.contains(con))
+                return false;
         }
         return true;
     }
