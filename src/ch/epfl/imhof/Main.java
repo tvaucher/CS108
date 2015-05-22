@@ -106,8 +106,8 @@ public class Main {
         }
 
         Map map = transformer.transform(osmMap);
-        for (Attributed<PointGeo> place : map.places()) {
-            System.out.println(place.attributeValue("name"));
+        for (Attributed<Point> place : map.places()) {
+            System.out.println(place.attributeValue("name") + " " + place.value().x() + " " + place.value().y());
         }
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
@@ -18,7 +19,7 @@ import ch.epfl.imhof.geometry.Polygon;
  * 
  */
 public final class Map {
-    private final List<Attributed<PointGeo>> places;
+    private final List<Attributed<Point>> places;
     private final List<Attributed<PolyLine>> polyLines;
     private final List<Attributed<Polygon>> polygons;
 
@@ -30,7 +31,7 @@ public final class Map {
      * @param polygons
      *            a list of attributed Polygon objects
      */
-    public Map(List<Attributed<PointGeo>> places,
+    public Map(List<Attributed<Point>> places,
             List<Attributed<PolyLine>> polyLines,
             List<Attributed<Polygon>> polygons) {
         this.places = Collections.unmodifiableList(new ArrayList<>(
@@ -46,7 +47,7 @@ public final class Map {
      * 
      * @return a list of all the attributed places in the map
      */
-    public List<Attributed<PointGeo>> places() {
+    public List<Attributed<Point>> places() {
         return places;
     }
 
@@ -73,7 +74,7 @@ public final class Map {
      * by allowing us to add polylines and polygons one at a time.
      */
     public final static class Builder {
-        private final List<Attributed<PointGeo>> places = new ArrayList<>();
+        private final List<Attributed<Point>> places = new ArrayList<>();
         private final List<Attributed<PolyLine>> polyLines = new ArrayList<>();
         private final List<Attributed<Polygon>> polygons = new ArrayList<>();
 
@@ -84,7 +85,7 @@ public final class Map {
          * @param newPlace
          *            a PointGeo with attributes.
          */
-        public void addPlace(Attributed<PointGeo> newPlace) {
+        public void addPlace(Attributed<Point> newPlace) {
             places.add(newPlace);
         }
         

@@ -106,7 +106,7 @@ public final class OSMToGeoTransformer {
         if (containsAll(currentAttributes, pointGeoAttributes)) {
             String place = currentAttributes.get("place");
             if (isContained(place, placeAttributes)) {
-                builder.addPlace(new Attributed<>(node.position(), currentAttributes));
+                builder.addPlace(new Attributed<>(nodeToPoint(node), currentAttributes));
             }
         }
         //ToDo => notempty, contains any placeAttrs => create new Attributed PointGeo
