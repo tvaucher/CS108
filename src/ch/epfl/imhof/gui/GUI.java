@@ -9,11 +9,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,21 +25,50 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.MaskFormatter;
 
+/**
+ * The GUI class is the View of our MVC architecture. It shows a window that
+ * makes it easier to input data.
+ * 
+ * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
+ */
 public class GUI {
     private static final int WIDTH = 400, HEIGHT = 100, TEXT_WIDTH = 200;
-    
-    private static void createUI() {
+    private List<JButton> fileOpenButtons = new ArrayList<JButton>();
+
+    public static void main(String[] args) {
+        new GUI();
+    }
+
+    public GUI() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager
+                        .getSystemLookAndFeelClassName()); // Still prettier
+                                                           // than the default
+                                                           // IMO
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            createUI();
+        });
+    }
+
+    public List<JButton> getFileOpenButtons() { // Temp.
+        return fileOpenButtons; // Not immutable.
+    }
+
+    private void createUI() {
         JFrame frame = new JFrame("The Imhof Project");
-        
-        ////////////////////////
-        ////// COMPONENTS //////
-        ////////////////////////
+
+        // ////////////////////
+        // //// COMPONENTS ////
+        // ////////////////////
         // Here, we will be defining the individual components.
-        
+
         // Image:
         JLabel logoLabel = null;
         try {
@@ -58,7 +88,7 @@ public class GUI {
         JLabel trLatLabel = new JLabel("Top Right Latitude");
         JLabel dpiLabel = new JLabel("Resolution");
         JLabel outLabel = new JLabel("Output File");
-        
+
         // Text Fields:
         JTextField osmField = new JTextField();
         JTextField hgtField = new JTextField();
@@ -76,27 +106,27 @@ public class GUI {
         SpinnerNumberModel model = new SpinnerNumberModel(300, 10, 2000, 10);
         JSpinner dpiField = new JSpinner(model);
         JFormattedTextField outField = new JFormattedTextField();
-        
+
         // Buttons:
-        JButton osmButton = new JButton("Choose File...");
-        FileFilter osmFilter = new FileNameExtensionFilter("Open Street Maps (*.osm, *.osm.gz)", "osm", "gz");
-        osmButton.addActionListener(e -> fileChooser(frame, osmField, osmFilter));
-        
-        JButton hgtButton = new JButton("Choose File...");
-        FileFilter hgtFilter = new FileNameExtensionFilter("HGT (*.hgt)", "hgt");
-        hgtButton.addActionListener(e -> fileChooser(frame, hgtField, hgtFilter));
-        
-        JButton outButton = new JButton("Save As...");
-        FileFilter outFilter = new FileNameExtensionFilter("PNG (*.png)", "png");
-        outButton.addActionListener(e -> saveAsChooser(frame, outField, outFilter));
-        
+        FileButton osmButton = new OpenFileButton(osmField);
+        osmButton.setFileFilter(new FileNameExtensionFilter(
+                "Open Street Maps (*.osm, *.osm.gz)", "osm", "gz"));
+
+        FileButton hgtButton = new OpenFileButton("Choose File...", hgtField);
+        hgtButton.setFileFilter(new FileNameExtensionFilter("HGT (*.hgt)",
+                "hgt"));
+
+        FileButton outButton = new SaveFileButton(outField);
+        outButton.setFileFilter(new FileNameExtensionFilter("PNG (*.png)",
+                "png"));
+
         JButton create = new JButton("Create Map");
         JButton exit = new JButton("Exit");
         exit.addActionListener(e -> System.exit(0));
-        
-        ////////////////////////////
-        /////// CONTENT PANEL //////
-        ////////////////////////////
+
+        // ////////////////////////
+        // ///// CONTENT PANEL ////
+        // ////////////////////////
         // Here, we put all the components into a content field.
         JPanel content = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -109,19 +139,20 @@ public class GUI {
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         content.add(logoLabel, gbc);
-        
-        //////////////////
-        // INPUTS PANEL //
-        //////////////////
-        // We're putting the inputs into a separate panel to make the layout easier to change.
+
+        // //////////////////
+        // // INPUTS PANEL //
+        // //////////////////
+        // We're putting the inputs into a separate panel to make the layout
+        // easier to change.
         JPanel inputs = new JPanel(new GridBagLayout());
         GridBagConstraints inc = new GridBagConstraints();
         inc.fill = GridBagConstraints.HORIZONTAL;
         inc.insets = new Insets(1, 1, 1, 1);
-        
+
         // Add input lines:
         inc.anchor = GridBagConstraints.WEST;
-        
+
         // OSM file:
         inc.gridx = 0;
         inc.gridy = 0;
@@ -139,42 +170,42 @@ public class GUI {
         inputs.add(formatted(hgtField), inc);
         inc.gridx = 2;
         inputs.add(hgtButton, inc);
-        
+
         // BL longitude
         inc.gridx = 0;
         inc.gridy = 2;
         inputs.add(blLongLabel, inc);
         inc.gridx = 1;
         inputs.add(formatted(blLongField), inc);
-        
+
         // BL latitude
         inc.gridx = 0;
         inc.gridy = 3;
         inputs.add(blLatLabel, inc);
         inc.gridx = 1;
         inputs.add(formatted(blLatField), inc);
-        
+
         // TR longitude
         inc.gridx = 0;
         inc.gridy = 4;
         inputs.add(trLongLabel, inc);
         inc.gridx = 1;
         inputs.add(formatted(trLongField), inc);
-        
+
         // TR latitude
         inc.gridx = 0;
         inc.gridy = 5;
         inputs.add(trLatLabel, inc);
         inc.gridx = 1;
         inputs.add(formatted(trLatField), inc);
-        
+
         // Resolution
         inc.gridx = 0;
         inc.gridy = 6;
         inputs.add(dpiLabel, inc);
         inc.gridx = 1;
         inputs.add(dpiField, inc);
-        
+
         // Output name
         inc.gridx = 0;
         inc.gridy = 7;
@@ -183,7 +214,7 @@ public class GUI {
         inputs.add(formatted(outField), inc);
         inc.gridx = 2;
         inputs.add(outButton, inc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         content.add(inputs, gbc);
@@ -194,14 +225,13 @@ public class GUI {
         gbc.gridx = 1;
         gbc.gridy = 2;
         content.add(actionButtons, gbc);
-        
-        
+
         // Style the content
         content.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        ///////////////////
-        ////// FRAME //////
-        ///////////////////
+        // ///////////////
+        // //// FRAME ////
+        // ///////////////
         // Finally, we can create the frame.
         frame.setLayout(new BorderLayout());
         frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -212,64 +242,10 @@ public class GUI {
         frame.pack();
         frame.setVisible(true);
     }
-    
-    
-    private static void fileChooser(JFrame frame, JTextField text, FileFilter filter) {
-        JFileChooser fc = new JFileChooser();
-        File start = new File(System.getProperty("user.dir"));
-        try {
-            String currentPath = text.getText();
-            System.out.println(currentPath);
-            if (!currentPath.equals("")) {
-                start = new File(new File(currentPath).getParent());
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            fc.setCurrentDirectory(start); // start in the current working directory
-            fc.setFileFilter(filter);
-            if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-                text.setText(fc.getSelectedFile().getPath());
-            }
-        }
-    }
-    
-    private static void saveAsChooser(JFrame frame, JTextField text, FileFilter filter) {
-        JFileChooser fc = new JFileChooser();
-        File start = new File(System.getProperty("user.dir"));
-        try {
-            String currentPath = text.getText();
-            if (!currentPath.equals("")) {
-                start = new File(new File(currentPath).getParent());
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            fc.setCurrentDirectory(start); // start in the current working directory
-            fc.setFileFilter(filter);
-            if (fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
-                String file = fc.getSelectedFile().getPath();
-                if (!file.endsWith(".png")) {
-                    file += ".png";
-                }
-                text.setText(file);
-            }
-        }
-    }
-    
-    private static JTextField formatted (JTextField tf) {
-        tf.setPreferredSize(new Dimension(TEXT_WIDTH, tf.getPreferredSize().height));
+
+    private JTextField formatted(JTextField tf) {
+        tf.setPreferredSize(new Dimension(TEXT_WIDTH,
+                tf.getPreferredSize().height));
         return tf;
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Still prettier than the default IMO
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            createUI();
-        });
     }
 }
