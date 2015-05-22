@@ -22,9 +22,9 @@ public class QueryGenerator {
     private static final DecimalFormat formatLat = new DecimalFormat("00");
     private static final DecimalFormat formatLon = new DecimalFormat("000");
     private static final Pattern CH1903Pattern = Pattern
-            .compile("^ *([4-8]\\d{5}) +(\\d{5,6}) +([4-8]\\d{5}) +(\\d{5,6}) *$");
+            .compile("^([4-8]\\d{5}) (\\d{5,6}) ([4-8]\\d{5}) (\\d{5,6})$");
     private static final Pattern WGS83DecimalPattern = Pattern
-            .compile("^ *(4[5-7]\\.\\d{4}) +([6-9]\\.\\d{4}) +(4[5-7]\\.\\d{4}) +([6-9]\\.\\d{4}) *$");
+            .compile("^(4[5-7]\\.\\d{4}) ([6-9]\\.\\d{4}) (4[5-7]\\.\\d{4}) ([6-9]\\.\\d{4})$");
 
     // private static final Pattern WGS83DegreePattern =
     // Pattern.compile("^4[5-7]°[0-5]?\\d'[0-5]?\\d\" N [6-9]°[0-5]?\\d'[0-5]?\\d\" E 4[5-7]°[0-5]?\\d'[0-5]?\\d\" N [6-9]°[0-5]?\\d'[0-5]?\\d\" E$");
