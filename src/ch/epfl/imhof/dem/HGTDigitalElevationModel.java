@@ -73,7 +73,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         System.out.println("\"" + hgt.getName() + "\"");
         Matcher m = hgtPattern.matcher(hgt.getName());
         if (!m.matches())
-            throw new IllegalArgumentException("Invalid file name: " + hgt.getName());
+            throw new IllegalArgumentException("Invalid file name: "
+                    + hgt.getName());
 
         // Test about the length
         long length = hgt.length();
