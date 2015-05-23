@@ -79,16 +79,17 @@ public final class Map {
         private final List<Attributed<Polygon>> polygons = new ArrayList<>();
 
         /**
-         * Adds an attributed PointGeo to the list of places that will be a
-         * part of the map.
+         * Adds an attributed PointGeo to the list of places that will be a part
+         * of the map.
          * 
          * @param newPlace
          *            a PointGeo with attributes.
          */
         public void addPlace(Attributed<Point> newPlace) {
-            places.add(newPlace);
+            if (isNew(newPlace.attributeValue("name")))
+                places.add(newPlace);
         }
-        
+
         /**
          * Adds an attributed polyline to the list of polylines that will be a
          * part of the map.
@@ -120,6 +121,14 @@ public final class Map {
          */
         public Map build() {
             return new Map(places, polyLines, polygons);
+        }
+
+        private boolean isNew(String name) {
+            for (Attributed<Point> p : places) {
+                if (p.attributeValue("name").equals(name))
+                    return false;
+            }
+            return true;
         }
     }
 }

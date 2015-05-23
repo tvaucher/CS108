@@ -51,7 +51,7 @@ public final class OSMToGeoTransformer {
                     "archipelago", "island", "islet"));
     private static final Pattern parkRegex = Pattern.compile(
             "^(?:esplanade|parc)(?: d[eu])? *(.+)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern suffixIgnored = Pattern.compile("^.*brunnen$",
+    private static final Pattern suffixIgnored = Pattern.compile("^.*(?:brunnen|garten)$",
             Pattern.CASE_INSENSITIVE);
     private static final Pattern prefixIgnored = Pattern.compile(
             "^(?:fontaine|promenade|canal|campagne|ancien).*$",
@@ -59,7 +59,7 @@ public final class OSMToGeoTransformer {
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
-    private static final int MINAREA = 10000;
+    private static final int MINAREA = 25000;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -444,20 +444,21 @@ public final class OSMToGeoTransformer {
                         ++count;
                     }
                     Attributes.Builder attr = new Attributes.Builder();
-
-                    if (naturalVal != null)
-                        attr.put("place", naturalVal);
-                    else if (landuseVal != null)
-                        attr.put("place", landuseVal);
-                    else if (shell.area() >= MINAREA) {
-                        Matcher m = parkRegex.matcher(name);
-                        if (m.matches())
-                            name = m.group(1);
-                        attr.put("place", leisureVal);
+                    if (shell.area() >= MINAREA) {
+                        if (naturalVal != null)
+                            attr.put("place", naturalVal);
+                        else if (landuseVal != null)
+                            attr.put("place", landuseVal);
+                        else  {
+                            Matcher m = parkRegex.matcher(name);
+                            if (m.matches())
+                                name = m.group(1);
+                            attr.put("place", leisureVal);
+                        }
+                        attr.put("name", name);
+                        builder.addPlace(new Attributed<Point>(new Point(posX
+                                / count, posY / count), attr.build()));
                     }
-                    attr.put("name", name);
-                    builder.addPlace(new Attributed<Point>(new Point(posX
-                            / count, posY / count), attr.build()));
                 }
             }
         }

@@ -205,7 +205,6 @@ public final class Java2DCanvas implements Canvas {
         while (count < 3 && toDraw == false) {
             for (Rectangle r : placePosition) {
                 if (current.intersects(r)) {
-                    System.out.println("intersect");
                     int differenceY = current.y - r.y;
                     current.y += (differenceY <= 0 ? current.height
                             : -current.height);
