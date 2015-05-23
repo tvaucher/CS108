@@ -70,7 +70,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      */
     public HGTDigitalElevationModel(File hgt) throws IOException {
         // Uses regex to test and get parts of the args in the file name
-        System.out.println("\"" + hgt.getName() + "\"");
         Matcher m = hgtPattern.matcher(hgt.getName());
         if (!m.matches())
             throw new IllegalArgumentException("Invalid file name: "
@@ -195,7 +194,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // hgt.deleteOnExit();
         byte[] buf = new byte[1024];
         if (ze != null) {
-            System.out.println("Unzipping " + ze.getName());
             BufferedOutputStream fout = new BufferedOutputStream(
                     new FileOutputStream(hgt));
             int len = 0;
@@ -206,7 +204,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             fout.close();
         }
         zin.close();
-        System.out.println("out");
         return hgt;
     }
 

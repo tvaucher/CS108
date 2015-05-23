@@ -83,20 +83,16 @@ public final class QueryGenerator {
     }
 
     public String getURLosm() {
-        String url = "http://overpass-api.de/api/interpreter?data=(node("
+        return "http://overpass-api.de/api/interpreter?data=(node("
                 + minLat + "," + minLon + "," + maxLat + "," + maxLon
                 + ");<;>;);out;";
-        System.out.println(url);
-        return url;
     }
 
     public String getURLhgt() {
-        String url = "http://www.viewfinderpanoramas.org/dem1/N"
+        return "http://www.viewfinderpanoramas.org/dem1/N"
                 + formatLat.format(Math.floor(Math.toDegrees(bl.latitude())))
                 + "E"
                 + formatLon.format(Math.floor(Math.toDegrees(bl.longitude())))
                 + ".zip";
-        System.out.println(url);
-        return url;
     }
 }
