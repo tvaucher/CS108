@@ -28,7 +28,8 @@ import ch.epfl.imhof.utility.MapMaker;
 public class GraphicalUserInterface {
     private static final int WIDTH = 400, HEIGHT = 100, TEXT_WIDTH = 200;
 
-    public static void createUI() {
+    public GraphicalUserInterface() {
+
         JFrame frame = new JFrame("The Imhof Project");
         JPanel content = new JPanel(new GridBagLayout());
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
@@ -222,8 +223,6 @@ public class GraphicalUserInterface {
         tab1.add(formatted(outField), inc);
         inc.gridx = 2;
         tab1.add(outButton, inc);
-        // Style the tab1
-        content.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // ///////////////////////////
         // ///// TAB 2: AUTOMATIC ////
@@ -282,6 +281,7 @@ public class GraphicalUserInterface {
         gbc.gridx = 0;
         gbc.gridy = 1;
         content.add(tabs, gbc);
+        content.setBorder(new EmptyBorder(10, 10, 10, 10));
         frame.setLayout(new BorderLayout());
         frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
         frame.setLocationRelativeTo(null); // Center the window
@@ -293,7 +293,7 @@ public class GraphicalUserInterface {
 
     }
 
-    private static JTextField formatted(JTextField tf) {
+    private JTextField formatted(JTextField tf) {
         tf.setPreferredSize(new Dimension(TEXT_WIDTH,
                 tf.getPreferredSize().height));
         return tf;

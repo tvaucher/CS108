@@ -23,7 +23,7 @@ public class Main {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            GraphicalUserInterface.createUI();
+            GraphicalUserInterface gui = new GraphicalUserInterface();
         });
     }
 }
