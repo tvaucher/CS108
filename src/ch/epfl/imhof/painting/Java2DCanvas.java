@@ -191,7 +191,6 @@ public final class Java2DCanvas implements Canvas {
             current.x = 2;
         else if (current.x + current.width >= imgWidth
                 && p.x() - current.width <= imgWidth) {
-            System.out.println(name + " deplaced");
             current.x = (int) (imgWidth - current.width - 1);
         }
             
@@ -207,7 +206,6 @@ public final class Java2DCanvas implements Canvas {
         while (count < 3 && toDraw == false) {
             for (Rectangle r : placePosition) {
                 if (current.intersects(r)) {
-                    System.out.println("collision : " + name);
                     int differenceY = current.y - r.y;
                     current.y += (differenceY <= 0 ? current.height
                             : -current.height);
@@ -218,8 +216,6 @@ public final class Java2DCanvas implements Canvas {
             toDraw = true;
         }
 
-        System.out.println(current.x + " " + current.y + " " + current.width
-                + " " + current.height);
         // Draw palce's name
         if (toDraw) {
             ctx.setFont(font);
