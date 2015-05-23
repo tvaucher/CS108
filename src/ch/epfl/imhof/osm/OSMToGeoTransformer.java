@@ -50,11 +50,16 @@ public final class OSMToGeoTransformer {
                     "suburb", "quarter", "isolate_dwelling", "farm",
                     "archipelago", "island", "islet"));
     private static final Pattern parkRegex = Pattern.compile(
-            "^parc(?: d[eu])? *(.+)$", Pattern.CASE_INSENSITIVE);
+            "^(?:esplanade|parc)(?: d[eu])? *(.+)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern suffixIgnored = Pattern.compile("^.*brunnen$",
+            Pattern.CASE_INSENSITIVE);
+    private static final Pattern prefixIgnored = Pattern.compile(
+            "^(?:fontaine|promenade|canal|campagne|ancien).*$",
+            Pattern.CASE_INSENSITIVE);
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
-    private static final int MINAREA = 25000;
+    private static final int MINAREA = 2000;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -114,8 +119,7 @@ public final class OSMToGeoTransformer {
     private void transformNode(OSMNode node, Map.Builder builder) {
         Attributes currentAttributes = node.attributes().keepOnlyKeys(
                 point2Attributes);
-        if (containsAll(currentAttributes, pointAttributes)
-                && !currentAttributes.get("name").equals("Altstadt")) {
+        if (containsAll(currentAttributes, pointAttributes)) {
             int population = currentAttributes.get("population", 0);
             String place = currentAttributes.get("place");
             if (isContained(place, placeAttributes)) {
@@ -164,6 +168,7 @@ public final class OSMToGeoTransformer {
                         nodesToPoints(way.nonRepeatingNodes()));
                 builder.addPolygon(new Attributed<>(new Polygon(closedLine),
                         currentAttributes));
+                generatePOI(way, closedLine, builder);
             }
         } else {
             currentAttributes = currentAttributes
@@ -417,41 +422,43 @@ public final class OSMToGeoTransformer {
         return true;
     }
 
-    private void generatePOI(OSMRelation relation, ClosedPolyLine shell,
+    private void generatePOI(OSMEntity entity, ClosedPolyLine shell,
             Map.Builder builder) {
-        String naturalVal = relation.attributeValue("natural");
-        String landuseVal = relation.attributeValue("landuse");
-        String leisureVal = relation.attributeValue("leisure");
+        String naturalVal = entity.attributeValue("natural");
+        String landuseVal = entity.attributeValue("landuse");
+        String leisureVal = entity.attributeValue("leisure");
         if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal
                 .equals("water")))
                 || (landuseVal != null && landuseVal.equals("forest"))
                 || (leisureVal != null && leisureVal.equals("park"))) {
-            String name = relation.attributeValue("name");
+            String name = entity.attributeValue("name");
             if (name != null) {
-                double posX = 0;
-                double posY = 0;
-                int count = 0;
-                for (Point p : shell.points()) {
-                    posX += p.x();
-                    posY += p.y();
-                    ++count;
-                }
-                Attributes.Builder attr = new Attributes.Builder();
+                if (!prefixIgnored.matcher(name).matches()
+                        && !suffixIgnored.matcher(name).matches()) {
+                    double posX = 0;
+                    double posY = 0;
+                    int count = 0;
+                    for (Point p : shell.points()) {
+                        posX += p.x();
+                        posY += p.y();
+                        ++count;
+                    }
+                    Attributes.Builder attr = new Attributes.Builder();
 
-                if (naturalVal != null)
-                    attr.put("place", naturalVal);
-                else if (landuseVal != null)
-                    attr.put("place", landuseVal);
-                else if (shell.area() >= MINAREA) {
-                    System.out.println(name + " "+ shell.area());
-                    Matcher m = parkRegex.matcher(name);
-                    if (m.matches())
-                        name = m.group(1);
-                    attr.put("place", leisureVal);
+                    if (naturalVal != null)
+                        attr.put("place", naturalVal);
+                    else if (landuseVal != null)
+                        attr.put("place", landuseVal);
+                    else if (shell.area() >= MINAREA) {
+                        Matcher m = parkRegex.matcher(name);
+                        if (m.matches())
+                            name = m.group(1);
+                        attr.put("place", leisureVal);
+                    }
+                    attr.put("name", name);
+                    builder.addPlace(new Attributed<Point>(new Point(posX
+                            / count, posY / count), attr.build()));
                 }
-                attr.put("name", name);
-                builder.addPlace(new Attributed<Point>(new Point(posX / count,
-                        posY / count), attr.build()));
             }
         }
     }
