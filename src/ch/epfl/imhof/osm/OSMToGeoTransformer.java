@@ -59,7 +59,7 @@ public final class OSMToGeoTransformer {
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
-    private static final int MINAREA = 2000;
+    private static final int MINAREA = 10000;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
