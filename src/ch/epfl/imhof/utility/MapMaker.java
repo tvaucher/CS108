@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3;
@@ -116,6 +115,7 @@ public class MapMaker {
     }
     
     private void automaticMapMaker(String[] args) {
+        System.out.println("Creating a new map automatically.");
         String string = args[1].trim() + " " + args[0].trim() + " " + args[3].trim() + " " + args[2].trim();
         QueryGenerator qg = new QueryGenerator(string);
         Point bl = qg.bl();
@@ -141,6 +141,7 @@ public class MapMaker {
         OSMMap osmMap = null;
 
         try {
+            System.out.println("Parsing the OSM file...");
             osmMap = OSMMapReader.readOSMFile(urlOsm);
 
         } catch (Exception e) {
@@ -148,24 +149,31 @@ public class MapMaker {
             e.printStackTrace();
         }
         Map map = transformer.transform(osmMap);
+        /*
         for (Attributed<Point> place : map.places()) {
             System.out.println(place.attributeValue("name") + " "
                     + place.value().x() + " " + place.value().y());
         }
+        */
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
+        System.out.println("Parsing the HGT file...");
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 urlHgt);) {
+            System.out.println("Shading the mountains...");
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
+            System.out.println("Drawing the map...");
             painter.drawMap(map, canvas);
+            System.out.println("Overlaying mountains...");
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
                     outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.");
             e.printStackTrace();
         }
+        System.out.println("Done.");
     }
     
     private static BufferedImage mix(BufferedImage i1, BufferedImage i2) {
