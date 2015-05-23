@@ -49,17 +49,18 @@ public final class OSMToGeoTransformer {
             Arrays.asList("village", "hamlet", "town", "city", "borough",
                     "suburb", "quarter", "isolate_dwelling", "farm",
                     "archipelago", "island", "islet"));
-    private static final Pattern parkRegex = Pattern.compile(
-            "^(?:esplanade|parc)(?: d[eu])? *(.+)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern suffixIgnored = Pattern.compile("^.*(?:brunnen|garten)$",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern parkRegex = Pattern
+            .compile("^(?:esplanade|parc)(?: d[eu]s?)? *(.+)$",
+                    Pattern.CASE_INSENSITIVE);
+    private static final Pattern suffixIgnored = Pattern.compile(
+            "^.*(?:brunnen|garten)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern prefixIgnored = Pattern.compile(
             "^(?:fontaine|promenade|canal|campagne|ancien).*$",
             Pattern.CASE_INSENSITIVE);
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
-    private static final int MINAREA = 25000;
+    private static final int MINAREA = 20000;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -429,7 +430,8 @@ public final class OSMToGeoTransformer {
         String leisureVal = entity.attributeValue("leisure");
         if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal
                 .equals("water")))
-                || (landuseVal != null && landuseVal.equals("forest"))
+                || (landuseVal != null && (landuseVal.equals("forest") || landuseVal
+                        .equals("industrial")))
                 || (leisureVal != null && leisureVal.equals("park"))) {
             String name = entity.attributeValue("name");
             if (name != null) {
@@ -449,7 +451,7 @@ public final class OSMToGeoTransformer {
                             attr.put("place", naturalVal);
                         else if (landuseVal != null)
                             attr.put("place", landuseVal);
-                        else  {
+                        else {
                             Matcher m = parkRegex.matcher(name);
                             if (m.matches())
                                 name = m.group(1);

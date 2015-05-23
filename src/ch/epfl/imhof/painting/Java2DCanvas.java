@@ -177,8 +177,8 @@ public final class Java2DCanvas implements Canvas {
     public void drawPlace(Point point, String name, Font font, Color color) {
         // Some useful
         FontMetrics metrics = ctx.getFontMetrics(font);
-        Rectangle current = new Rectangle(metrics.stringWidth(name) + 4,
-                metrics.getHeight() + 4);
+        Rectangle current = new Rectangle(metrics.stringWidth(name),
+                metrics.getHeight()/2);
         double halfWidth = current.getWidth() / 2d;
         double imgHeight = image.getHeight() / scalingFactor;
         double imgWidth = image.getWidth() / scalingFactor;
@@ -193,7 +193,7 @@ public final class Java2DCanvas implements Canvas {
             current.x = (int) (imgWidth - current.width - 1);
         }
             
-        current.y = (int) (p.y() - current.height + 2);
+        current.y = (int) (p.y() - current.height);
         if (current.y + current.height >= imgHeight
                 && p.y() <= imgHeight) {
             current.y = (int) (imgHeight - current.height);
@@ -202,9 +202,10 @@ public final class Java2DCanvas implements Canvas {
         // Non-collision algo
         int count = 0; // Limited number of iteration
         boolean toDraw = false;
-        while (count < 3 && toDraw == false) {
+        while (count < 5 && toDraw == false) {
+            Rectangle interstectionRect = new Rectangle(current.x - 3, current.y - 3, current.width + 6, current.height + 6);
             for (Rectangle r : placePosition) {
-                if (current.intersects(r)) {
+                if (interstectionRect.intersects(r) || r.intersects(interstectionRect)) {
                     int differenceY = current.y - r.y;
                     current.y += (differenceY <= 0 ? current.height
                             : -current.height);
