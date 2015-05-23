@@ -209,7 +209,7 @@ public final class OSMToGeoTransformer {
                     polygonAttributes);
             if (!attributes.isEmpty()) {
                 List<Attributed<Polygon>> polygons = assemblePolygon(relation,
-                        attributes);
+                        attributes, builder);
                 for (Attributed<Polygon> polygon : polygons) {
                     builder.addPolygon(polygon);
                 }
@@ -297,7 +297,7 @@ public final class OSMToGeoTransformer {
      * @return A list of attributed polygons.
      */
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
-            Attributes attributes) {
+            Attributes attributes, Map.Builder builder) {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
         if (outerRings.isEmpty())
@@ -324,7 +324,30 @@ public final class OSMToGeoTransformer {
                 }
             }
         }
-
+        
+        String naturalVal = relation.attributeValue("natural");
+        String landuseVal = relation.attributeValue("landuse");
+        if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal.equals("water"))) || (landuseVal != null && landuseVal.equals("forest"))) {
+            String name = relation.attributeValue("name");
+            if (name != null) {
+                double posX = 0;
+                double posY = 0;
+                int count = 0;
+                for (Point p : outerRings.get(outerRings.size()-1).points()) {
+                    posX += p.x();
+                    posY += p.y();
+                    ++count;
+                }
+                Attributes.Builder attr = new Attributes.Builder();
+                attr.put("name", name);
+                if (naturalVal != null)
+                    attr.put("place", naturalVal);
+                else
+                    attr.put("place", landuseVal);
+                builder.addPlace(new Attributed<Point>(new Point(posX/count, posY/count), attr.build()));
+            }
+        }
+        
         List<Attributed<Polygon>> out = new ArrayList<>();
         polygonMap.entrySet().forEach(
                 polygon -> {

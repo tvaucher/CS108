@@ -22,8 +22,10 @@ public final class SwissPainter {
         Color black = Color.BLACK;
         Color darkGray = gray(0.2);
         Color darkGreen = rgb(0.75, 0.85, 0.7);
+        Color darkerGreen = rgb(0.45, 0.55, 0.4);
         Color darkRed = rgb(0.7, 0.15, 0.15);
         Color darkBlue = rgb(0.45, 0.7, 0.8);
+        Color darkerBlue = rgb(0.15, 0.4, 0.5);
         Color lightGreen = rgb(0.85, 0.9, 0.85);
         Color lightGray = gray(0.9);
         Color orange = rgb(1, 0.75, 0.2);
@@ -41,7 +43,8 @@ public final class SwissPainter {
         Font cityFont = baseFont.deriveFont(Font.PLAIN, 18);
         Font townFont = baseFont.deriveFont(Font.PLAIN, 14);
         Font villageFont = baseFont.deriveFont(Font.ITALIC, 12);
-        Font defaultFont = baseFont.deriveFont(Font.ITALIC, 11);
+        Font defaultFont = baseFont.deriveFont(Font.ITALIC, 10);
+        Font natureFont = baseFont.deriveFont(Font.ITALIC, 8);
 
         Painter roadPainter = RoadPainterGenerator.painterForRoads(
                 new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
@@ -106,7 +109,11 @@ public final class SwissPainter {
                 .above(place(defaultFont, black).when(
                         tagged("place", "borough", "suburb", "quarter",
                                 "isolate_dwelling", "farm", "archipelago",
-                                "island", "islet")));
+                                "island", "islet")))
+                .above(place(natureFont, darkerGreen).when(
+                        tagged("place", "wood", "forest")))
+                .above(place(natureFont, darkerBlue).when(
+                        tagged("place", "water")));
 
         PAINTER = placePainter.above(fgPainter.above(bgPainter));
     }
