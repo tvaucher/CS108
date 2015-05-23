@@ -76,7 +76,7 @@ public class GraphicalUserInterface {
                 .setToolTipText("The longitude (in CH1903 or WGS83) of the top right point of the map");
         trLatLabel
                 .setToolTipText("The latitude (in CH1903 or WGS83) of the top right point of the map");
-        dpiLabel.setToolTipText("The resolution of the image (in dpi)");
+        dpiLabel.setToolTipText("The resolution of the map (in dpi)");
         outLabel.setToolTipText("The name of the map image that will be created (*.png)");
 
         JLabel autoBlLongLabel = new JLabel("Bottom Left Longitude"), autoBlLatLabel = new JLabel(
@@ -84,6 +84,18 @@ public class GraphicalUserInterface {
                 "Top Right Longitude"), autoTrLatLabel = new JLabel(
                 "Top Right Latitude"), autoDpiLabel = new JLabel("Resolution"), autoOutLabel = new JLabel(
                 "Output File");
+
+        autoBlLongLabel
+                .setToolTipText("The longitude (in CH1903 or WGS83) of the bottom left point of the map");
+        autoBlLatLabel
+                .setToolTipText("The latitude (in CH1903 or WGS83) of the bottom left point of the map");
+        autoTrLongLabel
+                .setToolTipText("The longitude (in CH1903 or WGS83) of the top right point of the map");
+        autoTrLatLabel
+                .setToolTipText("The latitude (in CH1903 or WGS83) of the top right point of the map");
+        autoDpiLabel.setToolTipText("The resolution of the map (in dpi)");
+        autoOutLabel
+                .setToolTipText("The name of the map image that will be created (*.png)");
 
         // Text Fields:
         JTextField osmField = new JTextField(), hgtField = new JTextField(), blLongField = new JTextField(), blLatField = new JTextField(), trLongField = new JTextField(), trLatField = new JTextField(), outField = new JTextField();
