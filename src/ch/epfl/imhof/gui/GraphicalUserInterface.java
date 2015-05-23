@@ -337,11 +337,11 @@ public final class GraphicalUserInterface {
         content.setBorder(new EmptyBorder(10, 10, 10, 10));
         frame.setLayout(new BorderLayout());
         frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-        frame.setLocationRelativeTo(null); // Center the window
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setContentPane(content);
         frame.pack();
+        frame.setLocationRelativeTo(null); // Center the window
         frame.setVisible(true);
 
     }
