@@ -8,25 +8,31 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultCaret;
 
 import ch.epfl.imhof.utility.MapMaker;
 
 public class GraphicalUserInterface {
     private static final int WIDTH = 400, HEIGHT = 100, TEXT_WIDTH = 200;
+    private static JTextArea console;
 
     public GraphicalUserInterface() {
 
@@ -87,6 +93,11 @@ public class GraphicalUserInterface {
         JTextField autoBlLongField = new JTextField(), autoBlLatField = new JTextField(), autoTrLongField = new JTextField(), autoTrLatField = new JTextField(), autoOutField = new JTextField();
         JSpinner autoDpiField = new JSpinner(model);
 
+        console = new JTextArea(5, 40);
+        DefaultCaret caret = (DefaultCaret) console.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        console.setEditable(false);
+
         // Buttons:
         OpenFileButton osmButton = new OpenFileButton(osmField);
         osmButton.setFileFilter(new FileNameExtensionFilter(
@@ -105,25 +116,38 @@ public class GraphicalUserInterface {
         autoOutButton.setFileFilter(filter);
         autoOutButton.setDefaultExtension("png");
 
-        JButton create = new JButton("Create Map");
-        create.addActionListener(e -> {
-            if (tabs.getSelectedIndex() == 0) {
-                String[] args = { osmField.getText(), hgtField.getText(),
-                        blLongField.getText(), blLatField.getText(),
-                        trLongField.getText(), trLatField.getText(),
-                        String.valueOf(dpiField.getValue()), outField.getText() };
-                MapMaker m = new MapMaker(args);
-            } else {
-                String[] args = { autoBlLongField.getText(),
-                        autoBlLatField.getText(), autoTrLongField.getText(),
-                        autoTrLatField.getText(),
-                        String.valueOf(autoDpiField.getValue()),
-                        autoOutField.getText() };
-                MapMaker m = new MapMaker(args);
-            }
-        });
         JButton exit = new JButton("Exit");
         exit.addActionListener(e -> System.exit(0));
+
+        JButton create = new JButton("Create Map");
+        create.addActionListener(e -> {
+            create.setEnabled(false);
+            exit.setEnabled(false);
+            new Thread() {
+                @Override
+                public void run() {
+                    if (tabs.getSelectedIndex() == 0) {
+                        String[] args = { osmField.getText(),
+                                hgtField.getText(), blLongField.getText(),
+                                blLatField.getText(), trLongField.getText(),
+                                trLatField.getText(),
+                                String.valueOf(dpiField.getValue()),
+                                outField.getText() };
+                        MapMaker m = new MapMaker(args);
+                    } else {
+                        String[] args = { autoBlLongField.getText(),
+                                autoBlLatField.getText(),
+                                autoTrLongField.getText(),
+                                autoTrLatField.getText(),
+                                String.valueOf(autoDpiField.getValue()),
+                                autoOutField.getText() };
+                        MapMaker m = new MapMaker(args);
+                    }
+                    create.setEnabled(true);
+                    exit.setEnabled(true);
+                }
+            }.start();
+        });
 
         // //////////////////
         // //// PANELS //////
@@ -133,6 +157,7 @@ public class GraphicalUserInterface {
         // Default values
         gbc.fill = GridBagConstraints.HORIZONTAL;
         pb_gbc.fill = GridBagConstraints.HORIZONTAL;
+        pb_gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(1, 1, 1, 1);
 
         // Add the logo to the top right.
@@ -150,6 +175,17 @@ public class GraphicalUserInterface {
         gbc.gridx = 0;
         gbc.gridy = 2;
         content.add(actionButtons, gbc);
+
+        pb_gbc.gridx = 0;
+        pb_gbc.gridy = 3;
+        pb_gbc.gridwidth = 3;
+        JScrollPane consoleFrame = new JScrollPane(console);
+        consoleFrame
+                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        consoleFrame
+                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        consoleFrame.setBorder(BorderFactory.createTitledBorder("Output"));
+        content.add(consoleFrame, pb_gbc);
 
         // ////////////////////////
         // ///// TAB 1: MANUAL ////
@@ -276,6 +312,11 @@ public class GraphicalUserInterface {
         // ///////////////
 
         // Finally, we can create the frame.
+
+        PrintStream out = new PrintStream(new GUIConsoleOutputStream(console));
+        System.setOut(out);
+        System.setErr(out);
+
         tabs.add("Manual mode", tab1);
         tabs.add("Automatic mode", tab2);
         gbc.gridx = 0;
