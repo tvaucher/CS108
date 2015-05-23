@@ -21,8 +21,8 @@ public final class SwissPainter {
     static {
         Color black = Color.BLACK;
         Color darkGray = gray(0.2);
-        Color darkGreen = rgb(0.75, 0.85, 0.7);
-        Color darkerGreen = rgb(0.45, 0.55, 0.4);
+        // Color darkGreen = rgb(0.75, 0.85, 0.7);
+        Color darkerGreen = rgb(0.35, 0.35, 0.15);
         Color darkRed = rgb(0.7, 0.15, 0.15);
         Color darkBlue = rgb(0.45, 0.7, 0.8);
         Color darkerBlue = rgb(0.15, 0.4, 0.5);
@@ -32,6 +32,7 @@ public final class SwissPainter {
         Color lightYellow = rgb(1, 1, 0.5);
         Color lightRed = rgb(0.95, 0.7, 0.6);
         Color lightBlue = rgb(0.8, 0.9, 0.95);
+        Color lightRose = rgb(0xd7cce1);
         Color white = Color.WHITE;
         Font baseFont = null;
         try {
@@ -90,15 +91,16 @@ public final class SwissPainter {
                 .above(line(1, lightBlue).above(line(1.5f, darkBlue)).when(
                         tagged("waterway", "river", "canal")))
                 .above(line(1, darkBlue).when(tagged("waterway", "stream")))
-                .above(polygon(darkGreen).when(
+                .above(polygon("wood").when(
                         tagged("natural", "wood").or(
                                 tagged("landuse", "forest"))))
                 .above(polygon(lightGreen).when(
                         tagged("landuse", "grass", "recreation_ground",
-                                "meadow", "cemetery").or(
-                                tagged("leisure", "park"))))
-                .above(polygon(lightGray).when(
-                        tagged("landuse", "residential", "industrial")))
+                                "meadow").or(tagged("leisure", "park"))))
+                .above(polygon("cemetery").when(tagged("landuse", "cemetery")))
+                .above(polygon(lightGray)
+                        .when(tagged("landuse", "residential")))
+                .above(polygon(lightRose).when(tagged("landuse", "industrial")))
                 .layered();
 
         Painter placePainter = place(cityFont, black)
@@ -111,7 +113,7 @@ public final class SwissPainter {
                                 "isolate_dwelling", "farm", "archipelago",
                                 "island", "islet")))
                 .above(place(natureFont, darkerGreen).when(
-                        tagged("place", "wood", "forest")))
+                        tagged("place", "wood", "forest", "park")))
                 .above(place(natureFont, darkerBlue).when(
                         tagged("place", "water")));
 

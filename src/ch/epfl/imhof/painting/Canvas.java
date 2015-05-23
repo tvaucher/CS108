@@ -35,6 +35,8 @@ public interface Canvas {
      *            The Color that will be used to fill said Polygon.
      */
     public void drawPolygon(Polygon polygon, Color color);
+    
+    public void drawPolygon(Polygon polygon, String texture);
 
     /**
      * A method that draws a PlaceName onto the canvas.

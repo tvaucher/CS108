@@ -47,6 +47,14 @@ public interface Painter {
             }
         };
     }
+    
+    public static Painter polygon(String texture) {
+        return (map, canvas) -> {
+            for (Attributed<Polygon> polygon : map.polygons()) {
+                canvas.drawPolygon(polygon.value(), texture);
+            }
+        };
+    }
 
     /**
      * Basic painter that draws all the polylines it received with the given

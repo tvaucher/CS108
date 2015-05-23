@@ -8,10 +8,17 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
+
+import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
@@ -31,6 +38,7 @@ public final class Java2DCanvas implements Canvas {
 
     private final Function<Point, Point> projectedToCanvas;
     private final static double CANVAS_DPI = 72d;
+    private final Map<String, TexturePaint> texture = new HashMap<>();
 
     /**
      * Constructs a new Java2D object.
@@ -80,6 +88,18 @@ public final class Java2DCanvas implements Canvas {
 
         // Set antialiasing
         ctx.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+
+        // creating textures
+        Rectangle2D anchor = new Rectangle2D.Double(0, 0, 16, 16);
+        BufferedImage woodImg = null, cemeteryImg = null;
+        try {
+            woodImg = ImageIO.read(new File("wood.png"));
+            cemeteryImg = ImageIO.read(new File("cemetery.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        texture.put("wood", new TexturePaint(woodImg, anchor));
+        texture.put("cemetery", new TexturePaint(cemeteryImg, anchor));
     }
 
     /**
@@ -121,6 +141,19 @@ public final class Java2DCanvas implements Canvas {
     @Override
     public void drawPolygon(Polygon polygon, Color color) {
         ctx.setColor(color.toAWTColor());
+        drawPolygonApplied(polygon);
+    }
+
+    @Override
+    public void drawPolygon(Polygon polygon, String texture) {
+        TexturePaint current = this.texture.get(texture);
+        if (current != null) {
+            ctx.setPaint(current);
+            drawPolygonApplied(polygon);
+        }
+    }
+
+    private void drawPolygonApplied(Polygon polygon) {
         // creating the shell
         Area shell = new Area(pathPolyLine(polygon.shell()));
         for (PolyLine p : polygon.holes()) {

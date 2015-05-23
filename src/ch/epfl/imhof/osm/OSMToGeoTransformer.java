@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Attributes;
@@ -47,9 +49,12 @@ public final class OSMToGeoTransformer {
             Arrays.asList("village", "hamlet", "town", "city", "borough",
                     "suburb", "quarter", "isolate_dwelling", "farm",
                     "archipelago", "island", "islet"));
+    private static final Pattern parkRegex = Pattern.compile(
+            "^parc(?: d[eu])? *(.+)$", Pattern.CASE_INSENSITIVE);
 
     private static final double DELTA = 1e-5;
     private static final int MINPOPULATION = 500;
+    private static final int MINAREA = 25000;
 
     /**
      * Construct a new OSMToGeoTransformer object; takes the desired projection
@@ -119,8 +124,7 @@ public final class OSMToGeoTransformer {
                         builder.addPlace(new Attributed<>(nodeToPoint(node),
                                 currentAttributes));
                     }
-                }
-                else {
+                } else {
                     builder.addPlace(new Attributed<>(nodeToPoint(node),
                             currentAttributes));
                 }
@@ -324,30 +328,9 @@ public final class OSMToGeoTransformer {
                 }
             }
         }
-        
-        String naturalVal = relation.attributeValue("natural");
-        String landuseVal = relation.attributeValue("landuse");
-        if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal.equals("water"))) || (landuseVal != null && landuseVal.equals("forest"))) {
-            String name = relation.attributeValue("name");
-            if (name != null) {
-                double posX = 0;
-                double posY = 0;
-                int count = 0;
-                for (Point p : outerRings.get(outerRings.size()-1).points()) {
-                    posX += p.x();
-                    posY += p.y();
-                    ++count;
-                }
-                Attributes.Builder attr = new Attributes.Builder();
-                attr.put("name", name);
-                if (naturalVal != null)
-                    attr.put("place", naturalVal);
-                else
-                    attr.put("place", landuseVal);
-                builder.addPlace(new Attributed<Point>(new Point(posX/count, posY/count), attr.build()));
-            }
-        }
-        
+
+        generatePOI(relation, outerRings.get(outerRings.size() - 1), builder);
+
         List<Attributed<Polygon>> out = new ArrayList<>();
         polygonMap.entrySet().forEach(
                 polygon -> {
@@ -432,5 +415,44 @@ public final class OSMToGeoTransformer {
                 return false;
         }
         return true;
+    }
+
+    private void generatePOI(OSMRelation relation, ClosedPolyLine shell,
+            Map.Builder builder) {
+        String naturalVal = relation.attributeValue("natural");
+        String landuseVal = relation.attributeValue("landuse");
+        String leisureVal = relation.attributeValue("leisure");
+        if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal
+                .equals("water")))
+                || (landuseVal != null && landuseVal.equals("forest"))
+                || (leisureVal != null && leisureVal.equals("park"))) {
+            String name = relation.attributeValue("name");
+            if (name != null) {
+                double posX = 0;
+                double posY = 0;
+                int count = 0;
+                for (Point p : shell.points()) {
+                    posX += p.x();
+                    posY += p.y();
+                    ++count;
+                }
+                Attributes.Builder attr = new Attributes.Builder();
+
+                if (naturalVal != null)
+                    attr.put("place", naturalVal);
+                else if (landuseVal != null)
+                    attr.put("place", landuseVal);
+                else if (shell.area() >= MINAREA) {
+                    System.out.println(name + " "+ shell.area());
+                    Matcher m = parkRegex.matcher(name);
+                    if (m.matches())
+                        name = m.group(1);
+                    attr.put("place", leisureVal);
+                }
+                attr.put("name", name);
+                builder.addPlace(new Attributed<Point>(new Point(posX / count,
+                        posY / count), attr.build()));
+            }
+        }
     }
 }
