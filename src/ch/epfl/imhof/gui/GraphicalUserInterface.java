@@ -99,7 +99,7 @@ public final class GraphicalUserInterface {
 
         // Text Fields:
         JTextField osmField = new JTextField(), hgtField = new JTextField(), blLongField = new JTextField(), blLatField = new JTextField(), trLongField = new JTextField(), trLatField = new JTextField(), outField = new JTextField();
-        SpinnerNumberModel model = new SpinnerNumberModel(300, 10, 2000, 10);
+        SpinnerNumberModel model = new SpinnerNumberModel(300, 10, 3000, 10);
         JSpinner dpiField = new JSpinner(model);
 
         JTextField autoBlLongField = new JTextField(), autoBlLatField = new JTextField(), autoTrLongField = new JTextField(), autoTrLatField = new JTextField(), autoOutField = new JTextField();
@@ -138,25 +138,30 @@ public final class GraphicalUserInterface {
             new Thread() {
                 @Override
                 public void run() {
-                    if (tabs.getSelectedIndex() == 0) {
-                        String[] args = { osmField.getText(),
-                                hgtField.getText(), blLongField.getText(),
-                                blLatField.getText(), trLongField.getText(),
-                                trLatField.getText(),
-                                String.valueOf(dpiField.getValue()),
-                                outField.getText() };
-                        MapMaker m = new MapMaker(args);
-                    } else {
-                        String[] args = { autoBlLongField.getText(),
-                                autoBlLatField.getText(),
-                                autoTrLongField.getText(),
-                                autoTrLatField.getText(),
-                                String.valueOf(autoDpiField.getValue()),
-                                autoOutField.getText() };
-                        MapMaker m = new MapMaker(args);
-                    }
+                    try {
+                        if (tabs.getSelectedIndex() == 0) {
+                            String[] args = { osmField.getText(),
+                                    hgtField.getText(), blLongField.getText(),
+                                    blLatField.getText(), trLongField.getText(),
+                                    trLatField.getText(),
+                                    String.valueOf(dpiField.getValue()),
+                                    outField.getText() };
+                            MapMaker m = new MapMaker(args);
+                        } else {
+                            String[] args = { autoBlLongField.getText(),
+                                    autoBlLatField.getText(),
+                                    autoTrLongField.getText(),
+                                    autoTrLatField.getText(),
+                                    String.valueOf(autoDpiField.getValue()),
+                                    autoOutField.getText() };
+                            MapMaker m = new MapMaker(args);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally { // Reenable if there's an error so that the user can try again.
                     create.setEnabled(true);
                     exit.setEnabled(true);
+                    }
                 }
             }.start();
         });
