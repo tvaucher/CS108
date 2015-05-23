@@ -7,6 +7,7 @@ import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.geom.Area;
@@ -14,7 +15,9 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -39,6 +42,7 @@ public final class Java2DCanvas implements Canvas {
     private final Function<Point, Point> projectedToCanvas;
     private final static double CANVAS_DPI = 72d;
     private final Map<String, TexturePaint> texture = new HashMap<>();
+    private final List<Rectangle> placePosition = new ArrayList<>();
 
     /**
      * Constructs a new Java2D object.
@@ -171,33 +175,65 @@ public final class Java2DCanvas implements Canvas {
      */
     @Override
     public void drawPlace(Point point, String name, Font font, Color color) {
+        // Some useful
         FontMetrics metrics = ctx.getFontMetrics(font);
-        int height = metrics.getHeight();
-        int width = metrics.stringWidth(name);
-        double halfHeight = height / 2d;
-        double halfWidth = width / 2d;
+        Rectangle current = new Rectangle(metrics.stringWidth(name) + 5,
+                metrics.getHeight() + 5);
+        double halfHeight = current.getHeight() / 2d;
+        double halfWidth = current.getWidth() / 2d;
         double imgHeight = image.getHeight() / scalingFactor;
         double imgWidth = image.getWidth() / scalingFactor;
         Point p = projectedToCanvas.apply(point);
-        double posX = p.x() - halfWidth;
-        if (posX < 0 && p.x() >= 0)
-            posX = 2;
-        else if (posX > imgWidth - halfWidth && p.x() - width <= imgWidth)
-            posX = imgWidth - width;
-        double posY = p.y();
-        if (posY > imgHeight - halfHeight && p.y() - height <= imgHeight) {
-            posY = imgHeight - height;
+
+        // Boundaries problems
+        current.x = (int) (p.x() - halfWidth);
+        if (current.x < 0 && p.x() >= 0)
+            current.x = 2;
+        else if (current.x + current.width >= imgWidth
+                && p.x() - current.width <= imgWidth) {
+            System.out.println(name + " deplaced");
+            current.x = (int) (imgWidth - current.width - 1);
         }
-        ctx.setFont(font);
-        ctx.setColor(Color.WHITE.toAWTColor());
-        for (int i = -2; i <= 2; ++i) {
-            for (int j = -2; j <= 2; ++j) {
-                ctx.drawString(name, (float) posX + 0.3f * i, (float) posY
-                        + 0.25f * j);
+            
+        current.y = (int) (p.y() - current.height);
+        if (current.y > imgHeight - halfHeight
+                && p.y() + current.height <= imgHeight) {
+            current.y = (int) (imgHeight + current.height);
+        }
+
+        // Non-collision algo
+        int count = 0; // Limited number of iteration
+        boolean toDraw = false;
+        while (count < 3 && toDraw == false) {
+            for (Rectangle r : placePosition) {
+                if (current.intersects(r)) {
+                    System.out.println("collision : " + name);
+                    int differenceY = current.y - r.y;
+                    current.y += (differenceY <= 0 ? current.height
+                            : -current.height);
+                    ++count;
+                    continue;
+                }
             }
+            toDraw = true;
         }
-        ctx.setColor(color.toAWTColor());
-        ctx.drawString(name, (float) posX, (float) posY);
+
+        System.out.println(current.x + " " + current.y + " " + current.width
+                + " " + current.height);
+        // Draw palce's name
+        if (toDraw) {
+            ctx.setFont(font);
+            ctx.setColor(Color.WHITE.toAWTColor());
+            for (int i = -2; i <= 2; ++i) {
+                for (int j = -2; j <= 2; ++j) {
+                    ctx.drawString(name, (float) current.x + 0.3f * i,
+                            (float) (current.y + current.height + 0.25f * j));
+                }
+            }
+            ctx.setColor(color.toAWTColor());
+            ctx.drawString(name, (float) current.x, (float) (current.y + current.height));
+            placePosition.add(current);
+        }
     }
 
     private Shape pathPolyLine(PolyLine polyLine) {
