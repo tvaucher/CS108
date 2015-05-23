@@ -181,7 +181,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Write zipped file
         URL url = new URL(address);
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        File temp = File.createTempFile("temp", ".hgt.zip");
+        File temp = File.createTempFile("temp", ".hgt.zip.tmp");
+        temp.deleteOnExit();
         FileOutputStream fos = new FileOutputStream(temp);
         fos.getChannel().transferFrom(rbc, 0, Integer.MAX_VALUE);
         fos.close();
@@ -190,7 +191,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         ZipInputStream zin = new ZipInputStream(new BufferedInputStream(
                 new FileInputStream(temp)));
         ZipEntry ze = zin.getNextEntry();
-        File hgt = File.createTempFile(ze.getName(), "");
+        File hgt = File.createTempFile(ze.getName(), ".tmp");
+        hgt.deleteOnExit();
         // hgt.deleteOnExit();
         byte[] buf = new byte[1024];
         if (ze != null) {
