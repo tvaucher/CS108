@@ -9,7 +9,7 @@ import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
-public class QueryGenerator {
+public final class QueryGenerator {
     private final String minLat;
     private final String maxLat;
     private final String minLon;

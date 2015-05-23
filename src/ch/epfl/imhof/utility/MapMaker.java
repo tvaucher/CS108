@@ -23,7 +23,7 @@ import ch.epfl.imhof.painting.SwissPainter;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
-public class MapMaker {
+public final class MapMaker {
     private final static double INCHES_PER_METRE = 39.3700787;
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
     private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");

@@ -3,7 +3,7 @@ package ch.epfl.imhof.gui;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class SaveFileButton extends FileButton {
+public final class SaveFileButton extends FileButton {
     public SaveFileButton(String text, JTextField textField) {
         super(text, textField);
     }

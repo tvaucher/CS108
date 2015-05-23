@@ -30,7 +30,7 @@ import javax.swing.text.DefaultCaret;
 
 import ch.epfl.imhof.utility.MapMaker;
 
-public class GraphicalUserInterface {
+public final class GraphicalUserInterface {
     private static final int WIDTH = 400, HEIGHT = 100, TEXT_WIDTH = 200;
     private static JTextArea console;
 

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import javax.swing.JTextArea;
 
-public class GUIConsoleOutputStream extends OutputStream {
+public final class GUIConsoleOutputStream extends OutputStream {
     private JTextArea textArea;
 
     public GUIConsoleOutputStream(JTextArea textArea) {
