@@ -42,10 +42,10 @@ public final class SwissPainter {
             e.printStackTrace();
         }
         Font cityFont = baseFont.deriveFont(Font.PLAIN, 18);
-        Font townFont = baseFont.deriveFont(Font.PLAIN, 14);
-        Font villageFont = baseFont.deriveFont(Font.ITALIC, 12);
-        Font defaultFont = baseFont.deriveFont(Font.ITALIC, 10);
-        Font natureFont = baseFont.deriveFont(Font.ITALIC, 8);
+        Font townFont = baseFont.deriveFont(Font.PLAIN, 13);
+        Font villageFont = baseFont.deriveFont(Font.ITALIC, 11);
+        Font defaultFont = baseFont.deriveFont(Font.ITALIC, 9);
+        Font natureFont = baseFont.deriveFont(Font.ITALIC, 7);
 
         Painter roadPainter = RoadPainterGenerator.painterForRoads(
                 new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
@@ -111,7 +111,7 @@ public final class SwissPainter {
                 .above(place(defaultFont, black).when(
                         tagged("place", "borough", "suburb", "quarter",
                                 "isolate_dwelling", "farm", "archipelago",
-                                "island", "islet")))
+                                "island", "islet", "industrial")))
                 .above(place(natureFont, darkerGreen).when(
                         tagged("place", "wood", "forest", "park")))
                 .above(place(natureFont, darkerBlue).when(
