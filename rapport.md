@@ -39,9 +39,9 @@ Finalement, cette interface produit aussi une sortie verbeuse qui permet à l'ut
 ### Mise en oeuvre Java
 L'interface graphique est décrite dans la classe `GraphicalUserInterface` du paquetage `ch.epfl.imhof.gui`. Cette classe utilise Swing pour créer une fenêtre contenant de nombreux composants, dont des `JLabel`, `JTextField`, `JTextArea`, `JButton`...
 
-Les boutons qui permettent de sélectionner et sauvegarder un fichier sont définis par la classe abstraite `FileButton`. Un `FileButton` est intimement lié à un `JTextArea` (qui doit être donné dans le constructeur), et le fait de sélectionner un fichier dans le `JFileChooser` créé en cliquant sur le bouton remplit automatiquement le `JTextArea` lié au bouton. Les classes héritant de `FileButton` (à savoir `OpenFileButton` et `SaveFileButton`) doivent redéfinir la méthode `showDialog()` pour montrer une fenêtre d'ouverture ou de sauvegarde de fichier. Ils peuvent éventuellement aussi redéfinir une extension par défaut qui sera rajoutée aux noms des fichiers si besoin en est.
+Les boutons qui permettent de sélectionner et sauvegarder un fichier sont définis par la classe abstraite `FileButton` qui hérite de `JButton`. Un `FileButton` est intimement lié au `JTextArea` qui lui est donné par le constructeur. Le fait de sélectionner un fichier dans le `JFileChooser` créé en cliquant sur le bouton remplit automatiquement le `JTextArea` lié au bouton. Les classes héritant de `FileButton` (à savoir `OpenFileButton` et `SaveFileButton`) doivent redéfinir la méthode `showDialog()` pour montrer une fenêtre d'ouverture ou de sauvegarde de fichier. Ils peuvent éventuellement aussi redéfinir une extension par défaut qui sera rajoutée aux noms des fichiers si besoin en est.
 
-Le code pour créer une carte (défini dans `MapMaker`) tourne dans un fil d'exéction séparé afin de ne pas bloquer l'interface pendant la création de carte.
+Le code pour créer une carte (défini dans `MapMaker`) tourne dans un fil d'exécution séparé afin de ne pas bloquer l'interface pendant la création de carte.
 
 L'ajout de texte à la console de l'interface se fait par la méthode `System.out.println`. Pour cela, un nouvel `OutputStream` est défini par la classe `GUIConsoleOutputStream` qui ajoute le texte directement au `JTextArea` donnée en argument à son constructeur. La classe `GraphicalUserInterface` utilise cette classe pour rediriger l'output de `System.out`.
 
@@ -49,10 +49,10 @@ L'ajout de texte à la console de l'interface se fait par la méthode `System.ou
 ## Détection et lecture de fichiers `.osm` et `.osm.gz`
 
 ### Amélioration du point de vue de l'utilisateur
-Cet ajout permet de lire des fichiers `.osm` non gzippés. La classe `MapMaker` peut détecter si un fichier est au format `.gz` ou non, et le lire dans les deux cas, alors qu'elle était uniquement capable de lire les `.osm.gz` avant.
+Cet ajout permet de lire des fichiers `.osm` non gzippés. Le programme peut détecter si un fichier est au format `.gz` ou non, et le lire dans les deux cas, alors qu'il était uniquement capable de lire les `.osm.gz` avant.
 
 ### Mise en oeuvre en Java
-La détection du format du fichier se fait à l'aide d'une expression régulière (*regex*) qui retourne `true` si le nom du ficher se termine en `.gz`, et false autrement. 
+La détection du format du fichier se fait dans la classe `MapMaker` à l'aide d'une expression régulière (*regex*) qui retourne `true` si le nom du ficher se termine en `.gz`, et false autrement. 
 
 Cette valeur est ensuite donnée comme second argument à `OSMMapReader.readOSMFile()`, et le fichier ne sera donc dézippé que s'il est nécessaire de le faire.
 
