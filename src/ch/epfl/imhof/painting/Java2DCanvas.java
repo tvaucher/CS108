@@ -216,13 +216,14 @@ public final class Java2DCanvas implements Canvas {
         boolean toDraw = false;
         Rectangle interstectionRect = new Rectangle(current.width + 4,
                 current.height + 4);
-        while (count < 5 && toDraw == false) {
+        while (count < 5 && !toDraw) {
             boolean changed = false;
             interstectionRect.setLocation(current.x - 2, current.y - 2);
             for (Rectangle r : placePosition) {
                 if (interstectionRect.intersects(r)
                         || r.intersects(interstectionRect)) {
-                    int differenceY = current.y - r.y;
+                    int differenceY = (int) Math.round(current.y
+                            + current.height / 2d - (r.y + r.height));
                     current.y += (differenceY <= 0 ? current.height
                             : -current.height);
                     ++count;

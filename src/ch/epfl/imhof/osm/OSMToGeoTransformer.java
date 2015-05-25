@@ -40,7 +40,7 @@ public final class OSMToGeoTransformer {
                     "tunnel", "waterway")));
     private static final Set<String> polygonAttributes = new HashSet<>(
             (Arrays.asList("building", "landuse", "layer", "leisure",
-                    "natural", "waterway")));
+                    "natural", "waterway", "aeroway")));
     private static final Set<String> pointAttributes = new HashSet<>(
             Arrays.asList("name", "place"));
     private static final Set<String> point2Attributes = new HashSet<>(

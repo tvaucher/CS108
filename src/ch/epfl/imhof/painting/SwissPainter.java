@@ -100,7 +100,7 @@ public final class SwissPainter {
                 .above(polygon("cemetery").when(tagged("landuse", "cemetery")))
                 .above(polygon(lightGray)
                         .when(tagged("landuse", "residential")))
-                .above(polygon(lightRose).when(tagged("landuse", "industrial")))
+                .above(polygon(lightRose).when(tagged("landuse", "industrial").or(tagged("aeroway"))))
                 .layered();
 
         Painter placePainter = place(cityFont, black)
