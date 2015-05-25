@@ -23,12 +23,26 @@ import ch.epfl.imhof.painting.SwissPainter;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
+/**
+ * MapMaker is the class that puts everything together and creates a map as best
+ * as possible with the provided arguments.
+ * 
+ * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
+ */
 public final class MapMaker {
     private final static double INCHES_PER_METRE = 39.3700787;
     private final static double BLUR_RADIUS = 1.7; // in millimetres.
     private final static Pattern gzPattern = Pattern.compile(".+\\.gz$");
     private final static Vector3 LIGHT_VECTOR = new Vector3(-1, 1, 1);
 
+    /**
+     * Constructs a new MapMaker object. Depending on the number of arguments,
+     * it will either download osm and hgt files, or work with what it's been
+     * given.
+     * 
+     * @param args
+     */
     public MapMaker(String[] args) {
         int length = args.length;
         if (length == 8) {
@@ -36,12 +50,12 @@ public final class MapMaker {
         } else if (length == 6) {
             automaticMapMaker(args);
         } else {
-            throw new IllegalArgumentException("Wrong number of arguments! Got " + length + ", expected 6 or 8");
+            throw new IllegalArgumentException(
+                    "Wrong number of arguments! Got " + length
+                            + ", expected 6 or 8");
         }
     }
-    
-    
-    
+
     // @formatter:off
     /**
      * The method to execute to create a map.
@@ -113,10 +127,11 @@ public final class MapMaker {
             e.printStackTrace();
         }
     }
-    
+
     private void automaticMapMaker(String[] args) {
         System.out.println("Creating a new map automatically.");
-        String string = args[1].trim() + " " + args[0].trim() + " " + args[3].trim() + " " + args[2].trim();
+        String string = args[1].trim() + " " + args[0].trim() + " "
+                + args[3].trim() + " " + args[2].trim();
         QueryGenerator qg = new QueryGenerator(string);
         Point bl = qg.bl();
         Point tr = qg.tr();
@@ -150,11 +165,10 @@ public final class MapMaker {
         }
         Map map = transformer.transform(osmMap);
         /*
-        for (Attributed<Point> place : map.places()) {
-            System.out.println(place.attributeValue("name") + " "
-                    + place.value().x() + " " + place.value().y());
-        }
-        */
+         * for (Attributed<Point> place : map.places()) {
+         * System.out.println(place.attributeValue("name") + " " +
+         * place.value().x() + " " + place.value().y()); }
+         */
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
         System.out.println("Parsing the HGT file...");
@@ -175,7 +189,7 @@ public final class MapMaker {
         }
         System.out.println("Done.");
     }
-    
+
     private static BufferedImage mix(BufferedImage i1, BufferedImage i2) {
         BufferedImage out = new BufferedImage(i1.getWidth(), i1.getHeight(),
                 i1.getType());
