@@ -30,10 +30,20 @@ import javax.swing.text.DefaultCaret;
 
 import ch.epfl.imhof.utility.MapMaker;
 
+/**
+ * GraphicalUserInterface is a class that describes the Swing GUI of the
+ * application.
+ * 
+ * @author Maxime Kjaer (250694)
+ * @author Timote Vaucher (246532)
+ */
 public final class GraphicalUserInterface {
     private static final int WIDTH = 400, HEIGHT = 100, TEXT_WIDTH = 200;
     private static JTextArea console;
 
+    /**
+     * Constructs a new GUI.
+     */
     public GraphicalUserInterface() {
 
         JFrame frame = new JFrame("The Imhof Project");
@@ -142,7 +152,8 @@ public final class GraphicalUserInterface {
                         if (tabs.getSelectedIndex() == 0) {
                             String[] args = { osmField.getText(),
                                     hgtField.getText(), blLongField.getText(),
-                                    blLatField.getText(), trLongField.getText(),
+                                    blLatField.getText(),
+                                    trLongField.getText(),
                                     trLatField.getText(),
                                     String.valueOf(dpiField.getValue()),
                                     outField.getText() };
@@ -158,9 +169,10 @@ public final class GraphicalUserInterface {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally { // Reenable if there's an error so that the user can try again.
-                    create.setEnabled(true);
-                    exit.setEnabled(true);
+                    } finally { // Reenable if there's an error so that the user
+                                // can try again.
+                        create.setEnabled(true);
+                        exit.setEnabled(true);
                     }
                 }
             }.start();
