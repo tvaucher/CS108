@@ -24,8 +24,10 @@ public final class Map {
     private final List<Attributed<Polygon>> polygons;
 
     /**
-     * Constructs a new Map of polylines and polygons
+     * Constructs a new Map of places, polylines and polygons
      * 
+     * @param places
+     *            a list of attributed Point objects
      * @param polyLines
      *            a list of attributed PolyLine objects
      * @param polygons
@@ -79,7 +81,7 @@ public final class Map {
         private final List<Attributed<Polygon>> polygons = new ArrayList<>();
 
         /**
-         * Adds an attributed PointGeo to the list of places that will be a part
+         * Adds an attributed Poin to the list of places that will be a part
          * of the map.
          * 
          * @param newPlace

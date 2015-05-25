@@ -135,8 +135,6 @@ public final class OSMToGeoTransformer {
                 }
             }
         }
-        // ToDo => notempty, contains any placeAttrs => create new Attributed
-        // PointGeo
     }
 
     // @formatter:off
@@ -423,6 +421,16 @@ public final class OSMToGeoTransformer {
         return true;
     }
 
+    /**
+     * Generates the place name for a given entity and closed polyline
+     * 
+     * @param entity
+     *            for attributes
+     * @param shell
+     *            for area + label positioning
+     * @param builder
+     *            map builder to add the place
+     */
     private void generatePOI(OSMEntity entity, ClosedPolyLine shell,
             Map.Builder builder) {
         String naturalVal = entity.attributeValue("natural");
@@ -430,8 +438,7 @@ public final class OSMToGeoTransformer {
         String leisureVal = entity.attributeValue("leisure");
         if ((naturalVal != null && (naturalVal.equals("wood") || naturalVal
                 .equals("water")))
-                || (landuseVal != null && (landuseVal.equals("forest") || landuseVal
-                        .equals("industrial")))
+                || (landuseVal != null && (landuseVal.equals("forest")))
                 || (leisureVal != null && leisureVal.equals("park"))) {
             String name = entity.attributeValue("name");
             if (name != null) {

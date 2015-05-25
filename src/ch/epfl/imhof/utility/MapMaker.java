@@ -132,7 +132,7 @@ public final class MapMaker {
         System.out.println("Creating a new map automatically.");
         String string = args[1].trim() + " " + args[0].trim() + " "
                 + args[3].trim() + " " + args[2].trim();
-        QueryGenerator qg = new QueryGenerator(string);
+        QueryGenerator qg = new QueryGenerator(string, new CH1903Projection());
         Point bl = qg.bl();
         Point tr = qg.tr();
 
@@ -164,11 +164,6 @@ public final class MapMaker {
             e.printStackTrace();
         }
         Map map = transformer.transform(osmMap);
-        /*
-         * for (Attributed<Point> place : map.places()) {
-         * System.out.println(place.attributeValue("name") + " " +
-         * place.value().x() + " " + place.value().y()); }
-         */
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
         System.out.println("Parsing the HGT file...");

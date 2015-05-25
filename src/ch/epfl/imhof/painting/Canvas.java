@@ -35,7 +35,16 @@ public interface Canvas {
      *            The Color that will be used to fill said Polygon.
      */
     public void drawPolygon(Polygon polygon, Color color);
-    
+
+    /**
+     * A method that draws a Polygon onto the canvas, filling it with the given
+     * texture
+     * 
+     * @param polygon
+     *            The Polygon that will be drawn onto the canvas.
+     * @param texture
+     *            The name of texture that will be used to fill said Polygon.
+     */
     public void drawPolygon(Polygon polygon, String texture);
 
     /**

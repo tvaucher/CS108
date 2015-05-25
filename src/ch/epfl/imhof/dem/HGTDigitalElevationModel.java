@@ -110,6 +110,14 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                 .asShortBuffer();
     }
 
+    /**
+     * Constructor of HGTDEM for the automatised version is based on the other
+     * constructor
+     * 
+     * @param address
+     *            URL of hgt file
+     * @throws IOException
+     */
     public HGTDigitalElevationModel(String address) throws IOException {
         this(readOnlineFile(address));
     }

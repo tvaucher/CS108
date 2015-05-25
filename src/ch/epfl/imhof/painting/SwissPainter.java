@@ -111,7 +111,7 @@ public final class SwissPainter {
                 .above(place(defaultFont, black).when(
                         tagged("place", "borough", "suburb", "quarter",
                                 "isolate_dwelling", "farm", "archipelago",
-                                "island", "islet", "industrial")))
+                                "island", "islet")))
                 .above(place(natureFont, darkerGreen).when(
                         tagged("place", "wood", "forest", "park")))
                 .above(place(natureFont, darkerBlue).when(

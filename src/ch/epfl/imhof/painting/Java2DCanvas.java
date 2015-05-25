@@ -148,6 +148,13 @@ public final class Java2DCanvas implements Canvas {
         drawPolygonApplied(polygon);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * ch.epfl.imhof.painting.Canvas#drawPolygon(ch.epfl.imhof.geometry.Polygon,
+     * java.lang.String)
+     */
     @Override
     public void drawPolygon(Polygon polygon, String texture) {
         TexturePaint current = this.texture.get(texture);
@@ -157,6 +164,12 @@ public final class Java2DCanvas implements Canvas {
         }
     }
 
+    /**
+     * Concrete implementation of a polygon common to both method drawPolygon()
+     * 
+     * @param polygon
+     *            to be drawn with current style
+     */
     private void drawPolygonApplied(Polygon polygon) {
         // creating the shell
         Area shell = new Area(pathPolyLine(polygon.shell()));
@@ -178,7 +191,7 @@ public final class Java2DCanvas implements Canvas {
         // Some useful
         FontMetrics metrics = ctx.getFontMetrics(font);
         Rectangle current = new Rectangle(metrics.stringWidth(name),
-                metrics.getHeight()/2);
+                (int) Math.ceil(metrics.getHeight() / 2d));
         double halfWidth = current.getWidth() / 2d;
         double imgHeight = image.getHeight() / scalingFactor;
         double imgWidth = image.getWidth() / scalingFactor;
@@ -192,28 +205,32 @@ public final class Java2DCanvas implements Canvas {
                 && p.x() - current.width <= imgWidth) {
             current.x = (int) (imgWidth - current.width - 1);
         }
-            
+
         current.y = (int) (p.y() - current.height);
-        if (current.y + current.height >= imgHeight
-                && p.y() <= imgHeight) {
+        if (current.y + current.height >= imgHeight && p.y() <= imgHeight) {
             current.y = (int) (imgHeight - current.height);
         }
 
         // Non-collision algo
         int count = 0; // Limited number of iteration
         boolean toDraw = false;
+        Rectangle interstectionRect = new Rectangle(current.width + 4,
+                current.height + 4);
         while (count < 5 && toDraw == false) {
-            Rectangle interstectionRect = new Rectangle(current.x - 3, current.y - 3, current.width + 6, current.height + 6);
+            boolean changed = false;
+            interstectionRect.setLocation(current.x - 2, current.y - 2);
             for (Rectangle r : placePosition) {
-                if (interstectionRect.intersects(r) || r.intersects(interstectionRect)) {
+                if (interstectionRect.intersects(r)
+                        || r.intersects(interstectionRect)) {
                     int differenceY = current.y - r.y;
                     current.y += (differenceY <= 0 ? current.height
                             : -current.height);
                     ++count;
-                    continue;
+                    changed = true;
                 }
             }
-            toDraw = true;
+            if (!changed)
+                toDraw = true;
         }
 
         // Draw palce's name
@@ -227,7 +244,8 @@ public final class Java2DCanvas implements Canvas {
                 }
             }
             ctx.setColor(color.toAWTColor());
-            ctx.drawString(name, (float) current.x, (float) (current.y + current.height));
+            ctx.drawString(name, (float) current.x,
+                    (float) (current.y + current.height));
             placePosition.add(current);
         }
     }
