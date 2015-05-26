@@ -8,9 +8,9 @@ L'utilisateur n'a plus besoin de télécharger et sélectionner lui-même les do
 Cependant, du à la disponibilité limitée des fichiers HGT, cette fonctionnalité est limitée à la Suisse.
 
 ### Mise en oeuvre Java
-Le téléchargement des données OSM, ce fait par une requête en utilisant l'Overpass API. Elle est générée dans la classe `QueryGenerator` du paquetage `ch.epfl.imhof.utility` à partir d'une expression régulière qui récupère les coordonées des boundaries. Une requête pour l'Overpass API ressemble à http://overpass-api.de/api/interpreter?data=(node(minLat, minLon, maxLat, maxLon);<;>;);out; Cette requête est utilisée comme flux entrant dans `OSMMapReader` dont un constructeur particulier a du être généré pour l'occasion.
+Le téléchargement des données OSM, ce fait par une requête en utilisant l'Overpass API. Elle est générée dans la classe `QueryGenerator` du paquetage `ch.epfl.imhof.utility` à partir d'une expression régulière qui récupère les coordonées des boundaries. Une requête pour l'Overpass API ressemble à `http://overpass-api.de/api/interpreter?data=(node(minLat, minLon, maxLat, maxLon);<;>;);out;` Cette requête est utilisée comme flux entrant dans `OSMMapReader` dont un constructeur particulier a du être généré pour l'occasion.
 
-Le fichier HGT est téléchargé directement sur le site http://www.viewfinderpanoramas.org/ par une requête générée dans `QueryGenerator` en utilisant principalement la fonction `format` de `DecimalFormat` pour récupérer le nom correct du fichier. Néanmoins, ces derniers sont uniquement disponibles en .zip. Ils sont dans enregistrés dans un fichier temporaire avant d'être dézippé dans la méthode `readOnlineFile` de `HGTDigitalElevationModel` afin de pouvoir être lu comme un `File` dans le constructeur habituel de la classe
+Le fichier HGT est téléchargé directement sur le site [viewfinderpanorama.org](http://www.viewfinderpanoramas.org/) par une requête générée dans `QueryGenerator` en utilisant principalement la fonction `format` de `DecimalFormat` pour récupérer le nom correct du fichier. Néanmoins, ces derniers sont uniquement disponibles en `.zip`. Ils sont dans enregistrés dans un fichier temporaire avant d'être dézippé dans la méthode `readOnlineFile` de `HGTDigitalElevationModel` afin de pouvoir être lu comme un `File` dans le constructeur habituel de la classe
 
 ## Ajout des noms de villes, parcs, étendues d'eau et forêts
 
@@ -27,7 +27,7 @@ Un nouveau peintre appelé `place` prennant en argument une police et une couleu
 ## Ajout de textures à la carte
 
 ### Amélioration du point de vue de l'utilisateur
-Afin d'obtenir un résultat plus proche des cartes OSM disponible sur http://openstreetmap.org, l'ajout de texture permet aussi de se rapprocher des spécifications d'OpenStreetMap
+Afin d'obtenir un résultat plus proche des cartes OSM disponible sur [openstreetmap.org](http://openstreetmap.org), l'ajout de texture permet aussi de se rapprocher des spécifications d'OpenStreetMap
 
 ### Mise en oeuvre Java
 Un nouveau peintre de polygon a été défini, il prend en argument le nom de la texture. Ces dernières sont spécifiées dans une `Map<String, TexturePaint>` afin qu'on puisse les récupérer avec l'argument du nouveau peintre.
