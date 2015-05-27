@@ -157,7 +157,7 @@ public final class GraphicalUserInterface {
                                     trLatField.getText(),
                                     String.valueOf(dpiField.getValue()),
                                     outField.getText() };
-                            MapMaker m = new MapMaker(args);
+                            new MapMaker(args);
                         } else {
                             String[] args = { autoBlLongField.getText(),
                                     autoBlLatField.getText(),
@@ -165,7 +165,7 @@ public final class GraphicalUserInterface {
                                     autoTrLatField.getText(),
                                     String.valueOf(autoDpiField.getValue()),
                                     autoOutField.getText() };
-                            MapMaker m = new MapMaker(args);
+                            new MapMaker(args);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

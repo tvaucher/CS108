@@ -17,13 +17,12 @@ public final class Main {
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager
-                        .getSystemLookAndFeelClassName()); // Still prettier
-                                                           // than the default
-                                                           // IMO
+                        .getSystemLookAndFeelClassName());
+                new GraphicalUserInterface();
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("ERROR : " + e.getMessage());
             }
-            GraphicalUserInterface gui = new GraphicalUserInterface();
+            
         });
     }
 }

@@ -75,6 +75,7 @@ public final class MapMaker {
      */
     // @formatter:on
     private void manualMapMaker(String[] args) {
+        System.out.println("Creating a new map ");
         String mapName = args[0];
         String hgtName = args[1];
 
@@ -103,29 +104,33 @@ public final class MapMaker {
         OSMMap osmMap = null;
 
         try {
+            System.out.println("Parsing the OSM file...");
             osmMap = OSMMapReader.readOSMFile(mapName,
                     gzPattern.matcher(mapName).matches());
 
         } catch (Exception e) {
-            System.out.println("An error occured while reading the file.");
-            e.printStackTrace();
+            System.out.println("An error occured while reading the file.\nERROR : " + e.getMessage());
         }
 
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
+        System.out.println("Parsing the HGT file...");
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 new File(hgtName))) {
+            System.out.println("Shading the relief...");
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
+            System.out.println("Drawing the map...");
             painter.drawMap(map, canvas);
+            System.out.println("Overlaying relief...");
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
                     outputName));
         } catch (Exception e) {
-            System.out.println("An error occured while writing the file.");
-            e.printStackTrace();
+            System.out.println("An error occured while writing the file.\nERROR : " + e.getMessage());
         }
+        System.out.println("Done.");
     }
 
     private void automaticMapMaker(String[] args) {
@@ -160,8 +165,7 @@ public final class MapMaker {
             osmMap = OSMMapReader.readOSMFile(urlOsm);
 
         } catch (Exception e) {
-            System.out.println("An error occured while reading the file.");
-            e.printStackTrace();
+            System.out.println("An error occured while reading the file.\nERROR : " + e.getMessage());
         }
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
@@ -169,18 +173,17 @@ public final class MapMaker {
         System.out.println("Parsing the HGT file...");
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 urlHgt);) {
-            System.out.println("Shading the mountains...");
+            System.out.println("Shading the relief...");
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
             System.out.println("Drawing the map...");
             painter.drawMap(map, canvas);
-            System.out.println("Overlaying mountains...");
+            System.out.println("Overlaying relief...");
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
                     outputName));
         } catch (Exception e) {
-            System.out.println("An error occured while writing the file.");
-            e.printStackTrace();
+            System.out.println("An error occured while writing the file.\nERROR : " + e.getMessage());
         }
         System.out.println("Done.");
     }

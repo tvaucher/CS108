@@ -199,7 +199,7 @@ public final class Java2DCanvas implements Canvas {
 
         // Boundaries problems
         current.x = (int) (p.x() - halfWidth);
-        if (current.x < 0 && p.x() >= 0)
+        if (current.x < 0 && p.x() + current.width >= 0)
             current.x = 2;
         else if (current.x + current.width >= imgWidth
                 && p.x() - current.width <= imgWidth) {
