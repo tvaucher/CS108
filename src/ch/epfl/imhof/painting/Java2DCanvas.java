@@ -240,8 +240,8 @@ public final class Java2DCanvas implements Canvas {
             ctx.setColor(Color.WHITE.toAWTColor());
             for (int i = -2; i <= 2; ++i) {
                 for (int j = -2; j <= 2; ++j) {
-                    ctx.drawString(name, (float) current.x + 0.3f * i,
-                            (float) (current.y + current.height + 0.25f * j));
+                    ctx.drawString(name, current.x + 0.3f * i, (current.y
+                            + current.height + 0.25f * j));
                 }
             }
             ctx.setColor(color.toAWTColor());
