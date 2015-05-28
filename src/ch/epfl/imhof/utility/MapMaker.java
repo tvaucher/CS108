@@ -75,9 +75,11 @@ public final class MapMaker {
      */
     // @formatter:on
     private void manualMapMaker(String[] args) {
-        System.out.println("Creating a new map ");
+        System.out.println("Creating a new map.");
         String mapName = args[0];
         String hgtName = args[1];
+        
+        System.out.println("[1 / 7] Calculating some initial values...");
 
         // Coordinates will directly be stored in radians:
         double blLongitude = Math.toRadians(Double.parseDouble(args[2]));
@@ -104,7 +106,6 @@ public final class MapMaker {
         OSMMap osmMap = null;
 
         try {
-            System.out.println("Parsing the OSM file...");
             osmMap = OSMMapReader.readOSMFile(mapName,
                     gzPattern.matcher(mapName).matches());
 
@@ -115,26 +116,28 @@ public final class MapMaker {
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
-        System.out.println("Parsing the HGT file...");
+        System.out.println("[3 / 7] Parsing the Digital Elevation Model data...");
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 new File(hgtName))) {
-            System.out.println("Shading the relief...");
+            System.out.println("[4 / 7] Shading the relief...");
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
-            System.out.println("Drawing the map...");
+            System.out.println("[5 / 7] Drawing the map...");
             painter.drawMap(map, canvas);
-            System.out.println("Overlaying relief...");
+            System.out.println("[6 / 7] Overlaying relief...");
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
                     outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.\nERROR : " + e.getMessage());
         }
-        System.out.println("Done.");
+        System.out.println("[7 / 7] Done.");
     }
 
     private void automaticMapMaker(String[] args) {
         System.out.println("Creating a new map automatically.");
+        
+        System.out.println("[1 / 8] Calculating some initial values...");
         String string = args[1].trim() + " " + args[0].trim() + " "
                 + args[3].trim() + " " + args[2].trim();
         QueryGenerator qg = new QueryGenerator(string, new CH1903Projection());
@@ -159,9 +162,8 @@ public final class MapMaker {
         Painter painter = SwissPainter.painter();
         OSMToGeoTransformer transformer = new OSMToGeoTransformer(projector);
         OSMMap osmMap = null;
-
+        
         try {
-            System.out.println("Parsing the OSM file...");
             osmMap = OSMMapReader.readOSMFile(urlOsm);
 
         } catch (Exception e) {
@@ -170,22 +172,22 @@ public final class MapMaker {
         Map map = transformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, width, height, dpi,
                 Color.WHITE);
-        System.out.println("Parsing the HGT file...");
+        System.out.println("[4 / 8] Parsing the Digital Elevation Model data...");
         try (HGTDigitalElevationModel model = new HGTDigitalElevationModel(
                 urlHgt);) {
-            System.out.println("Shading the relief...");
+            System.out.println("[5 / 8] Shading the relief...");
             ReliefShader rel = new ReliefShader(projector, model, LIGHT_VECTOR);
             BufferedImage relief = rel
                     .shadedRelief(bl, tr, width, height, blur);
-            System.out.println("Drawing the map...");
+            System.out.println("[6 / 8] Drawing the map...");
             painter.drawMap(map, canvas);
-            System.out.println("Overlaying relief...");
+            System.out.println("[7 / 8] Overlaying relief...");
             ImageIO.write(mix(canvas.image(), relief), "png", new File(
                     outputName));
         } catch (Exception e) {
             System.out.println("An error occured while writing the file.\nERROR : " + e.getMessage());
         }
-        System.out.println("Done.");
+        System.out.println("[8 / 8] Done.");
     }
 
     private static BufferedImage mix(BufferedImage i1, BufferedImage i2) {

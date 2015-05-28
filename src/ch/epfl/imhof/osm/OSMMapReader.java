@@ -67,7 +67,7 @@ public final class OSMMapReader {
     //@formatter:on
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws SAXException, IOException {
-
+        System.out.print("[2 / 7] ");
         try (BufferedInputStream inStream = new BufferedInputStream(
                 new FileInputStream(fileName));
                 InputStream i = unGZip ? new GZIPInputStream(inStream)
@@ -78,13 +78,16 @@ public final class OSMMapReader {
 
     public static OSMMap readOSMFile(String address)
             throws SAXException, IOException {
+        System.out.println("[2 / 8] Downloading the OpenStreetMaps data...");
         URL file = new URL(address);
         try (InputStream i = file.openStream();) {
+            System.out.print("[3 / 8] ");
             return parse(i);
         }
     }
 
     private static OSMMap parse(InputStream i) throws SAXException, IOException {
+        System.out.println("Parsing the OpenStreetMaps data...");
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
         XMLReader r = XMLReaderFactory.createXMLReader();
 
